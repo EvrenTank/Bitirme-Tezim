@@ -11,19 +11,20 @@ import javax.swing.JOptionPane;
 public class liquids {
 
     // Sınıf değişkenlerinin tanımlanması
+
     //==============================================================
 
     liquid_values values=new liquid_values();
 
-    //coefficients coefficient=new coefficients();
 
+    // href tüm malzemeler için 0 Kelvin'de 0 kJ/kg olarak alınmıştır.
 
     double M,Tb,Tc,Pc,Zc,wp,v0;
 
 
-    double vis_c[],k_c[],ro_c[],cp_c[],ref[];// viskozite coefficients
+    double vis_c[],k_c[],ro_c[],cp_c[],critical[],hvap_c[];// viskozite coefficients
 
-    String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
+    String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
     String vis_mix;
     double T;
 
@@ -51,7 +52,7 @@ public class liquids {
 
 
 
-    public String cp() {
+    public String cp() { // (kJ/(kmolK))
         double A,B,C,D;
 
         double cp=0;
@@ -63,6 +64,25 @@ public class liquids {
             C=cp_c[2];
             D=cp_c[3];
             cp=A+B*T+C*T*T+D*T*T*T;
+            return (""+cp);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
+    public String cp2() {  // (kJ/(kgK))
+        double A,B,C,D;
+
+        double cp=0;
+        double M=critical[0];
+
+        if(cp_c[4]<=T && T<=cp_c[5])
+        {
+            A=cp_c[0];
+            B=cp_c[1];
+            C=cp_c[2];
+            D=cp_c[3];
+            cp=(A+B*T+C*T*T+D*T*T*T)/M;
             return (""+cp);
         }
         else {
@@ -97,16 +117,15 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public String h() {
+    public String h() {  //  kJ/kmol
         double A,B,C,D;
         double h=0;
-        double Tref,href,sref,M;
+        double Tref=0;
+        double href=0;
+        double sref=0;
+        double M=critical[0];
 
-        if(ref.length==4) {
-            Tref=ref[0];  // K
-            href=ref[1]; // kJ/kg
-            sref=ref[2]; // kJ/(kgK)
-            M=ref[3];    // g/mol
+
             if(cp_c[4]<=T && T<=cp_c[5])
             {
                 A=cp_c[0];
@@ -122,25 +141,45 @@ public class liquids {
             }
 
         }
+    public String hvap() {  //  (kJ / kg)
+        // kJ/mol
+        // A*((1 - T/Tc)^n)
+        // A, Tc, n, Tmin, Tmax, T, Hvap@T
+        double A,Tc,n;
+        double hvap=0;
+        double M=critical[0];
+
+
+        if(hvap_c[3]<=T && T<=hvap_c[4])
+        {
+            A=hvap_c[0];
+            Tc=hvap_c[1];
+            n=hvap_c[2];
+            hvap = A* Math.pow(1-T/Tc,n)*1000/M;
+            return (""+hvap);
+        }
 
         else {
-            return "href değ. bilinm. için hesap yapılamıyor.";
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
 
     }
 
 
 
-    public String h2() {// kJ/kg
-        double A,B,C,D;
-        double h=0;
-        double Tref,href,sref,M;
 
-        if(ref.length==4) {
-            Tref=ref[0];  // K
-            href=ref[1]; // kJ/kg
-            sref=ref[2]; // kJ/(kgK)
-            M=ref[3];    // g/mol
+
+
+    public String h2() {  // kJ/kg
+        double A,B,C,D;
+
+        double h=0;
+        double Tref=0;
+        double href=0;
+        double sref=0;
+        double M= critical[0];
+
+
             if(cp_c[4]<=T && T<=cp_c[5])
             {
                 A=cp_c[0];
@@ -155,23 +194,18 @@ public class liquids {
                 return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
             }
 
-        }
-
-        else {
-            return "href değ. bilinm. için hesap yapılamıyor.";
-        }
-
     }
+
+
+
+
+
     public String s() {// kJ/kg
         double A,B,C,D;
         double s=0;
-        double Tref,href,sref,M,vref,v;
+        double Tref=1,href=0,sref=0,M=critical[0], vref,v;
         double Ru=8.3145; // kJ/(kmolK)
-        if(ref.length==4) {
-            Tref=ref[0];  // K
-            href=ref[1];  // kJ/kg
-            sref=ref[2];  // kJ/(kgK)
-            M=ref[3];     // g/mol
+
             vref=v(Tref); // m^3/kg
             v=v(T);
             System.out.println("vref="+vref+" v="+v);
@@ -181,7 +215,8 @@ public class liquids {
                 B=cp_c[1];
                 C=cp_c[2];
                 D=cp_c[3];
-                s=(((A-Ru)*Math.log(T)+B*T+C*T*T/2+D*T*T*T/3)-((A-Ru)*Math.log(Tref)+B*Tref+C*Tref*Tref/2+D*Tref*Tref*Tref/3)+ Ru*Math.log(v/vref))/M+sref; // kJ/kg
+                //s=(((A-Ru)*Math.log(T)+B*T+C*T*T/2+D*T*T*T/3)-((A-Ru)*Math.log(Tref)+B*Tref+C*Tref*Tref/2+D*Tref*Tref*Tref/3)+ Ru*Math.log(v/vref))/M+sref; // kJ/kg
+                s = ((A*Math.log(T)+B*T+C*T*T/2+D*T*T*T/3)-(A*Math.log(Tref)+B*Tref+C*Tref*Tref/2+D*Tref*Tref*Tref/3)+(sref*M))/M;
                 return (""+s);
             }
 
@@ -189,11 +224,7 @@ public class liquids {
                 return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
             }
 
-        }
 
-        else {
-            return "sref değ. bilinm. için hesap yapılamıyor.";
-        }
 
     }
 
@@ -209,11 +240,9 @@ public class liquids {
             A=k_c[0];
             B=k_c[1];
             C=k_c[2];
-            if(k_c[5]==1.0) {
-                k=Math.pow(10.0,(A+B* Math.pow((1-T/C), 2.0/7.0)));}
-            else if(k_c[5]==2.0) {
+
                 k=A+B*T+C*T*T;
-            }
+
             return (""+k);
         }
         else {
@@ -245,6 +274,9 @@ public class liquids {
         double A,B,C,D;
 
         double vis=0;
+        for(int i=0;i<vis_c.length;i++){
+            System.out.println("vis_c["+i+"]="+vis_c[i]);
+        }
 
         if(vis_c[4]<=T && T<=vis_c[5])
         {
@@ -297,7 +329,7 @@ public class liquids {
 
 
     public String ro() {
-        double A,B,n,Tc;
+        double A,B,C,n;
 
         double ro=0;
 
@@ -305,12 +337,14 @@ public class liquids {
         {
             A=ro_c[0];
             B=ro_c[1];
-            n=ro_c[2];
-            Tc=ro_c[3];
+            C=ro_c[2];
+            n=ro_c[3];
 
-            ro=A*Math.pow(B, -Math.pow((1-T/Tc), n)); // g/ml birimindedir.
+            ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
+            System.out.println("density="+ro);
             return (""+ro);
+
         }
         else {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
@@ -332,7 +366,7 @@ public class liquids {
     }
 
     public String v() {
-        double A,B,n,Tc;
+        double A,B,C,n;
 
         double ro=0;
         double v=0;
@@ -341,10 +375,10 @@ public class liquids {
         {
             A=ro_c[0];
             B=ro_c[1];
-            n=ro_c[2];
-            Tc=ro_c[3];
+            C=ro_c[2];
+            n=ro_c[3];
 
-            ro=A*Math.pow(B, -Math.pow((1-T/Tc), n)); // g/ml birimindedir.
+            ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
             v=1/ro;
             return (""+v);
@@ -355,7 +389,7 @@ public class liquids {
     }
 
     public double  v(double T) {
-        double A,B,n,Tc;
+        double A,B,C,n;
 
         double ro=0;
         double v=0;
@@ -363,12 +397,14 @@ public class liquids {
 
         A=ro_c[0];
         B=ro_c[1];
-        n=ro_c[2];
-        Tc=ro_c[3];
+        n=ro_c[3];
+        C=ro_c[2];
 
-        ro=A*Math.pow(B, -Math.pow((1-T/Tc), n)); // g/ml birimindedir.
+        ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
+        System.out.println(ro);
         ro*=1000; // Birimi kg/m^3 yaptım.
         v=1/ro;
+        System.out.println(v);
         return (v);
     }
 
@@ -421,14 +457,17 @@ public class liquids {
        ro_c=values.getro(name);
        vis_c=values.getvis(name);
        cp_c=values.getcp(name);
-       k_c=values.getk(name);
-       ref=values.getref(name);
+       k_c=values.getk(name); // Sonradan düzeltmek gerek
+       critical=values.get_critical(name); // Sonra düzeltmek gerek
+       hvap_c=values.gethvap(name);
 
         vis=vis();
 
         k=k();
 
         cp=cp();
+
+        cp_kg=cp2();
 
         ro=ro();
 
@@ -444,12 +483,14 @@ public class liquids {
 
         alfa=termal_diffuzivite(cp,k,ro);
 
+        hvap=hvap();
+
         Pr=Pr(cp,k,vis);
 
         Object result[][]= {{"T,sıcaklık:",T,"K"," "},{"P,basınç:",P,"kPa"," "},
                 {"cp,sabit basınçta özgül ısı:",cp,"kJ/kmolK",cp_c[4]+"-"+cp_c[5]},{"cp,sabit basınçta özgül ısı:",cp_cal,"kcal/kmolK",cp_c[4]+"-"+cp_c[5]}
-                ,{"cv, sabit hacimde özgül ısı:",Cv,"kJ/kmolK"," "},
-                {"h,entalpi:",h,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},{"h,entalpi:",h_kg,"kJ/kg",cp_c[4]+"-"+cp_c[5]},
+                ,{"cp, sabit basınçta özgül ısı:",cp_kg,"kJ/kgK"," "},{"cv, sabit hacimde özgül ısı:",Cv,"kJ/kmolK"," "},
+                {"h,entalpi:",h,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},{"h,entalpi:",h_kg,"kJ/kg",cp_c[4]+"-"+cp_c[5]},{"hvap,buharlaşma entalpisi:",hvap,"kJ/kg",hvap_c[3]+"-"+hvap_c[4]},
                 {"u, iç enerji:",u,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},
                 {"s, entropi:",s,"kJ/(kgK)",cp_c[4]+"-"+cp_c[5]},{"v, özgül hacim:",v,"m^3/kg",ro_c[4]+"-"+ro_c[5]},
                 {"ro,yoğunluk:",ro,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"g, gibbs serbest enerjisi:",g,"kJ/kmol",""},
@@ -485,21 +526,13 @@ public class liquids {
         ro_c=values.getro(name1);
         vis_c=values.getvis(name1);
         cp_c=values.getcp(name1);
-        k_c=values.getk(name1);
-        ref=values.getref(name1);
+        k_c=values.gethvap(name1); // Sonra düzelt
+        critical=values.get_critical(name1); // Daha sonra düzelt
 
         w1=m1/(m1+m2);
         w2=m2/(m1+m2);
 
-
-        if(ref.length==4){
-           M1=ref[3];//kg/kmol
-            //M1=5;
-        }
-        else{
-            M1=10; // Birçok sıvı için henüz M değeri girilmedi. Bunu kod hata vermesin diye ekledim ama bu şekilde sonuçlar zaten hatalı
-            //olur.
-        }
+        M1=critical[0];
 
         N1=m1/M1;
         ro1=(ro());
@@ -513,16 +546,11 @@ public class liquids {
         ro_c=values.getro(name2);
         vis_c=values.getvis(name2);
         cp_c=values.getcp(name2);
-        k_c=values.getk(name2);
-        ref=values.getref(name2);
+        k_c=values.gethvap(name2); // Daha sonra düzelt
+        critical=values.get_critical(name2); // Daha sonra düzelt
 
-        if(ref.length==4){
-            M2=ref[3];//kg/kmol
-           // M2=5;
-        }
-        else{
-            M2=10;
-        }
+        M2= critical[0];
+
 
         N2=m2/M2;
 

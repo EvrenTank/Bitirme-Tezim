@@ -19,7 +19,7 @@ public class liquid_names {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 isimler.add(data);
-                System.out.println(data);
+                //System.out.println(data);
 
             }
             myReader.close();
@@ -48,7 +48,7 @@ public class liquid_names {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 isimler.add(data);
-                System.out.println(data);
+                //System.out.println(data);
 
             }
             myReader.close();
@@ -64,9 +64,9 @@ public class liquid_names {
         }
 
         for ( int k=0;k<isim_dizisi.length;k++){
-            System.out.println(isim_dizisi[k]);
+            //System.out.println(isim_dizisi[k]);
         }
-        System.out.println(isimler.size());
+        //System.out.println(isimler.size());
         System.out.println(isim_dizisi.length);
 
     }

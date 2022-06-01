@@ -1,5 +1,6 @@
 package bitirme_tezi;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -29,20 +30,22 @@ public class liquid_values {
     // A, Tc, n, Tmin, Tmax, T, Hvap@T
 
     // Critical values organic and inorganic
-    // NO, formula,Name, MW, Tb, Tc, Pc, Vc, RHOC, ZC, omega
+    // NO, formula,Name, MW (g/mol), Tb(K), Tc, Pc(bar), Vc ( ml/mol) , RHOC, ZC, omega
 
     // viskozite organic - centipoise
     //log10(μ liq) = A + B/T + C*T + D*T^2
     // A,B,C,D,Tmin,Tmax,T,vis@T
 
 
-
+    int a=0; // Bunu kullanarak bir if komutu oluşturacağım ve böylece dosyalar sadece bir defa okunacak. Fonksiyonlar her çağırıldığında
+    // tekrar tekrar dosyaları okumak programı yavaşlatır.
 
     ArrayList <String[]> cp_katsayılar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> critical_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> density_katsayılar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> hvap_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> viscosity_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> k_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
 
 
 
@@ -57,7 +60,7 @@ public class liquid_values {
         myReader = new Scanner(file);
         while(myReader.hasNextLine()){
             String data = myReader.nextLine();
-            String veri[]= data.split(" ");
+            String veri[]= data.split("\\s+");
             katsayılar.add(veri);
 
         }
@@ -65,6 +68,7 @@ public class liquid_values {
 
         e.printStackTrace();
     }
+
 
 
 
@@ -76,14 +80,25 @@ public class liquid_values {
  File densityvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\density.txt");
  File hvapvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\hvap.txt");
  File viscosityvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\viscosity.txt");
+ File kvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\k.txt");
 
    cp_katsayılar= read_file(cpvalues_File);
    critical_katsayılar =read_file(criticalvalues_File);
    density_katsayılar= read_file(densityvalues_File);
    hvap_katsayılar= read_file(hvapvalues_File);
    viscosity_katsayılar= read_file(viscosityvalues_File);
+   k_katsayılar= read_file(kvalues_File);
+
+   for(int i=0;i<5;i++){
+       System.out.println(cp_katsayılar.get(i));
+       System.out.println(critical_katsayılar.get(i));
+       System.out.println(density_katsayılar.get(i));
+       System.out.println(hvap_katsayılar.get(i));
+       System.out.println(viscosity_katsayılar.get(i));
+   }
 
 
+        //JOptionPane.showMessageDialog(null,"read_all_Files metodu çalıştı.");
 
 
         String temp_array[];
@@ -92,6 +107,9 @@ public class liquid_values {
         String critical_values [] =new String[critical_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
         String hvap_values [] =new String[hvap_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
         String viscosity_values [] =new String[viscosity_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+        String k_values [] =new String[k_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+
+
 //        for (int i=0;i<cp_katsayılar.size();i++){
 //            cp_values[i] = String.valueOf(cp_katsayılar.get(i).split(" "));
 //
@@ -120,10 +138,14 @@ public class liquid_values {
 //        }
 }
     public double[] getcp(String name){
-        double cp []=null;
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double cp []= {0,0,0,0,0,0};
         for(String [] i:cp_katsayılar){
-            if( i[0] == name){
-                cp = new double[i.length-1];
+            if(  i[0].equals(name)){
+                //cp = new double[i.length-1];
                 cp [0] = Double.parseDouble(i[1]);
                 cp [1] = Double.parseDouble(i[2]);
                 cp [2] = Double.parseDouble(i[3]);
@@ -133,13 +155,45 @@ public class liquid_values {
 
             }
         }
+//        for(int i1=0;i1<cp.length;i1++){
+//            System.out.println("cp"+cp[i1]);
+//
+//        }
         return cp;
     }
+    public double[] getk (String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double k []= {0,0,0,0,0};
+        for(String [] i:k_katsayılar){
+            if(  i[0].equals(name)){
+                //cp = new double[i.length-1];
+                k [0] = Double.parseDouble(i[1]);
+                k [1] = Double.parseDouble(i[2]);
+                k [2] = Double.parseDouble(i[3]);
+                k [3] = Double.parseDouble(i[4]);
+                k [4] = Double.parseDouble(i[5]);
+
+            }
+        }
+        for(int i1=0;i1<k.length;i1++){
+            System.out.println("k="+k[i1]);
+
+        }
+        return k;
+    }
+
     public double[] getro(String name){
-        double ro []=null;
+        if(a == 0){
+            read_all_Files();
+        }
+        a++;
+        double ro []= {0,0,0,0,0,0,0,0};
         for(String [] i:density_katsayılar){
-            if( i[0] == name){
-                ro = new double[i.length-1];
+            if(  i[0].equals(name)){
+               // ro = new double[i.length-1];
                 ro [0] = Double.parseDouble(i[1]);
                 ro [1] = Double.parseDouble(i[2]);
                 ro [2] = Double.parseDouble(i[3]);
@@ -151,14 +205,23 @@ public class liquid_values {
 
             }
         }
+
+//        for(int i1=0;i1<ro.length;i1++){
+//            System.out.println("ro"+ro[i1]);
+//
+//        }
         return ro;
     }
 
     public double[] getvis(String name){
-        double vis []=null;
+        if(a == 0){
+            read_all_Files();
+        }
+        a++;
+        double vis []= {0,0,0,0,0,0,0};
         for(String [] i:viscosity_katsayılar){
-            if( i[0] == name){
-                vis = new double[i.length-1];
+            if( i[0].equals(name)){
+                //vis = new double[i.length-1];
                 vis [0] = Double.parseDouble(i[1]);
                 vis [1] = Double.parseDouble(i[2]);
                 vis [2] = Double.parseDouble(i[3]);
@@ -168,32 +231,56 @@ public class liquid_values {
                 vis [6] = Double.parseDouble(i[7]);
 
             }
+
         }
+//        for(int i1=0;i1<vis.length;i1++){
+//            System.out.println("vis"+vis[i1]);
+//
+//        }
         return vis;}
 
     public double[] gethvap(String name){
-        double hvap []=null;
+        // kJ/mol
+        // A*((1 - T/Tc)^n)
+        // A, Tc, n, Tmin, Tmax, T, Hvap@T
+
+        if(a == 0){
+            read_all_Files();
+        }
+        a++;
+        double hvap []= {0,0,0,0,0,0};
         for(String [] i:hvap_katsayılar){
-            if( i[0] == name){
-                hvap = new double[i.length-1];
+            if( i[0].equals(name)){
+                System.out.println("name="+name);
+                // hvap = new double[i.length-1];
                 hvap [0] = Double.parseDouble(i[1]);
                 hvap [1] = Double.parseDouble(i[2]);
                 hvap [2] = Double.parseDouble(i[3]);
                 hvap [3] = Double.parseDouble(i[4]);
                 hvap [4] = Double.parseDouble(i[5]);
                 hvap [5] = Double.parseDouble(i[6]);
-                hvap [6] = Double.parseDouble(i[7]);
+
 
             }
+
+
         }
+//        for(int i1=0;i1<hvap.length;i1++){
+//            System.out.println("hvap"+hvap[i1]);
+//
+//        }
         return hvap;}
 
     public double[] get_critical(String name){
+        if(a == 0){
+            read_all_Files();
+        }
+        a++;
 
-        double critic []=null;
+        double critic []= {0,0,0,0,0,0,0,0};
         for(String [] i:critical_katsayılar){
-            if( i[0] == name){
-                critic = new double[i.length-1];
+            if(  i[0].equals(name)){
+                //critic = new double[i.length-1];
                 critic [0] = Double.parseDouble(i[1]);
                 critic [1] = Double.parseDouble(i[2]);
                 critic [2] = Double.parseDouble(i[3]);
