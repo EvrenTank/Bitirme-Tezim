@@ -46,6 +46,9 @@ public class liquid_values {
     ArrayList <String[]> hvap_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> viscosity_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> k_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> csp_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> Tf= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> org_compounds= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
 
 
 
@@ -81,6 +84,9 @@ public class liquid_values {
  File hvapvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\hvap.txt");
  File viscosityvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\viscosity.txt");
  File kvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\k.txt");
+ File csp_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\a_values_for_CSP.txt");
+ File Tfreezing_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\Tfreezing.txt");
+ File organic_compounds= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\organiccompounds_classification.txt");
 
    cp_katsayılar= read_file(cpvalues_File);
    critical_katsayılar =read_file(criticalvalues_File);
@@ -88,6 +94,9 @@ public class liquid_values {
    hvap_katsayılar= read_file(hvapvalues_File);
    viscosity_katsayılar= read_file(viscosityvalues_File);
    k_katsayılar= read_file(kvalues_File);
+   csp_katsayılar= read_file(csp_File);
+   Tf= read_file(Tfreezing_File);
+   org_compounds=read_file(organic_compounds);
 
    for(int i=0;i<5;i++){
        System.out.println(cp_katsayılar.get(i));
@@ -100,7 +109,7 @@ public class liquid_values {
 
         //JOptionPane.showMessageDialog(null,"read_all_Files metodu çalıştı.");
 
-
+        // Bunlar büyük ihtimalle kullanılmıyor. Silsem de olur muhtemelen ama şimdi hata falan verir diye silmiyorum.
         String temp_array[];
         String cp_values [] =new String[cp_katsayılar.size()] ; // ArrayListleri, arraylere dönüşürdüm.
         String density_values [] =new String[density_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
@@ -108,6 +117,7 @@ public class liquid_values {
         String hvap_values [] =new String[hvap_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
         String viscosity_values [] =new String[viscosity_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
         String k_values [] =new String[k_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+
 
 
 //        for (int i=0;i<cp_katsayılar.size();i++){
@@ -137,6 +147,31 @@ public class liquid_values {
 //           System.out.println(viscosity_values[i]);
 //        }
 }
+
+    public double[] get_orgmat_classification(String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double org_compound_coefficients []= {0,0,0,0};
+        for(String [] i:org_compounds){
+            if(  i[0].equals(name)){
+                //cp = new double[i.length-1];
+                org_compound_coefficients [0] = Double.parseDouble(i[2]);
+                org_compound_coefficients [1] = Double.parseDouble(i[3]);
+                org_compound_coefficients [2] = Double.parseDouble(i[4]);
+                org_compound_coefficients [3] = Double.parseDouble(i[5]);
+
+
+            }
+        }
+//        for(int i1=0;i1<cp.length;i1++){
+//            System.out.println("cp"+cp[i1]);
+//
+//        }
+        return org_compound_coefficients;
+    }
+
     public double[] getcp(String name){
         if(a == 0){
             read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
@@ -161,6 +196,23 @@ public class liquid_values {
 //        }
         return cp;
     }
+    public double getTf (String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double Tf = 0;
+        for(String [] i:this.Tf){
+            if(  i[0].equals(name)){
+                //cp = new double[i.length-1];
+                Tf = Double.parseDouble(i[1]);
+                System.out.println("Tf="+Tf);
+
+
+            }
+        }
+
+        return Tf;}
     public double[] getk (String name){
         if(a == 0){
             read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
@@ -219,6 +271,7 @@ public class liquid_values {
         }
         a++;
         double vis []= {0,0,0,0,0,0,0};
+        // A, B, C, D, Tmin, Tmax
         for(String [] i:viscosity_katsayılar){
             if( i[0].equals(name)){
                 //vis = new double[i.length-1];
@@ -228,7 +281,7 @@ public class liquid_values {
                 vis [3] = Double.parseDouble(i[4]);
                 vis [4] = Double.parseDouble(i[5]);
                 vis [5] = Double.parseDouble(i[6]);
-                vis [6] = Double.parseDouble(i[7]);
+//                vis [6] = Double.parseDouble(i[7]);
 
             }
 
@@ -293,6 +346,28 @@ public class liquid_values {
             }
         }
         return critic;
+    }
+    public double[] get_a_values(String name){ // for cp_CSP method
+        if(a == 0){
+            read_all_Files();
+        }
+        a++;
+
+        double csp []= {0,0,0,0,0,0,0};
+        for(String [] i:csp_katsayılar){
+            if(  i[0].equals(name)){
+                //critic = new double[i.length-1];
+                csp [0] = Double.parseDouble(i[1]);
+                csp [1] = Double.parseDouble(i[2]);
+                csp [2] = Double.parseDouble(i[3]);
+                csp [3] = Double.parseDouble(i[4]);
+                csp [4] = Double.parseDouble(i[5]);
+                csp [5] = Double.parseDouble(i[6]);
+                csp [6] = Double.parseDouble(i[7]);
+
+            }
+        }
+        return csp;
     }
 
 

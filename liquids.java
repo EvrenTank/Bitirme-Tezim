@@ -22,9 +22,9 @@ public class liquids {
     double M,Tb,Tc,Pc,Zc,wp,v0;
 
 
-    double vis_c[],k_c[],ro_c[],cp_c[],critical[],hvap_c[];// viskozite coefficients
+    double vis_c[],k_c[],ro_c[],cp_c[],critical[],hvap_c[],a_values[],Tf,organiccompounds_classification[];// viskozite coefficients
 
-    String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
+    String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap,cp_csp,vis_GCM,k_latini; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
     String vis_mix;
     double T;
 
@@ -70,6 +70,40 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+    public String cp_CSP() { // (kJ/(kmolK))
+        // CSP: Corresponding States Method
+
+        // Tmin ve Tmax değerleri verilmeyen malzemeler vardı. Onları her sıcaklıkta olur diye kabul ettiğim için
+        // 0 ile 10000 arası diye kafama göre yazdım.
+        double w,Tr,Tc,a0,a1,a2,a3,a4,Tmin,Tmax;
+        a0 = a_values[0];
+        a1 = a_values[1];
+        a2= a_values[2];
+        a3 = a_values[3];
+        a4 = a_values[4];
+        Tmin = a_values[5];
+        Tmax = a_values[6];
+        double cp_saturated;
+        double cp=0;
+        w=critical[7];
+        Tc=critical[2];
+        double M = critical[0] ;
+        double Ru= 8.3145; // kJ/(kmolK)
+        Tr=T/Tc;
+        double R = Ru/M;   // kJ/(kgK)
+
+
+        if( Tr < 0.99 && (T>=Tmin && T<= Tmax) )
+        {
+            cp = R* (1.586 + 0.49/(1-Tr)+w*(4.2775 + 6.3/Tr*Math.pow(1.0-Tr,0.3333)+0.4355/(1-Tr)) +a0+a1*T+a2*T*T+a3*T*T*T+a4*T*T*T*T) ;
+            cp_saturated =  cp - R* Math.pow(Math.E,20.1*Tr-17.9);
+            return (""+cp+"    "+cp_saturated);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
+
     public String cp2() {  // (kJ/(kgK))
         double A,B,C,D;
 
@@ -208,7 +242,7 @@ public class liquids {
 
             vref=v(Tref); // m^3/kg
             v=v(T);
-            System.out.println("vref="+vref+" v="+v);
+            //System.out.println("vref="+vref+" v="+v);
             if(cp_c[4]<=T && T<=cp_c[5])
             {
                 A=cp_c[0];
@@ -249,6 +283,33 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
 
+
+    }
+    public String k_Latini(){
+        // Latini et. al method
+
+        double A,Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
+        double k=0;
+        M=critical[0];
+        Tb=critical[1];
+        Tc=critical[2];
+        Tr=T/Tc;
+        Asharp=organiccompounds_classification[0];
+        alfa=organiccompounds_classification[1];
+        beta=organiccompounds_classification[2];
+        gamma=organiccompounds_classification[3];
+
+        if(k_c[3]<=T && T<=k_c[4])
+        {
+            A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
+            k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
+
+            return (""+k);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+
     }
 
     //Flippov Equation
@@ -274,9 +335,9 @@ public class liquids {
         double A,B,C,D;
 
         double vis=0;
-        for(int i=0;i<vis_c.length;i++){
-            System.out.println("vis_c["+i+"]="+vis_c[i]);
-        }
+//        for(int i=0;i<vis_c.length;i++){
+//            System.out.println("vis_c["+i+"]="+vis_c[i]);
+//        }
 
         if(vis_c[4]<=T && T<=vis_c[5])
         {
@@ -284,7 +345,7 @@ public class liquids {
             B=vis_c[1];
             C=vis_c[2];
             D=vis_c[3];
-            vis=Math.pow(10.0, vis_c[0]+vis_c[1]/T+vis_c[2]*T+vis_c[3]*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
+            vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
             vis=vis/1000; // Pa.s birimine çevirdim
             return (""+vis);
         }
@@ -292,6 +353,208 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+    public String vis_GCM() { // Burada V değerlerini ro'yu kullanarak yaptım.
+
+        // Przezdziecki and Sridhar Yöntemi ( Group Contribution Yöntemlerinden biri)
+
+        double Tr, w, H1, H2, Tc, Vc, Pc, V;
+        double Vm, Vo, E;
+        Pc = critical[3];
+        w = critical[7];
+        Tc = critical[2]; // Kelvin
+        Vc = critical[4]; // (ml/mol), ( cm^3/mol) ikisi aynı şey
+        double M = critical[0];
+        double vis = 0;
+
+        System.out.println("Yazma İşlemi Başlıyor.");
+        System.out.println("Tf:"+Tf);
+        System.out.println("w"+w);
+
+        Tr= T/Tc;
+
+
+
+        try {
+            Vm = M / Double.parseDouble(ro(Tf)) * 1000;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "Tkritik için yoğunluk bilinmediği için hesaplama yapılamıyor";
+        }
+
+
+        System.out.println("Vm:"+Vm);
+
+
+
+
+
+        try {
+         V = M / Double.parseDouble(ro()) * 1000;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "Yoğunluk bilinmediği için hesaplama yapılamıyor";
+        }
+
+
+
+
+        Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
+        E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
+        vis = Vo / E / (V - Vo);
+        System.out.println("V:"+V);
+        System.out.println("Vo:"+Vo);
+        System.out.println("E:"+E);
+        System.out.println("vis:"+vis);
+
+//        for (int i = 0; i < vis_c.length; i++) {
+//            System.out.println("vis_c[" + i + "]=" + vis_c[i]);
+//        }
+
+       /* if(Tr > 0.55)
+        {
+            vis=vis/1000; // Pa.s birimine çevirdim
+            return (""+vis);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }*/
+        if( Tf == 0   ){
+            return "Tf bilinmediği için hesaplama yapılamıyor.";
+        }
+        else if( Tr< 0.50){
+            return "Tr, 0.50'den küçük olduğu için hesaplama yapılamıyor.";
+        }
+        else if( w==0){
+            return "Accentric factor bilinmediği için hesaplama yapılamıyor.";
+        }
+        else {
+            vis = vis / 1000; // Pa.s birimine çevirdim
+            return ("" + vis);        }
+
+
+    }
+
+    public String vis_GCM2() { // Viskozite hesabını yaparken V değerlerini fT üzerinden hesaplamaya çalışacağım.
+
+        // Przezdziecki and Sridhar Yöntemi ( Group Contribution Yöntemlerinden biri)
+
+        double Tr, w, H1, H2, Tc, Vc, Pc, V;
+        double fTreferans;// f(Treferans);
+        double Vreferans, Treferans;
+        double fT; // f(T) demek istedim.
+        double Vm, Vo, E;
+        Pc = critical[3];
+        w = critical[7];
+        Tc = critical[2]; // Kelvin
+        Vc = critical[4]; // (ml/mol), ( cm^3/mol) ikisi aynı şey
+        Vreferans = Vc;
+        Treferans = Tc;
+        double M = critical[0];
+        double vis = 0;
+        Tr = Tf / Tc;
+        H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
+        H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
+        fT = H1 * (1 - w * H2); // Donma sıcaklığı için yapılan hesaplama Bunun yardımı ile Vm bulunacak.
+        System.out.println("Yazma İşlemi Başlıyor.");
+        System.out.println("Tf:"+Tf);
+        System.out.println("H1:"+H1);
+        System.out.println("H2:"+H2);
+        System.out.println("fT:"+fT);
+        System.out.println("Treferans(Tfp):"+Treferans);
+        System.out.println("w"+w);
+
+
+        double x = (Treferans / Tc);
+        H1 = 0.33593 - 0.33953 * x + 1.51941 * x * x - 2.02512 * x * x * x + 1.11422 * x * x * x * x;
+        H2 = 0.29607 - 0.09045 * x - 0.04842 * x * x;
+        fTreferans = H1 * (1 - w * H2); // referans noktası olması için kullanılan fT.
+        // Bu fT hem Vm hesabında hem de girdiğimiz sıcaklık için yapılan V hesabında kullanılacak.
+        // Referans noktası olarak kritik sıcaklığı seçtim. Çünkü orası için V değerleri tablolarda mevcut.
+        System.out.println("H1:"+H1);
+        System.out.println("H2:"+H2);
+        System.out.println("fTreferans:"+fTreferans);
+
+//        Vm = fT * Vreferans / fTreferans;
+//        Vm=95.2;
+        try {
+            Vm = M / Double.parseDouble(ro(Tf)) * 1000;
+//          Vreferans=106.87;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "Bu sıcaklıkta hesaplama yapılamıyor";
+        }
+
+
+        System.out.println("Vm:"+Vm);
+
+
+        Tr = T / Tc;
+
+
+        H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
+        H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
+        fT = H1 * (1 - w * H2);
+        H1 = 0.33593 - 0.33953 * x + 1.51941 * x * x - 2.02512 * x * x * x + 1.11422 * x * x * x * x;
+        H2 = 0.29607 - 0.09045 * x - 0.04842 * x * x;
+
+
+//        fTreferans = H1 * (1 - w * H2);
+        fTreferans=0.340;
+
+        System.out.println("H1:"+H1);
+        System.out.println("H2:"+H2);
+        System.out.println("fT:"+fT);
+
+        try {
+            Vreferans = M / Double.parseDouble(ro()) * 1000;
+            V = M / Double.parseDouble(ro()) * 1000;
+//       Vreferans=106.87;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "Bu sıcaklıkta hesaplama yapılamıyor";
+        }
+//        V = fT * Vreferans / fTreferans;
+
+
+
+
+        Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
+        E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
+        vis = Vo / E / (V - Vo);
+        System.out.println("V:"+V);
+        System.out.println("Vreferans:"+Vreferans);
+        System.out.println("Vo:"+Vo);
+        System.out.println("E:"+E);
+        System.out.println("vis:"+vis);
+
+//        for (int i = 0; i < vis_c.length; i++) {
+//            System.out.println("vis_c[" + i + "]=" + vis_c[i]);
+//        }
+
+       /* if(Tr > 0.55)
+        {
+            vis=vis/1000; // Pa.s birimine çevirdim
+            return (""+vis);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }*/
+        if( Tf != 0 && (Tr > 0.50)){ // Aslında kitapta 0.55 yazıyordu ama sınırdaki değerlerde sıkıntı olmasın diye böyle yaptım.
+            vis = vis / 1000; // Pa.s birimine çevirdim
+            return ("" + vis);
+        }
+        else if( w == 0.0 ){
+            return "Accentric factor bilinmiyor.";
+        }
+        else {
+            return "Tf değeri bilinmediği için hesap yapılamıyor.";
+        }
+
+
+    }
+
     public String vis_centipoise() {
         double A,B,C,D;
 
@@ -327,13 +590,12 @@ public class liquids {
 
 
 
-
-    public String ro() {
+    public String ro(double T) {
         double A,B,C,n;
 
         double ro=0;
 
-        if(ro_c[4]<=T && T<=ro_c[5])
+        if(ro_c[4]<=(T+5.0) && (T-5.0)<=ro_c[5])
         {
             A=ro_c[0];
             B=ro_c[1];
@@ -342,7 +604,29 @@ public class liquids {
 
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
-            System.out.println("density="+ro);
+            //System.out.println("density="+ro);
+            return (""+ro);
+
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
+    public String ro() {
+        double A,B,C,n;
+
+        double ro=0;
+
+        if(ro_c[4]<=(T+5.0) && (T-5.0)<=ro_c[5])
+        {
+            A=ro_c[0];
+            B=ro_c[1];
+            C=ro_c[2];
+            n=ro_c[3];
+
+            ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
+            ro*=1000; // Birimi kg/m^3 yaptım.
+            //System.out.println("density="+ro);
             return (""+ro);
 
         }
@@ -401,10 +685,10 @@ public class liquids {
         C=ro_c[2];
 
         ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
-        System.out.println(ro);
+        //System.out.println(ro);
         ro*=1000; // Birimi kg/m^3 yaptım.
         v=1/ro;
-        System.out.println(v);
+        //System.out.println(v);
         return (v);
     }
 
@@ -460,6 +744,9 @@ public class liquids {
        k_c=values.getk(name); // Sonradan düzeltmek gerek
        critical=values.get_critical(name); // Sonra düzeltmek gerek
        hvap_c=values.gethvap(name);
+       a_values=values.get_a_values(name);
+       Tf=values.getTf(name);
+       organiccompounds_classification=values.get_orgmat_classification(name);
 
         vis=vis();
 
@@ -468,6 +755,8 @@ public class liquids {
         cp=cp();
 
         cp_kg=cp2();
+
+        cp_csp=cp_CSP();
 
         ro=ro();
 
@@ -487,15 +776,24 @@ public class liquids {
 
         Pr=Pr(cp,k,vis);
 
-        Object result[][]= {{"T,sıcaklık:",T,"K"," "},{"P,basınç:",P,"kPa"," "},
+        vis_GCM=vis_GCM();
+
+        k_latini=k_Latini();
+
+        Object result[][]= {{"T,sıcaklık:",T,"K"," "},{"P,basınç:",P,"kPa"," "},{"Tc,kritik sıcaklık",critical[2],"K",""},
+                {"Tb, kaynama sıcaklığı",critical[1],"K",""},
+                {"Tf,donma sıcaklığı",Tf,"K",""},{"Pc,kritik basınç",critical[3],"K",""},
+                {"Vc,kritik hacim",critical[4],"ml/mol veya cm^3/mol",""},{"w,accentr,c factor",critical[7],"Birimsiz",""},
                 {"cp,sabit basınçta özgül ısı:",cp,"kJ/kmolK",cp_c[4]+"-"+cp_c[5]},{"cp,sabit basınçta özgül ısı:",cp_cal,"kcal/kmolK",cp_c[4]+"-"+cp_c[5]}
                 ,{"cp, sabit basınçta özgül ısı:",cp_kg,"kJ/kgK"," "},{"cv, sabit hacimde özgül ısı:",Cv,"kJ/kmolK"," "},
+                {"cp_csp, sabit basınçta özgül ısı:",cp_csp,"kJ/kgK", a_values[5]+"-"+a_values[6]},
                 {"h,entalpi:",h,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},{"h,entalpi:",h_kg,"kJ/kg",cp_c[4]+"-"+cp_c[5]},{"hvap,buharlaşma entalpisi:",hvap,"kJ/kg",hvap_c[3]+"-"+hvap_c[4]},
                 {"u, iç enerji:",u,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},
                 {"s, entropi:",s,"kJ/(kgK)",cp_c[4]+"-"+cp_c[5]},{"v, özgül hacim:",v,"m^3/kg",ro_c[4]+"-"+ro_c[5]},
                 {"ro,yoğunluk:",ro,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"g, gibbs serbest enerjisi:",g,"kJ/kmol",""},
-                {"viskozite:",vis," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"k, ısıl iletkenlik:",k," W/(mK)",k_c[3]+"-"+k_c[4]},
-                {"Prandtl Number:",vis," Birimsiz"," "},{"termal difüzivite:",k,"m^2/s",""}
+                {"viskozite:",vis," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"viskozite,GCM:",vis_GCM," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
+                {"k, ısıl iletkenlik:",k," W/(mK)",k_c[3]+"-"+k_c[4]},
+                {"k, ısıl iletkenlik(latini met.):",k_latini," W/(mK)",k_c[3]+"-"+k_c[4]},{"Prandtl Number:",vis," Birimsiz"," "},{"termal difüzivite:",k,"m^2/s",""}
         };
 
 
