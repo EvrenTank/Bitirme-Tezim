@@ -33,9 +33,9 @@ public class liquid_names {
             isim_dizisi[i] = isimler.get(i);
 
         }
-        for ( int k=0;k<isim_dizisi.length;k++){
+       /* for ( int k=0;k<isim_dizisi.length;k++){
             System.out.println(isim_dizisi[k]);
-        }
+        }*/
 
         return  isim_dizisi;
     }
@@ -67,7 +67,7 @@ public class liquid_names {
             //System.out.println(isim_dizisi[k]);
         }
         //System.out.println(isimler.size());
-        System.out.println(isim_dizisi.length);
+        //System.out.println(isim_dizisi.length);
 
     }
 }

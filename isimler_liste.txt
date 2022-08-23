@@ -10387,7 +10387,7 @@ N2H4C_ammoniumcyanide
 N2H4_hydrazine
 N2H6O_hydrazinehydrate
 N2O3_nitrogentrioxide
-N2O4_nitrogentetraoxide
+N2O4_dinitrogentetraoxide
 N2O5_nitrogenpentoxide
 N2O_nitrousoxide
 N2_nitrogen

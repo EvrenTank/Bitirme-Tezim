@@ -135,6 +135,8 @@ public class liquids_Table_mix extends JPanel{
             }
         };
 
+
+
         field_P.addActionListener(ac_lis);
         field_T.addActionListener(ac_lis);
         isim_listesi.addActionListener(ac_lis);

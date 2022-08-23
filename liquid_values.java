@@ -13,6 +13,8 @@ public class liquid_values {
 
     // ısıl iletkenlik=> A,B,C,Tmin,Tmax  birimi: W/(mK)  Kontrol et
 
+    // Surface tension organic and inorganic (dynes/cm) Ben bunu N/m'ye dönüştüreceğim.
+    // A,B,C,Tmin,Tmax
 
 
     // Cp organic liq =A+B*T+C*(T^2)+D*(T^3)	( J/(molK))
@@ -40,6 +42,8 @@ public class liquid_values {
     int a=0; // Bunu kullanarak bir if komutu oluşturacağım ve böylece dosyalar sadece bir defa okunacak. Fonksiyonlar her çağırıldığında
     // tekrar tekrar dosyaları okumak programı yavaşlatır.
 
+    String malzemenin_turu=""; // Malzeme alkol mü asit mi yoksa başka bir tür mü diye bakacağım.
+
     ArrayList <String[]> cp_katsayılar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> critical_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> density_katsayılar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
@@ -49,6 +53,7 @@ public class liquid_values {
     ArrayList <String[]> csp_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> Tf= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> org_compounds= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> surtension_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
 
 
 
@@ -87,6 +92,7 @@ public class liquid_values {
  File csp_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\a_values_for_CSP.txt");
  File Tfreezing_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\Tfreezing.txt");
  File organic_compounds= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\organiccompounds_classification.txt");
+ File surtensionvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\surfacetension.txt");
 
    cp_katsayılar= read_file(cpvalues_File);
    critical_katsayılar =read_file(criticalvalues_File);
@@ -97,14 +103,15 @@ public class liquid_values {
    csp_katsayılar= read_file(csp_File);
    Tf= read_file(Tfreezing_File);
    org_compounds=read_file(organic_compounds);
+   surtension_katsayılar=read_file(surtensionvalues_File);
 
-   for(int i=0;i<5;i++){
+   /*for(int i=0;i<5;i++){
        System.out.println(cp_katsayılar.get(i));
        System.out.println(critical_katsayılar.get(i));
        System.out.println(density_katsayılar.get(i));
        System.out.println(hvap_katsayılar.get(i));
        System.out.println(viscosity_katsayılar.get(i));
-   }
+   }*/
 
 
         //JOptionPane.showMessageDialog(null,"read_all_Files metodu çalıştı.");
@@ -147,6 +154,29 @@ public class liquid_values {
 //           System.out.println(viscosity_values[i]);
 //        }
 }
+    public double[] getsurtension(String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double surface_tension_coefficients []= {0,0,0,0,0};
+        for(String [] i:surtension_katsayılar){
+            if(  i[0].equals(name)){
+                surface_tension_coefficients [0] = Double.parseDouble(i[1]);
+                surface_tension_coefficients [1] = Double.parseDouble(i[2]);
+                surface_tension_coefficients [2] = Double.parseDouble(i[3]);
+                surface_tension_coefficients [3] = Double.parseDouble(i[4]);
+                surface_tension_coefficients [4] = Double.parseDouble(i[5]);
+
+
+            }
+        }
+
+        return surface_tension_coefficients;
+    }
+
+
+
 
     public double[] get_orgmat_classification(String name){
         if(a == 0){
@@ -157,6 +187,7 @@ public class liquid_values {
         for(String [] i:org_compounds){
             if(  i[0].equals(name)){
                 //cp = new double[i.length-1];
+                malzemenin_turu=i[1];
                 org_compound_coefficients [0] = Double.parseDouble(i[2]);
                 org_compound_coefficients [1] = Double.parseDouble(i[3]);
                 org_compound_coefficients [2] = Double.parseDouble(i[4]);
@@ -206,7 +237,7 @@ public class liquid_values {
             if(  i[0].equals(name)){
                 //cp = new double[i.length-1];
                 Tf = Double.parseDouble(i[1]);
-                System.out.println("Tf="+Tf);
+               // System.out.println("Tf="+Tf);
 
 
             }
@@ -220,7 +251,7 @@ public class liquid_values {
         a++;
         double k []= {0,0,0,0,0};
         for(String [] i:k_katsayılar){
-            if(  i[0].equals(name)){
+            if(  i[0].equals(name) && i.length==6){
                 //cp = new double[i.length-1];
                 k [0] = Double.parseDouble(i[1]);
                 k [1] = Double.parseDouble(i[2]);
@@ -230,10 +261,10 @@ public class liquid_values {
 
             }
         }
-        for(int i1=0;i1<k.length;i1++){
+        /*for(int i1=0;i1<k.length;i1++){
             System.out.println("k="+k[i1]);
 
-        }
+        }*/
         return k;
     }
 
@@ -304,7 +335,7 @@ public class liquid_values {
         double hvap []= {0,0,0,0,0,0};
         for(String [] i:hvap_katsayılar){
             if( i[0].equals(name)){
-                System.out.println("name="+name);
+                //System.out.println("name="+name);
                 // hvap = new double[i.length-1];
                 hvap [0] = Double.parseDouble(i[1]);
                 hvap [1] = Double.parseDouble(i[2]);

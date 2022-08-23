@@ -2867,6 +2867,7 @@ C3H6O2_methylacetate 2.5630E-01 -2.3505E-04 -3.4187E-07 175 481
 C5H8O3_methylacetoacetate 2.5950E-01 -3.3376E-04 -4.4858E-08 193 610
 C4H6O2_methylacrylate 2.0040E-01 -1.1085E-04 -3.3300E-07 226.32 466
 CH4O_methylalcohol 2.5220E-01 -6.9135E-06 -5.3801E-07 175 487
+CH4O_methanol 2.5220E-01 -6.9135E-06 -5.3801E-07 175 487
 C8H8O2_methylbenzoate 1.6240E-01 -5.6321E-05 -1.8205E-07 290.75 623
 CH3Br_methylbromide 1.7630E-01 -1.3013E-04 -3.4422E-07 209.55 397
 C5H10O2_methylbutanoate 1.9700E-01 -1.0132E-04 -2.9606E-07 217.35 484.5
@@ -4937,3 +4938,335 @@ C8H10O_26xylenol 1.6540E-01 -4.1548E-05 -2.0120E-07 348.76 631.05
 C8H10O_25xylenol 1.6420E-01 -2.8665E-05 -2.1260E-07 377.99 637.05
 C8H10O_23xylenol 1.6380E-01 -3.2898E-05 -1.9663E-07 375.71 652.95
 C8H10O_24xylenol 1.6910E-01 -4.7360E-05 -1.9521E-07 327.68 637.65
+
+Ag_silver
+AgCl_silverchloride
+AgI_silveriodide
+Al_aluminum
+AlB3H12_aluminumborohyride 0.2804 -1.4584E-04 -5.3593E-07 209 462
+AlBr3_aluminumbromide 0.1529 -2.3596E-05 -1.6993E-07 390 687
+AlCl3_aluminumchloride
+AlF3_aluminumfluoride
+AlI3_alumniumiodide
+Ar_argon 0.1819 -3.176E-04 -4.11E-06 84 150
+As_arsenic
+AsBr3_arsenictribromide 0.1354 -4.9347E-05 -1.0551E-07 306 710
+AsCl3_arsenictrichloride 0.1764 -7.6933E-05 -2.0083E-07 255 589
+AsF3_arsenictrifluoride 0.1960 -4.8443E-05 -4.4249E-07 267 477
+AsF5_arsenicpentafluoride 0.1668 -2.7463E-05 -9.1562E-07 193 322
+AsH3_arsine 0.2485 -1.6905E-04 -9.2454E-07 156 336
+AsI3_arsenictriiodide 0.1112 -2.9772E-05 -4.3803E-08 419 991
+As2O3_arsenictrioxide
+Au_gold
+B_boron
+BBr3_borontribromide 0.1521 -7.4015E-05 -2.2066E-07 228 523
+BCl3_borontrichloride 0.2258 -1.5356E-04 -5.1475E-07 166 407
+BF3_borontrifluoride 0.2781 -1.4752E-05 -3.0436E-06 146 235
+BH2CO_borinecarbonyl 0.3691 -2.9796E-04 -1.5882E-06 136 306
+B2D6_deuterodiborane 0.3928 -2.6308E-04 -2.6052E-06 136 264
+B2H5Br_diboranehydrobromide 0.2333 -1.5623E-04  -4.925E-07 169 420
+B2H6_diborane 0.4585 -4.8053E-04 -2.5611E-06 108 261
+B3N3H6_borinetriamine 0.2637 -1.322E-04 -4.954E-07 215 469
+B4H10_tetraborane 0.3332 -2.4373E-04 -6.6177E-07 153 420
+B5H9_pentaborane 0.2850 -1.3884E-04 -4.3683E-07 226 512
+B5H11_tetrahydropentaborane 0.2933 -1.3966E-04 -5.0069E-07 226 492
+B10H14_decaborane 0.2059 -4.8187E-05 -1.9149E-07 373 713
+Ba_barium
+Be_beryllium
+BeB2H8_berylliumborohydride 0.2938 2.0204E-04 -9.5365E-07 396 532
+BeBr2_berylliumbromide
+BeCl2_berylliumchloride
+BeI2_berylliumiodide
+Bi_bismuth
+BiBr3_bismuthtribromide
+BiCl3_bismuthtrichloride
+BrF5_brominepentafluoride 0.1878 -8.5540E-05 -4.723E-07 212 423
+Br2_bromine 0.1325 1.0331E-04 -4.5514E-07 266 584
+CCl2O_phosgene 0.1682 1.1873E-04 -8.4939E-07 145 410
+CF2O_carbonylfluoride 0.3069 -5.3980E-05 -2.4657E-06 162 267
+CH4N2O_urea 0.2888 1.1326E-05 -4.5537E-07 406 635
+CH4N2S_thiourea 0.1934 -1.9223E-05 -1.7982E-07 454 769
+CNBr_cyanogenbromide 0.1964 4.5432E-05 -5.7894E-07 331 491
+CNCl_cyanogenchloride 0.2423 3.7906E-05 -9.9081E-07 267 404
+CNF_cyanogenfluoride 0.3512 -2.5473E-04 -1.3047E-06 150 332
+CO_carbonmonoxide 0.2855 -1.784E-03 -1.6136E-07 70 125
+COS_carbonylsulfide 0.2354 -1.9881E-04 -7.4048E-07 134 341
+COSe_carbonyloxyselenide 0.2346 -1.9639E-04 -6.1505E-07 134 366
+CO2_carbondioxide 0.4320 -1.1929E-03 -6.5352E-17 250 300
+CS2_carbondisulfide 0.2181 -1.4539E-04 -2.9062E-07 162 497
+CSeS_carbonselenosulfide 0.2191 -1.2504E-04 -2.9305E-07 198 519
+C2N2_cyanogen 0.2905 6.6083E-05 -1.5309E-06 239 360
+Ca_calcium
+CaF2_calciumfluoride
+CbF5_colombiumfluoride 0.1696 -5.0359E-05 -1.3656E-07 349 730
+Cd_cadmium
+CdCl2_cadmiumchloride
+CdF2_cadmiumfluoride
+CdI2_cadmiumiodide
+CdO_cadmiumoxide
+ClF_chlorinemonofluoride 0.3103 -2.3025E-04 -2.1802E-06 128 254
+ClFO3_perchlorylfluoride 0.2379 -2.1407E-04 -7.7506E-07 125 332
+ClF3_chlorinetrifluoride 0.2454 -1.3866E-04 -5.9536E-07 190 413
+ClF5_chlorinepentafluoride 0.2040 -1.0074E-04 -6.6485E-07 190 374
+ClHO3S_chlorosulfonicacid 0.2080 -1.1086E-04 -1.6832E-07 193 630
+ClHO4_perchloricacid 0.2178 -1.3010E-04 -2.1479E-07 172 568
+ClO2_chlorinedioxide 0.2778 -1.2070E-04 -7.2849E-07 214 419
+Cl2_chlorine 0.2246 -6.4000E-05 -7.8800E-07 172 410
+Cl2O_chlorinemonoxide 0.2588 -1.8641E-04 -5.9294E-07 157 400
+Cl2O7_chlorineheptoxide 0.1808 -1.1071E-04 -2.4145E-07 182 509
+Co_cobalt
+CoCl2_cobaltchloride
+CoNC3O4_cobaltnitrosyltricarbonyl 0.1759 -6.1478E-05 -3.1136E-07 262 511
+Cr_chromium
+CrC6O6_chromiumcarbonyl 0.1353 2.8624E-05 -2.5348E-07 424 622
+CrO2Cl2_chromiumoxychloride 0.1988 -1.1915E-04 -2.0211E-07 177 564
+Cs_cesium 20.3124 3.1566E-03 -6.1694E-06 350 1800
+CsBr_cesiumbromide
+CsCl_cesiumchloride
+CsF_cesiumfluoride
+CsI_cesiumiodide
+Cu_copper
+CuBr_cuprousbromide
+CuCl_cuprouschloride
+CuCl2_cupricchloride 0.0647 3.3955E-04 -1.4748E-07 703 2192
+CuI_copperiodide
+DCN_deuteriumcyanide 0.4128 -4.9224E-05 -1.2473E-06 261 434
+D2_deuterium -0.0953 1.7754E-02 -3.3575E-04 19 38
+D2O_deuteriumoxide -0.0138 3.6838E-03 -5.4096E-06 277 580
+Eu_europium
+F2_fluorine 0.2758 -1.6297E-03 -3.7475E-18 53 130
+F2O_fluorineoxide 0.3292 -6.2445E-04 -2.6048E-06 49 194
+Fe_iron
+FeC5O5_ironpentacarbonyl 0.1692 -7.1908E-05 -2.3565E-07 252 546
+FeCl2_ferrouschloride
+FeCl3_ferricchloride
+Ga_gallium 6.6484 7.5930E-02 -1.6369E-05 303 700
+GaCl3_galliumtrichloride 0.1857 -3.4299E-05 -2.4565E-07 351 625
+Gd_gadolinium
+Ge_germanium
+GeBr4_germaniumbromide 0.1301 -1.4000E-04 5.3235E-18 300 360
+GeCl4_germaniumchloride 0.1183 1.1086E-04 -5.7143E-07 260 360
+GeHCl3_trichlorogermane 0.1801 -1.0085E-04 -2.6414E-07 202 504
+GeH4_germane 0.2693 -2.8399E-04 -1.2736E-06 107 277
+Ge2H6_digermane 0.1977 -1.3548E-04 -3.5845E-07 164 442
+Ge3H8_trigermane 0.1650 -1.0229E-04 -1.7027E-07 168 555
+HBr_hydrogenbromide 0.1649 1.1789E-04 -1.1999E-06 194 327
+HCN_hydrogencyanide 0.3333 1.5737E-06 -1.2143E-06 260 411
+HCl_hydrogenchloride 0.8045 -2.1020E-03 -2.3238E-16 273 323
+HF_hydrogenfluoride 0.6678 -4.7979E-04 -1.0548E-06 204 415
+HI_hydrogeniodide 0.0483 1.1854E-04 -4.5588E-07 225 420
+HNO3_nitricacid -0.2535 2.9368E-03 -3.6854E-06 233 468
+H2_hydrogen -0.1433 2.3627E-02 -5.1480E-04 14 33
+H2O_water -0.2758 4.6120E-03 -5.5391E-06 273 633
+H2O2_hydrogenperoxide 0.4425 -1.8406E-04 -3.8824E-07 273 657
+H2S_hydrogensulfide 0.5719 -1.9273E-03 1.5450E-06 193 336
+H2SO4_sulfuricacid 0.1553 1.0699E-03 -1.2858E-06 283 833
+H2S2_hydrogendisulfide 0.2990 -1.8376E-04 -4.4762E-07 183 488
+H2Se_hydrogenselenide 0.2318 -6.9072E-05 -8.8127E-07 209 370
+H2Te_hydrogentelluride 0.1961 -5.2407E-05 -6.6190E-07 224 394
+He_helium 0.0050 5.1690E-03 -3.3214E-16 1 3
+He_helium3 0.0050 5.1690E-03 -3.3214E-16 1 3
+He_helium4 0.0078 4.1000E-03 -2.9000E-04 2 5
+Hf_hafnium
+Hg_mercury 0.9230 2.8887E-02 -1.5499E-05 234 1562
+HgBr2_mercuricbromide
+HgCl2_mercuricchloride
+HgI2_mercuriciodide
+IF7_iodineheptafluoride 0.1238 5.0118E-05 -5.7268E-07 279 403
+I2_iodine 0.0965 1.7970E-04 -3.4020E-07 387 785
+In_indium
+Ir_iridium
+K_potassium 69.3316 -4.7493E-02 9.4295E-06 350 1600
+KBr_potassiumbromide
+KCl_potassiumchloride
+KF_potassiumfluoride
+KI_potassiumiodide
+KOH_potassiumhydroxide
+Kr_krypton 0.1756 -7.0050E-04 1.3789E-18 116 210
+La_lanthanum
+Li_lithium 28.9331 3.5672E-02 -1.0087E-05 454 3677
+LiBr_lithiumbromide
+LiCl_lithiumchloride
+LiF_lithiumfluoride
+LiI_lithiumiodide
+Lu_lutecium
+Mg_magnesium
+MgCl2_magnesiumchloride
+Mn_manganese
+MnCl2_manganesechloride
+Mo_molybdenum
+MoF6_molybdenumfluoride 0.1450 1.3643E-05 -4.6861E-07 290 448
+MoO3_molybdenumoxide
+NCl3_nitrogentrichloride 0.2102 -8.6655E-05 -3.5545E-07 246 508
+ND3_heavyammonia 0.4969 -1.4733E-04 -2.1397E-06 199 350
+NF3_nitrogentrifluoride 0.2908 -4.6529E-04 -2.1267E-06 66 210
+NH3_ammonia 1.1606 -2.2840E-03 3.1245E-18 220 400
+NH3O_hydroxylamine 0.4095 -5.2700E-05 -8.5576E-07 306 517
+NH4Br_ammoniumbromide
+NH4Cl_ammoniumchloride
+NH4I_ammoniumiodide
+NH5S_ammoniumhydrogensulfide 0.1661 6.3855E-04 -1.6809E-06 391 449
+NO_nitricoxide 0.1878 1.0293E-03 -9.4300E-06 110 176
+NOCl_nitrosylchloride 0.2767 -1.0288E-04 -8.5984E-07 214 397
+NOF_nitrosylfluoride 0.3380 -2.6904E-04 -1.3357E-06 139 317
+NO2_nitrogendioxide -0.0120 1.5191E-03 -3.5073E-06 262 388
+N2_nirogen 0.2130 -4.2050E-04 -7.2951E-06 112 278
+N2F4_tetrafluorohydrazine 0.2547 -2.3893E-04 -1.2702E-06 112 278
+N2H4_hydrazine 0.4008 -1.5493E-04 -4.8625E-07 275 588
+N2H4C_ammoniumcyanide 0.2982 1.2592E-04 -1.1749E-06 309 442
+N2H6CO2_ammoniumcarbamate 0.2382 8.2829E-06 -6.3390E-07 309 486
+N2O_nitrousoxide 0.2539 5.4127E-05 -2.1713E-06 182 279
+N2O3_nitrogentrioxide 0.2831 -1.8315E-04 -7.7909E-07 170 383
+N2O4_nitrogentetraoxide 0.2401 6.9938E-05 -1.1302E-06 262 388
+N2O5_nitrogenpentaoxide 0.2011 2.4661E-05 -6.1811E-07 303 464
+Na_sodium 98.8909 -4.3158E-02 5.2876E-06 371 2316
+NaBr_sodiumbromide 0.3616 -3.3985E-05 -7.3045E-09 1020 3858
+NaCN_sodiumcyanide
+NaCl_sodiumchloride
+NaF_sodiumfluoride
+NaI_sodiumiodide
+NaOH_sodiumhydroxide
+Na2SO4_sodiumsulfate
+Nb_niobium
+Nd_neodymium
+Ne_neon 0.0080 8.6895E-03 -1.7697E-04 25 44
+Ni_nickel
+NiC4O4_nickelcarbonyl 0.1740 -5.4156E-05 -4.0987E-07 248 458
+NiF2_nickelfluoride
+Np_neptunium
+O2_oxygen 0.2320 -5.6357E-04 -3.8093E-06 60 155
+O3_ozone 0.1076 2.0786E-03 -8.7941E-06 80 235
+Os_osmium
+OsOF5_osmiumoxidepentafluoride 0.1242 -8.9873E-06 -2.4035E-07 333 548
+OsO4_osmiumtetroxide 0.1401 -2.8986E-05 -2.0468E-07 329 591
+OsO4_osmiumtetroxideyellow 0.1401 -2.8986E-05 -2.0468E-07 329 591
+OsO4_osmiumtetroxidewhite 0.1420 -3.7029E-05 -1.9643E-07 315 591
+P_phosphorus 0.3917 2.2121E-03 -2.5062E-06 317 894
+PBr3_phosphorustribromide 0.1502 -7.2169E-05 -1.2836E-07 233 640
+PCl2F3_phosphorusdichloridetrifluoride 0.1669 1.4694E-05 -6.3564E-07 265 411
+PCl3_phosphorustrichloride 0.1839 -1.1322E-04 -2.4781E-07 181 507
+PCl5_phosphoruspentachloride 0.1371 8.7024E-05 -3.7396E-07 433 582
+PH3_phosphine 0.2693 -2.0269E-04 -1.3427E-06 139 292
+PH4Br_phosphoniumbromide 0.1966 1.5528E-05 -6.2075E-07 291 452
+PH4Cl_phosphoniumchloride 0.2092 8.6905E-04 -4.0096E-06 245 420
+PH4I_phosphoniumiodide 0.1722 -1.8856E-05 -4.1517E-07 292 486
+POCl3_phosphorusoxychloride 0.1892 -6.5087E-05 -2.9332E-07 274 542
+PSBr3_phosphorusthiobromide 0.1338 -4.4935E-05 -1.3213E-07 311 657
+PSCl3_phosphorusthiochloride 0.1853 -8.8258E-05 -2.1280E-07 237 575
+P4O6_phosphorustrioxide 0.1602 -5.8241E-05 -1.6033E-07 296 643
+P4S10_phosphoruspentasulfide 0.2202 -4.0677E-05 -7.0155E-08 561 1162
+Pb_lead
+PbBr2_leadbromide
+PbCl2_leadchloride
+PbF2_leadfluoride
+PbI2_leadiodide
+PbO_leadoxide
+PbS_leadsulfide
+Pd_palladium
+Po_polonium
+Pt_platinum
+Ra_radium
+Rb_rubidium 42.1670 -2.5394E-02 3.8426E-06 350 1500
+RbBr_rubidiumbromide
+RbCl_rubidiumchloride
+RbF_rubidiumfluoride
+RbI_rubidiumiodide
+Re_rhenium
+Re2O7_rheniumheptoxide
+Rh_rhodium
+Rn_radon 0.0943 -1.4286E-04 -1.3437E-07 202 360
+Ru_ruthenium
+RuF5_rutheniumpentafluoride 0.1703 -5.3488E-05 -8.3035E-08 360 880
+S_sulfur 0.0262 4.1738E-04 -3.2471E-07 388 1182
+SF4_sulfurtetrafluoride 0.2341 -1.6998E-04 -8.9665E-07 149 328
+SF6_sulfurhexafluoride 0.2544 -6.5950E-04 7.0217E-18 223 319
+SOBr2_thionylbromide 0.1694 -8.6221E-05 -1.6895E-07 221 596
+SOCl2_thionylchloride 0.1974 -1.2157E-04 -2.5795E-07 172 510
+SOF2_sulfurousoxyfluoride 0.2505 -1.5546E-04 -9.8143E-07 163 334
+SO2_sulfurdioxide 0.3822 -6.2540E-04 -5.6891E-19 200 400
+SO2Cl2_sulfurylchloride 0.2062 -1.0100E-04 -3.5044E-07 222 491
+SO3_sulfurtrioxide 0.9288 -3.0803E-03 2.6600E-06 290 481
+S2Cl2_sulfurmonochloride 0.2125 -1.1856E-04 -1.9856E-07 193 593
+Sb_antimony
+SbBr3_antimonytribromide 0.1232 -3.5768E-05 -7.9151E-08 370 803
+SbCl3_antimonytrichloride 0.1550 -4.5388E-05 -1.3227E-07 347 715
+SbCl5_antimonypentachloride 0.1370 -5.3077E-05 -1.6073E-07 276 596
+SbH3_stibine 0.1999 -1.1437E-04 -5.3519E-07 185 396
+SbI3_antimonytriiodide 0.1050 -2.6214E-05 -4.3393E-08 440 988
+Sb2O3_antimonytrioxide
+Sc_scandium
+Se_selenium
+SeCl4_seleniumtetrachloride 0.1615 -6.1998E-05 -1.4201E-07 290 670
+SeF6_seleniumhexafluoride 0.1378 1.0612E-04 -1.0358E-06 238 332
+SeOCl2_seleniumoxychloride 0.1855 -7.2606E-05 -1.8405E-07 282 636
+SeO2_seleniumdioxide
+Si_silicon
+SiBrCl2F_bromodichlorofluorosilane 0.1734 -1.2039E-04 -3.0074E-07 161 447
+SiBrF3_trifluorobromosilane 0.1695 -2.7093E-05 -8.4434E-07 203 338
+SiBr2ClF_dibromochlorofluorosilane 0.1568 -1.0084E-04 -2.3517E-07 174 482
+SiClF3_trifluorochlorosilane 0.2150 -1.8107E-04 -9.7165E-07 131 297
+SiCl2F2_dichlorodifluorosilane 0.2064 -1.7459E-04 -5.9819E-07 133 352
+SiCl3F_trichlorofluorosilane 0.1963 -1.4463 -4.0204E-07 152 414
+SiCl4_silicontetrachloride 0.1510 -8.0951E-05 -2.9387E-07 204 456
+SiF4_silicontetrafluoride 0.1727 -2.9350E-04 1.2500E-07 260 340
+SiHBr3_tribromosilane 0.1508 -8.4590E-05 -1.7490E-07 200 549
+SiHCl3_trichlorosilane 0.2132 -2.3826E-04 -1.7829E-07 145 431
+SiHF3_trifluorosilane 0.2423 -1.3314E-04 -1.7375E-06 142 262
+SiH2Br2_dibromosilane 0.1755 -9.7668E-05 -2.7088E-07 203 495
+SiH2Cl2_dichlorosilane 0.3105 -5.1350E-04 -1.3364E-19 151 413
+SiH2F2_difluorosilane 0.2752 -1.5536E-04 -1.5992E-06 151 286
+SiH2I2_diiodosilane 0.1443 -5.7123E-05 -1.6897E-07 272 594
+SiH3Br_monobromosilane 0.2219 -1.3708E-04 -5.2949E-07 179 409
+SiH3Cl_monochlorosilane 0.2890 -2.0728E-04 -8.9603E-07 155 357
+SiH3F_monofluorosilane 0.3051 -6.0560E-05 -2.6235E-06 155 258
+SiH3I_iodosilane 0.1870 -9.1803E-05 -3.6543E-07 216 464
+SiH4_silane 0.2977 -1.3786E-03 1.7321E-06 88 243
+SiO2_silicondioxide 2.1744 -3.7847E-03 4.6353E-06 273 1400
+Si2Cl6_hexachlorodisilane 0.1448 -5.7491E-05 -1.6883E-07 272 595
+Si2F6_hexafluorodisilane 0.1535 6.2233E-05 -8.2874E-07 255 370
+Si2H5Cl_disilanylchloride 0.2293 -6.1631E-05 -5.6190E-07 254 456
+Si2H6_disilane 0.3005 -2.3899E-04 -6.9282E-07 141 389
+Si2OCl3F3_trichlorotrifluorodisiloxane 0.1471 -4.0323E-05 -3.5605E-07 254 458
+Si2OCl6_hexachlorodisiloxane 0.1432 -6.7458E-05 -1.5464E-07 240 590
+Si2OH6_disiloxane 0.2760 -2.3576E-04 -6.6397E-07 129 375
+Si3Cl8_octachlorotrisilane 0.1278 -5.6357E-05 -9.1772E-08 254 698
+Si3H8_trisilane 0.2559 -1.7790E-04 -3.7962E-07 156 473
+Si3H9N_trisilazane 0.2356 -1.5710E-04 -3.7591E-07 167 466
+Si4H10_tetrasilane 0.2225 -1.3484E-04 -2.5461E-07 180 539
+Sm_samarium
+Sn_tin
+SnBr4_stannicbromide 0.1980 -2.00E-04 3.3437E-18 260 340
+SnCl2_stannouschloride 0.1616 -1.1786E-04 -1.7857E-07 260 340
+SnCl4_stannicchloride 0.1482 -6.7765E-05 -1.8857E-07 243 558
+SnH4_stannichydride 0.2175 -1.9936E-04 -7.5278E-07 123 323
+SnI4_stanniciodide 0.0936 -2.4132E-05 -4.6721E-08 418 910
+Sr_strontium
+Ta_tantalum
+Tc_tecnnetium
+Te_tellurium
+TeCl4_telluriumtetrachloride
+TeF6_telluriumhexafluoride 0.1286 5.6649E-05 -8.1322E-07 235 342
+Ti_titanium
+TiCl4_titaniumtetrachloride 0.0942 3.9437E-04 -7.4801E-07 249 574
+Tl_thallium
+TlBr_thallousbromide
+TlI_thallousiodide
+Tm_thulium
+U_uranium
+UF6_uraniumfluoride
+V_vanadium
+VCl4_vanadiumtetrachloride 0.1639 -7.4795E-05 -1.5272E-07 247 627
+VOCl3_vanadiumoxytrichloride 0.1884 -1.0654E-04 -1.9305E-07 194 572
+W_tungsten
+WF6_tungstenfluoride 0.1217 1.1726E-05 -4.4358E-07 273 422
+Xe_xenon 0.1376 -3.9765E-04 -3.2519E-19 161 270
+Yb_ytterbium
+Yt_yttrium
+Zn_zinc
+ZnCl2_zincchloride
+ZnF2_zincfluoride
+Zr_zirconium
+ZrBr4_zirconiumbromide
+ZrCl4_zirconiumchloride
+ZrI4_zirconiumiodide
+

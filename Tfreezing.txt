@@ -465,6 +465,7 @@ CH3F_fluoromethane 131.35
 CH3NO2_nitromethane 244.60
 CH4_methane 90.69
 CH4O_methanol 175.49
+CH4O_methylalcohol 175.49
 CH4S_methanethiolmethylmercaptan 150.18
 CH4S_methylmercaptan 150.18
 CH5N_methanaminemethylamine 179.69
@@ -505,6 +506,7 @@ C2H5Cl_chloroethane 134.82
 C2H5F_fluoroethane 129.95
 C2H6_ethane 90.35
 C2H6O_ethanol 159.05
+C2H6O_ethylalcohol 159.05
 C2H6O_dimethylether 131.65
 C2H6S_ethanethiol 152.15
 C2H6S_2thiapropane 174.85
