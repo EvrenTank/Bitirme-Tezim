@@ -24,8 +24,8 @@ import javax.swing.JPanel;
         public ArrayList<double[]> ylist=new ArrayList<double[]>();
         private boolean tagsVisible=false;
         private JButton buton;
-        private String xlabel="";
-        private String ylabel="";
+        private String xlabel="deneme";
+        private String ylabel="deneme";
         private int alanx=125;
         private int alany=100;
         private int alanwidth=200;
@@ -34,10 +34,10 @@ import javax.swing.JPanel;
         double[] yseries,yseries2;
         //private NumberFormat numberformat=NumberFormat.getInstance(); // Virgülden sonra kaç rakam
         // gösterileceğini ayarlamam için gerekli
-        public xy_grafik(String xlabel,String ylabel) {
+        public xy_grafik(String x_label,String y_label) {
             setLayout(null);
-            this.xlabel = xlabel;
-            this.ylabel = ylabel;
+            xlabel = x_label;
+            ylabel = y_label;
             this.setBounds(0,0,300,300);
             //this.setSize(300,300);
             buton=new JButton("Veri etiketlerini gizle");
@@ -45,7 +45,7 @@ import javax.swing.JPanel;
             buton.addActionListener(this);
             buton.setFocusPainted(false);
             add(buton);
-            setBackground(Color.red);
+            setBackground(Color.cyan);
 /*		JFrame frame=new JFrame("XY Grafiği");
 		frame.setLayout(null);
 		frame.setBounds(0, 0, 900, 700);
@@ -55,16 +55,6 @@ import javax.swing.JPanel;
 
         }
 
-        public void setXlabel(String s) {
-            xlabel=s;
-        }
-
-        public void setYlabel(String s1) {
-            ylabel=s1;
-        }
-        public void writeText(){
-            System.out.println("Deneme yapıyotum dikat!!!");
-        }
 
         public void setValues(double x[],double y[]) {
 
@@ -82,6 +72,7 @@ import javax.swing.JPanel;
         }
 
         public void createGraphic(String name,String graphic_name){
+            // name : liquid name'i ifade eder.
             Object o[];
             if(graphic_name.equalsIgnoreCase("viscosity")){
                 o = viscosity_values(name);
@@ -89,8 +80,14 @@ import javax.swing.JPanel;
             else if(graphic_name.equalsIgnoreCase("surface tension")){
                 o = surten_values(name);
             }
+            else if(graphic_name.equalsIgnoreCase("ısıl iletkenlik")){
+                o= k_values(name);
+            }
+            else if(graphic_name.equalsIgnoreCase("yoğunluk")){
+                o= ro_values(name);
+            }
             else {
-                o = viscosity_values(name);
+                o = cp_values(name);
             }
 
 
@@ -110,7 +107,110 @@ import javax.swing.JPanel;
             }
 
         }
+        public Object[] cp_values(String name) {
+            liquid_values values = new liquid_values();
+            liquids liquids = new liquids();
+            double cp_c[]=values.getcp(name);
+            ArrayList<double[]> x = new ArrayList<double[]>();
+            ArrayList<double[]> y = new ArrayList<double[]>();
+            double x_ekseni[]  = new double[20];
+            double y_ekseni[]  = new double[20];
+            double Tmin= cp_c[4];
+            double Tmax= cp_c[5];
+            double T;
+            double cp; // Özgül ısı, Birimi kJ/(kmolK)
 
+            for(int i=0;i<20;i++){
+                T = Tmin+(Tmax-Tmin)/19*i;
+                x_ekseni[i] = T;
+                cp = liquids.cp(name,T);
+                System.out.println("cp="+cp);
+                y_ekseni[i] = cp;
+            }
+            x.add(x_ekseni);
+            y.add(y_ekseni);
+
+
+            Object [] object =new Object[2];
+            object[0] = x;
+            object[1] = y;
+
+            return object;
+        }
+
+        public Object[] ro_values(String name) {
+            liquid_values values = new liquid_values();
+            liquids liquids = new liquids();
+            double ro_c[]=values.getro(name);
+            ArrayList<double[]> x = new ArrayList<double[]>();
+            ArrayList<double[]> y = new ArrayList<double[]>();
+            double x_ekseni[]  = new double[20];
+            double y_ekseni[]  = new double[20];
+            double Tmin= ro_c[4];
+            double Tmax= ro_c[5];
+            double T;
+            double ro; // Yoğunluk, Birimi kg/m^3
+
+            for(int i=0;i<20;i++){
+                T = Tmin+(Tmax-Tmin)/19*i;
+                x_ekseni[i] = T;
+                ro = liquids.ro(name,T);
+                System.out.println("ro="+ro);
+                y_ekseni[i] = ro;
+            }
+            x.add(x_ekseni);
+            y.add(y_ekseni);
+
+
+            Object [] object =new Object[2];
+            object[0] = x;
+            object[1] = y;
+
+            return object;
+        }
+
+        public Object[] k_values(String name) {
+            liquid_values values = new liquid_values();
+            liquids liquids = new liquids();
+            double k_c[]=values.getk(name);
+            ArrayList<double[]> x = new ArrayList<double[]>();
+            ArrayList<double[]> y = new ArrayList<double[]>();
+            ArrayList<double[]> x_Latini = new ArrayList<double[]>();
+            ArrayList<double[]> y_Latini = new ArrayList<double[]>();// Latini yöntemi ile hesaplanan değerler.
+            double x_ekseni[]  = new double[20];
+            double y_ekseni[]  = new double[20];
+            double Tmin= k_c[3];
+            double Tmax= k_c[4];
+            double T;
+            double k; // Isıl iletkenlik katsayısı: N/m
+
+            for(int i=0;i<20;i++){
+                T = Tmin+(Tmax-Tmin)/19*i;
+                x_ekseni[i] = T;
+                k = liquids.k(name,T);
+                System.out.println("k="+k);
+                y_ekseni[i] = k;
+            }
+            x.add(x_ekseni);
+            y.add(y_ekseni);
+/*
+            for(int i=0;i<20;i++){
+                T = Tmin+(Tmax-Tmin)/19*i;
+                x_ekseni[i] = T;
+                k = liquids.k_Latini(name,T);
+                System.out.println("k="+k);
+                y_ekseni[i] = k;
+            }
+            x.add(x_ekseni);
+            y.add(y_ekseni);
+*/
+
+            Object [] object =new Object[2];
+            object[0] = x;
+            object[1] = y;
+
+            return object;
+        }
         public Object[] surten_values(String name) {
             liquid_values values = new liquid_values();
             liquids liquids = new liquids();
@@ -293,7 +393,7 @@ return object;
             at.rotate(-Math.PI/2);
             g2.setTransform(at);
             g2.setFont(new Font("arial", Font.BOLD, 15));
-            g2.drawString(ylabel,-(alany+alanheight)/2-150,alanx-40);
+            g2.drawString(ylabel,-(alany+alanheight)/2-150,alanx);
 
 
         }

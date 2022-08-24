@@ -74,7 +74,7 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public double cp(String name) { // (kJ/(kmolK))
+    public double cp(String name,double T) { // (kJ/(kmolK))
         double A,B,C,D;
 
         double cp=0;
@@ -299,7 +299,7 @@ public class liquids {
 
 
     }
-    public double k(String name) {
+    public double k(String name,double T) {
         double A,B,C;
         double k=0;
 
@@ -335,6 +335,31 @@ public class liquids {
 
 
     }
+    public double k_Latini(String name,double T){
+        // Latini et. al method
+
+        double A,Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
+        double k=0;
+        critical=values.get_critical(name);
+        organiccompounds_classification=values.get_orgmat_classification(name);
+
+        M=critical[0];
+        Tb=critical[1];
+        Tc=critical[2];
+        Tr=T/Tc;
+        Asharp=organiccompounds_classification[0];
+        alfa=organiccompounds_classification[1];
+        beta=organiccompounds_classification[2];
+        gamma=organiccompounds_classification[3];
+
+
+            A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
+            k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
+
+            return k;
+
+    }
+
     public String k_Latini(){
         // Latini et. al method
 
@@ -675,7 +700,7 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public double ro(String name) {
+    public double ro(String name,double T) {
         double A,B,C,n;
          ro_c = values.getro(name);
         double ro=0;
