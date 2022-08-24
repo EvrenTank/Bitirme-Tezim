@@ -74,6 +74,26 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+    public double cp(String name) { // (kJ/(kmolK))
+        double A,B,C,D;
+
+        double cp=0;
+
+        cp_c=values.getcp(name);
+
+
+            A=cp_c[0];
+            B=cp_c[1];
+            C=cp_c[2];
+            D=cp_c[3];
+            cp=A+B*T+C*T*T+D*T*T*T;
+            return cp;
+
+
+    }
+
+
+
     public String cp_CSP() { // (kJ/(kmolK))
         // CSP: Corresponding States Method
 
@@ -279,7 +299,19 @@ public class liquids {
 
 
     }
+    public double k(String name) {
+        double A,B,C;
+        double k=0;
 
+        k_c = values.getk(name);
+            A=k_c[0];
+            B=k_c[1];
+            C=k_c[2];
+
+            k=A+B*T+C*T*T;
+
+            return k;
+    }
 
     public String k() {
         double A,B,C;
@@ -347,7 +379,28 @@ public class liquids {
         double k_mix= (x1*x1*A1+x2*x2*A2+2.2*x1*x2*Math.pow((Math.pow(A1, 3.0)/A2),0.5))*(Math.pow(1-Trm, 0.38)/Math.pow(Trm, 1/6)) ;
         return " "+k_mix;
     }
+    public double vis(String name,double T) {
+        double A,B,C,D;
 
+        double vis=0;
+        vis_c = values.getvis(name);
+            A=vis_c[0];
+            B=vis_c[1];
+            C=vis_c[2];
+            D=vis_c[3];
+            System.out.println("A="+A);
+            System.out.println("B="+B);
+            System.out.println("C="+C);
+            System.out.println("D="+D);
+            vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
+            System.out.println("double vis="+vis);
+            vis=vis/1000; // Pa.s birimine çevirdim
+            System.out.println("vis="+vis);
+
+            return vis;
+
+
+    }
 
     public String vis() {
         double A,B,C,D;
@@ -363,8 +416,14 @@ public class liquids {
             B=vis_c[1];
             C=vis_c[2];
             D=vis_c[3];
+            System.out.println("A="+A);
+            System.out.println("B="+B);
+            System.out.println("C="+C);
+            System.out.println("D="+D);
             vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
+            System.out.println("String vis1="+vis);
             vis=vis/1000; // Pa.s birimine çevirdim
+            System.out.println("vis2="+vis);
             return (""+vis);
         }
         else {
@@ -383,14 +442,7 @@ public class liquids {
         Vc = critical[4]; // (ml/mol), ( cm^3/mol) ikisi aynı şey
         double M = critical[0];
         double vis = 0;
-
-        //System.out.println("Yazma İşlemi Başlıyor.");
-        //System.out.println("Tf:"+Tf);
-        //System.out.println("w"+w);
-
         Tr= T/Tc;
-
-
 
         try {
             Vm = M / Double.parseDouble(ro(Tf)) * 1000;
@@ -398,14 +450,6 @@ public class liquids {
             e.printStackTrace();
             return "Tkritik için yoğunluk bilinmediği için hesaplama yapılamıyor";
         }
-
-
-        //System.out.println("Vm:"+Vm);
-
-
-
-
-
         try {
          V = M / Double.parseDouble(ro()) * 1000;
         } catch (NumberFormatException e) {
@@ -419,24 +463,7 @@ public class liquids {
         Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
         E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
         vis = Vo / E / (V - Vo);
-        //System.out.println("V:"+V);
-       // System.out.println("Vo:"+Vo);
-        //System.out.println("E:"+E);
-      //  System.out.println("vis:"+vis);
 
-//        for (int i = 0; i < vis_c.length; i++) {
-//            System.out.println("vis_c[" + i + "]=" + vis_c[i]);
-//        }
-
-       /* if(Tr > 0.55)
-        {
-            vis=vis/1000; // Pa.s birimine çevirdim
-            return (""+vis);
-        }
-        else {
-            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
-        }
-    }*/
         if( Tf == 0   ){
             return "Tf bilinmediği için hesaplama yapılamıyor.";
         }
@@ -648,6 +675,27 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+    public double ro(String name) {
+        double A,B,C,n;
+         ro_c = values.getro(name);
+        double ro=0;
+
+
+
+            A=ro_c[0];
+            B=ro_c[1];
+            C=ro_c[2];
+            n=ro_c[3];
+
+            ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
+            ro*=1000; // Birimi kg/m^3 yaptım.
+            System.out.println("ro metodu içinde:density="+ro);
+            System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
+            return ro;
+
+
+
+    }
     public String ro() {
         double A,B,C,n;
 
@@ -670,7 +718,6 @@ public class liquids {
 
         }
         else {
-            System.out.println("ro metodu içinde:density= Bu sıcaklık değeri için  hesaplama yapılamıyor");
 
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
@@ -840,6 +887,25 @@ public class liquids {
             return "Bu sıcaklıkta hesaplama yapılamıyor";
         }
     }
+    public double sur_tension(String name,double T ){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+
+        double sigma;
+        surtension_c=values.getsurtension(name);
+        double A = surtension_c[0];
+        double B = surtension_c[1];
+        double n = surtension_c[2];
+        double Tmin = surtension_c[3];
+        double Tmax = surtension_c[4];
+
+
+            sigma = A*Math.pow(1-T/B,n);
+            sigma = sigma/1000; // Birimini N/m' ye çevirmek için yaptım.
+
+
+        return  sigma;
+
+    }
+
     public String sur_tension(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
 
         double sigma;
