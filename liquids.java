@@ -413,14 +413,14 @@ public class liquids {
             B=vis_c[1];
             C=vis_c[2];
             D=vis_c[3];
-            System.out.println("A="+A);
-            System.out.println("B="+B);
-            System.out.println("C="+C);
-            System.out.println("D="+D);
+            //System.out.println("A="+A);
+            //System.out.println("B="+B);
+            //System.out.println("C="+C);
+            //System.out.println("D="+D);
             vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
-            System.out.println("double vis="+vis);
+            //System.out.println("double vis="+vis);
             vis=vis/1000; // Pa.s birimine çevirdim
-            System.out.println("vis="+vis);
+            //System.out.println("vis="+vis);
 
             return vis;
 
@@ -441,14 +441,14 @@ public class liquids {
             B=vis_c[1];
             C=vis_c[2];
             D=vis_c[3];
-            System.out.println("A="+A);
-            System.out.println("B="+B);
-            System.out.println("C="+C);
-            System.out.println("D="+D);
+            //System.out.println("A="+A);
+            //System.out.println("B="+B);
+            //System.out.println("C="+C);
+            //System.out.println("D="+D);
             vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
-            System.out.println("String vis1="+vis);
+           // System.out.println("String vis1="+vis);
             vis=vis/1000; // Pa.s birimine çevirdim
-            System.out.println("vis2="+vis);
+            //System.out.println("vis2="+vis);
             return (""+vis);
         }
         else {
@@ -658,7 +658,7 @@ public class liquids {
     public String vis_mix_GN2(String vis[],double x[]) {// sıvı karışımının viskozite değeri
        double power=0;
        for(int i=0;i<vis.length;i++){
-           System.out.println("viskozite:"+ vis[i]);
+           //System.out.println("viskozite:"+ vis[i]);
 
            try{
                power += x[i]*(Math.log(Double.parseDouble(vis[i])));
@@ -714,8 +714,8 @@ public class liquids {
 
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
-            System.out.println("ro metodu içinde:density="+ro);
-            System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
+            //System.out.println("ro metodu içinde:density="+ro);
+            //System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
             return ro;
 
 
@@ -725,7 +725,7 @@ public class liquids {
         double A,B,C,n;
 
         double ro=0;
-        System.out.println("A="+ro_c[0]+" B="+ro_c[1]+" C="+ro_c[2]+" n="+ro_c[3]+" T="+T);
+        //System.out.println("A="+ro_c[0]+" B="+ro_c[1]+" C="+ro_c[2]+" n="+ro_c[3]+" T="+T);
 
 
         if(ro_c[4]<=(T+5.0) && (T-5.0)<=ro_c[5])
@@ -737,8 +737,8 @@ public class liquids {
 
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
-            System.out.println("ro metodu içinde:density="+ro);
-            System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
+            //System.out.println("ro metodu içinde:density="+ro);
+            //System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
             return (""+ro);
 
         }
@@ -753,7 +753,7 @@ public class liquids {
         double pay=0;
         double payda=0;
         for(int i=0;i<ro.length;i++){
-            System.out.println(" ro:"+ ro[i]);
+            //System.out.println(" ro:"+ ro[i]);
 
             pay += M[i]*x[i];
             try{
@@ -959,15 +959,42 @@ public class liquids {
         double Tb = critical[1];
         double Tc = critical[2];
         double Pc = critical[3];
+     /*   if((Tb !=0) && (Tc != 0) && (Pc != 0) ){
+            double Tbr=Tb/Tc;
+            double Tr=T/Tc;
+            double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
+            sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
+            //System.out.println("Tb="+Tb+" Tc="+Tc+" Pc="+Pc+" Tbr="+Tbr+" Tr="+Tr+" Q="+Q);
+            return ""+sigma/1000;
+
+        }
+
+        else {
+            return " Tb, Tc, Pc değerleri bilinmediği için hesap yapılamıyor.";
+        }*/
         double Tbr=Tb/Tc;
         double Tr=T/Tc;
         double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
         sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
-
-
+        //System.out.println("Tb="+Tb+" Tc="+Tc+" Pc="+Pc+" Tbr="+Tbr+" Tr="+Tr+" Q="+Q);
         return ""+sigma/1000;
 
     }
+    public double sur_tension2(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+        // BROCK and BIRD
+        double sigma;
+        critical = values.get_critical(name);
+        double Tb = critical[1];
+        double Tc = critical[2];
+        double Pc = critical[3];
+        double Tbr=Tb/Tc;
+        double Tr=T/Tc;
+        double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
+        sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
+        return sigma/1000;
+
+    }
+
     public String sur_tension3(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // PITZER
         double sigma=0;
@@ -1057,7 +1084,7 @@ public class liquids {
         double density=0.0;
         double x=0.0;
         for(int i=0;i<sur_tension.length;i++){
-            System.out.println("sur tension:"+ sur_tension[i]);
+            //System.out.println("sur tension:"+ sur_tension[i]);
             try {
                 Double.parseDouble(sur_tension[i]);
                 Double.parseDouble(ro[i]);
@@ -1426,9 +1453,9 @@ public class liquids {
             cp[i]=cp();
             h[i]=h();
             sur_tension[i]=sur_tension();
-            System.out.println("T:"+T);
+            //System.out.println("T:"+T);
             String s = "name="+name+" ro="+ ro[i]+" vis="+vis[i]+" k="+k[i]+" cp="+cp[i]+" h="+h[i]+" st="+sur_tension[i];
-            System.out.println(s);
+           // System.out.println(s);
 
         }
 

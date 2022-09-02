@@ -45,11 +45,11 @@ public class liquid_mixtureTables2 extends JPanel {
         JPanel panel_compounds=new JPanel();// Bu paneli malzeme sayısına göre oluşturulacak olan alanlar için kullanacağım. GridLayout yaparak
         // direkt olarak elemanları buna ekleyip, bu paneli de ana panele ekleyeceğim.
 
-        String column[]= {"Özellik"," Değer"," Birim","Uygun Sıcaklık Aralığı"};
+        String column[]= {"Şey"," Value"," Unit","Available temp. range"};
         table=new JTable(row , column);
 
 
-        JLabel label=new JLabel("Karışımdaki bileşen sayısını giriniz:");
+        JLabel label=new JLabel("Enter the comp. numbers in the mixture:");
         JRadioButton rb1=new JRadioButton("Molar orana göre hesapla");
         JRadioButton rb2=new JRadioButton("Kütlesel orana göre hesapla");
         ButtonGroup buttonGroup=new ButtonGroup();
@@ -270,7 +270,7 @@ public class liquid_mixtureTables2 extends JPanel {
                 liquid_mixtureTables2.this.revalidate();
 //		        /*Object comp[]=this.getComponents();
 //		        for(int i=0;i<comp.length;i++) {
-//		        	System.out.println(comp[i]);
+//		        	 intln(comp[i]);
 //		        }*/
             }
         };

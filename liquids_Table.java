@@ -71,7 +71,7 @@ public class liquids_Table extends JPanel{
         this.add(field_P);
 
 
-        String column[]= {"Özellik"," Değer"," Birim"," Uygun Sıcaklık Aralığı"};
+        String column[]= {"Property"," Value"," Unit"," Available temp. range"};
 
         table=new JTable(row, column);
         //table.setBackground(Color.red);
@@ -134,12 +134,11 @@ public class liquids_Table extends JPanel{
         JFrame frame=new JFrame(" Sıvıların Gazların Özellikleri:  ");
         JTabbedPane tabbedPane=new JTabbedPane(JTabbedPane.TOP);
         liquids_Table panel=new liquids_Table();
-
-        liquids_Table_mix panel2=new liquids_Table_mix();
-
-
+        liquid_mixtureTables2 panel2=new liquid_mixtureTables2();
+        grafikPanel_last panel3 = new grafikPanel_last();
         tabbedPane.addTab("Saf Sıvılar",panel);
         tabbedPane.addTab("Karışım",panel2);
+        tabbedPane.addTab("Özellik grafikleri",panel3);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(670, 600);
         frame.add(tabbedPane);

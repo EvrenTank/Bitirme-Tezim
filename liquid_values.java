@@ -44,16 +44,16 @@ public class liquid_values {
 
     String malzemenin_turu=""; // Malzeme alkol mü asit mi yoksa başka bir tür mü diye bakacağım.
 
-    ArrayList <String[]> cp_katsayılar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> critical_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> density_katsayılar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> hvap_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> viscosity_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> k_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> csp_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> cp_katsayilar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> critical_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> density_katsayilar= new ArrayList<String[]>(); // İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> hvap_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> viscosity_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> k_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> csp_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> Tf= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> org_compounds= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-    ArrayList <String[]> surtension_katsayılar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> surtension_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
 
 
 
@@ -62,14 +62,14 @@ public class liquid_values {
 
     public ArrayList<String[]> read_file(File file){
     String[] a=null;
-    ArrayList <String []> katsayılar = new ArrayList< String[] >();
+    ArrayList <String []> katsayilar = new ArrayList< String[] >();
     Scanner myReader;
     try {
         myReader = new Scanner(file);
         while(myReader.hasNextLine()){
             String data = myReader.nextLine();
             String veri[]= data.split("\\s+");
-            katsayılar.add(veri);
+            katsayilar.add(veri);
 
         }
     } catch (FileNotFoundException e) {
@@ -80,37 +80,37 @@ public class liquid_values {
 
 
 
-    return  katsayılar;
+    return  katsayilar;
 }
     public void  read_all_Files(){
- File cpvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\cp.txt");
- File criticalvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\critical values.txt");
- File densityvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\density.txt");
- File hvapvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\hvap.txt");
- File viscosityvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\viscosity.txt");
- File kvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\k.txt");
- File csp_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\a_values_for_CSP.txt");
- File Tfreezing_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\Tfreezing.txt");
- File organic_compounds= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\organiccompounds_classification.txt");
- File surtensionvalues_File= new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayılar\\surfacetension.txt");
+ File cpvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\cp.txt");
+ File criticalvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\critical values.txt");
+ File densityvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\density.txt");
+ File hvapvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\hvap.txt");
+ File viscosityvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\viscosity.txt");
+ File kvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\k.txt");
+ File csp_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\a_values_for_CSP.txt");
+ File Tfreezing_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\Tfreezing.txt");
+ File organic_compounds= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\organiccompounds_classification.txt");
+ File surtensionvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\surfacetension.txt");
 
-   cp_katsayılar= read_file(cpvalues_File);
-   critical_katsayılar =read_file(criticalvalues_File);
-   density_katsayılar= read_file(densityvalues_File);
-   hvap_katsayılar= read_file(hvapvalues_File);
-   viscosity_katsayılar= read_file(viscosityvalues_File);
-   k_katsayılar= read_file(kvalues_File);
-   csp_katsayılar= read_file(csp_File);
+   cp_katsayilar= read_file(cpvalues_File);
+   critical_katsayilar =read_file(criticalvalues_File);
+   density_katsayilar= read_file(densityvalues_File);
+   hvap_katsayilar= read_file(hvapvalues_File);
+   viscosity_katsayilar= read_file(viscosityvalues_File);
+   k_katsayilar= read_file(kvalues_File);
+   csp_katsayilar= read_file(csp_File);
    Tf= read_file(Tfreezing_File);
    org_compounds=read_file(organic_compounds);
-   surtension_katsayılar=read_file(surtensionvalues_File);
+   surtension_katsayilar=read_file(surtensionvalues_File);
 
    /*for(int i=0;i<5;i++){
-       System.out.println(cp_katsayılar.get(i));
-       System.out.println(critical_katsayılar.get(i));
-       System.out.println(density_katsayılar.get(i));
-       System.out.println(hvap_katsayılar.get(i));
-       System.out.println(viscosity_katsayılar.get(i));
+       System.out.println(cp_katsayilar.get(i));
+       System.out.println(critical_katsayilar.get(i));
+       System.out.println(density_katsayilar.get(i));
+       System.out.println(hvap_katsayilar.get(i));
+       System.out.println(viscosity_katsayilar.get(i));
    }*/
 
 
@@ -118,33 +118,33 @@ public class liquid_values {
 
         // Bunlar büyük ihtimalle kullanılmıyor. Silsem de olur muhtemelen ama şimdi hata falan verir diye silmiyorum.
         String temp_array[];
-        String cp_values [] =new String[cp_katsayılar.size()] ; // ArrayListleri, arraylere dönüşürdüm.
-        String density_values [] =new String[density_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
-        String critical_values [] =new String[critical_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
-        String hvap_values [] =new String[hvap_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
-        String viscosity_values [] =new String[viscosity_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
-        String k_values [] =new String[k_katsayılar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+        String cp_values [] =new String[cp_katsayilar.size()] ; // ArrayListleri, arraylere dönüşürdüm.
+        String density_values [] =new String[density_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+        String critical_values [] =new String[critical_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+        String hvap_values [] =new String[hvap_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+        String viscosity_values [] =new String[viscosity_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
+        String k_values [] =new String[k_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
 
 
 
-//        for (int i=0;i<cp_katsayılar.size();i++){
-//            cp_values[i] = String.valueOf(cp_katsayılar.get(i).split(" "));
+//        for (int i=0;i<cp_katsayilar.size();i++){
+//            cp_values[i] = String.valueOf(cp_katsayilar.get(i).split(" "));
 //
 //
 //        }
-//        for (int i=0;i<density_katsayılar.size();i++){
-//            density_values[i] = density_katsayılar.get(i);
+//        for (int i=0;i<density_katsayilar.size();i++){
+//            density_values[i] = density_katsayilar.get(i);
 //            temp_array= density_values[i].split(" ");
 //            for(int k=0;k<temp_array.length;k++){
 //                System.out.println(temp_array[k]);
 //            }
 //           }
-//        for (int i=0;i<critical_katsayılar.size();i++){
-//            critical_values[i] = critical_katsayılar.get(i);}
-//        for (int i=0;i<hvap_katsayılar.size();i++){
-//            hvap_values[i] = hvap_katsayılar.get(i);}
-//        for (int i=0;i<viscosity_katsayılar.size();i++){
-//            viscosity_values[i] = viscosity_katsayılar.get(i);}
+//        for (int i=0;i<critical_katsayilar.size();i++){
+//            critical_values[i] = critical_katsayilar.get(i);}
+//        for (int i=0;i<hvap_katsayilar.size();i++){
+//            hvap_values[i] = hvap_katsayilar.get(i);}
+//        for (int i=0;i<viscosity_katsayilar.size();i++){
+//            viscosity_values[i] = viscosity_katsayilar.get(i);}
 
 //        for(int i=0; i<1000;i++){
 //           System.out.println(cp_values[i]);
@@ -160,7 +160,7 @@ public class liquid_values {
         }
         a++;
         double surface_tension_coefficients []= {0,0,0,0,0};
-        for(String [] i:surtension_katsayılar){
+        for(String [] i:surtension_katsayilar){
             if(  i[0].equals(name)){
                 surface_tension_coefficients [0] = Double.parseDouble(i[1]);
                 surface_tension_coefficients [1] = Double.parseDouble(i[2]);
@@ -209,7 +209,7 @@ public class liquid_values {
         }
         a++;
         double cp []= {0,0,0,0,0,0};
-        for(String [] i:cp_katsayılar){
+        for(String [] i:cp_katsayilar){
             if(  i[0].equals(name)){
                 //cp = new double[i.length-1];
                 cp [0] = Double.parseDouble(i[1]);
@@ -250,7 +250,7 @@ public class liquid_values {
         }
         a++;
         double k []= {0,0,0,0,0};
-        for(String [] i:k_katsayılar){
+        for(String [] i:k_katsayilar){
             if(  i[0].equals(name) && i.length==6){
                 //cp = new double[i.length-1];
                 k [0] = Double.parseDouble(i[1]);
@@ -274,7 +274,7 @@ public class liquid_values {
         }
         a++;
         double ro []= {0,0,0,0,0,0,0,0};
-        for(String [] i:density_katsayılar){
+        for(String [] i:density_katsayilar){
             if(  i[0].equals(name)){
                // ro = new double[i.length-1];
                 ro [0] = Double.parseDouble(i[1]);
@@ -303,7 +303,7 @@ public class liquid_values {
         a++;
         double vis []= {0,0,0,0,0,0,0};
         // A, B, C, D, Tmin, Tmax
-        for(String [] i:viscosity_katsayılar){
+        for(String [] i:viscosity_katsayilar){
             if( i[0].equals(name)){
                 //vis = new double[i.length-1];
                 vis [0] = Double.parseDouble(i[1]);
@@ -333,7 +333,7 @@ public class liquid_values {
         }
         a++;
         double hvap []= {0,0,0,0,0,0};
-        for(String [] i:hvap_katsayılar){
+        for(String [] i:hvap_katsayilar){
             if( i[0].equals(name)){
                 //System.out.println("name="+name);
                 // hvap = new double[i.length-1];
@@ -362,7 +362,7 @@ public class liquid_values {
         a++;
 
         double critic []= {0,0,0,0,0,0,0,0};
-        for(String [] i:critical_katsayılar){
+        for(String [] i:critical_katsayilar){
             if(  i[0].equals(name)){
                 //critic = new double[i.length-1];
                 critic [0] = Double.parseDouble(i[1]);
@@ -385,7 +385,7 @@ public class liquid_values {
         a++;
 
         double csp []= {0,0,0,0,0,0,0};
-        for(String [] i:csp_katsayılar){
+        for(String [] i:csp_katsayilar){
             if(  i[0].equals(name)){
                 //critic = new double[i.length-1];
                 csp [0] = Double.parseDouble(i[1]);

@@ -33,7 +33,7 @@ public class graphicsPanel  extends JPanel {
         for(int i =0;i<20;i++)  {
             T = Tmin+ (Tmax-Tmin)/20*i;
             x_values[i] = T;
-            y_values[i] = liquid.cp(my_liquid_name);
+            y_values[i] = liquid.cp(my_liquid_name,T);
         }
         x.add(x_values);
         y.add(y_values);

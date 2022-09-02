@@ -26,10 +26,7 @@ import javax.swing.JPanel;
         private JButton buton;
         private String xlabel="deneme";
         private String ylabel="deneme";
-        private int alanx=125;
-        private int alany=100;
-        private int alanwidth=200;
-        private int alanheight=200;
+
         double[] xseries,xseries2;
         double[] yseries,yseries2;
         //private NumberFormat numberformat=NumberFormat.getInstance(); // Virgülden sonra kaç rakam
@@ -91,20 +88,19 @@ import javax.swing.JPanel;
             }
 
 
-            ArrayList<double[]> x = new ArrayList<double[]>();
-            ArrayList<double[]> y = new ArrayList<double[]>();
+            ArrayList<double[]> x ;
+            ArrayList<double[]> y ;
             x = (ArrayList<double[]>) o[0];
             y = (ArrayList<double[]>) o[1];
-            System.out.println();
             setValues(x,y);
             repaint();
 
-            for(int i=0;i<x.size();i++){
+     /*       for(int i=0;i<x.size();i++){
                 for(int k=0;k<x.get(i).length;k++){
                     System.out.println("x değeri:"+x.get(i)[k]);
                     System.out.println("y değeri:"+y.get(i)[k]);
                 }
-            }
+            }*/
 
         }
         public Object[] cp_values(String name) {
@@ -124,7 +120,7 @@ import javax.swing.JPanel;
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
                 cp = liquids.cp(name,T);
-                System.out.println("cp="+cp);
+                //System.out.println("cp="+cp);
                 y_ekseni[i] = cp;
             }
             x.add(x_ekseni);
@@ -155,7 +151,7 @@ import javax.swing.JPanel;
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
                 ro = liquids.ro(name,T);
-                System.out.println("ro="+ro);
+                //System.out.println("ro="+ro);
                 y_ekseni[i] = ro;
             }
             x.add(x_ekseni);
@@ -188,7 +184,7 @@ import javax.swing.JPanel;
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
                 k = liquids.k(name,T);
-                System.out.println("k="+k);
+               //System.out.println("k="+k);
                 y_ekseni[i] = k;
             }
             x.add(x_ekseni);
@@ -218,7 +214,9 @@ import javax.swing.JPanel;
             ArrayList<double[]> x = new ArrayList<double[]>();
             ArrayList<double[]> y = new ArrayList<double[]>();
             double x_ekseni[]  = new double[20];
+            double x_ekseni2[]  = new double[20];
             double y_ekseni[]  = new double[20];
+            double y_ekseni2[]  = new double[20];
             double Tmin= surten_c[3];
             double Tmax= surten_c[4];
             double T;
@@ -227,12 +225,33 @@ import javax.swing.JPanel;
             for(int i=0;i<20;i++){
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
+                x_ekseni2[i] = T;
                 sigma = liquids.sur_tension(name,T);
-                System.out.println("sigma="+sigma);
+                //System.out.println("sigma="+sigma);
                 y_ekseni[i] = sigma;
+                sigma = liquids.sur_tension2(name,T);
+                y_ekseni2[i] = sigma;
             }
             x.add(x_ekseni);
             y.add(y_ekseni);
+
+            boolean isNan = false;
+            /* Bazı sıvılar için sur_tension2 metodunda kullanılan kritik değerler bilinmediği için bu değerler 0 olarak kabul ediliyor.
+            Bu da sigma değerin NaN sonucu vermesine neden oluyor. Bu durumda grafikte sorun çıkacağı için eğer değerler arasında NaN
+            varsa onun grafiğini çizdirmeyecek şekilde ayarladım.
+            */
+            for(int j=0;j<y_ekseni2.length;j++){
+                System.out.println(y_ekseni2[j]);
+                System.out.println(Double.isNaN(y_ekseni[j]));
+                if(Double.isNaN(y_ekseni2[j]) ){
+                    isNan = true;
+                    break;
+                }
+            }
+            if(isNan == false){
+                x.add(x_ekseni2);
+                y.add(y_ekseni2);
+            }
 
 
             Object [] object =new Object[2];
@@ -279,8 +298,8 @@ return object;
             //boolean tagsVisible=true;
             JButton buton;
 
-            int alanx=70;
-            int alany=10;
+            int alanx=100;
+            int alany=20;
             int alanwidth=200;
             int alanheight=200;
             double[] xseries,xseries2;
@@ -300,21 +319,39 @@ return object;
             g2.setColor(Color.white); // Grafik arka planı rengi
             g2.fillRect(alanx, alany, alanwidth, alanheight);
 
-            double x_min = 0;
-            double x_max = 0;
-            double y_min = 0;
-            double y_max = 0;
+            double x_min = 0.0;
+            double x_max = 0.0;
+            double y_min = 0.0;
+            double y_max = 0.0;
+            double x[];
+            double y[];
+            Color colors[] = {Color.black,Color.red,Color.orange.darker(),Color.green.darker()};
+            for ( int j1=0;j1<xlist.size();j1++){
+                double xd[] = xlist.get(j1);
+                double yd[] = ylist.get(j1);
+                for(int k=0;k<xd.length;k++){
+                    if(xd[k] < x_min){ x_min = xd[k];}
+                    if(xd[k] > x_max){ x_max = xd[k];}
+                    if(yd[k] < y_min){ y_min = yd[k];}
+                    if(yd[k] > y_max){ y_max = yd[k];}
+                }
+                /*System.out.println("x_min="+x_min);
+                System.out.println("x_max="+x_max);
+                System.out.println("y_min="+y_min);
+                System.out.println("y_max="+y_max);*/
+            }
+            g2.drawString("8",-(alany+alanheight)/2-140,alanx-50);
+
 
             for ( int j=0;j<xlist.size();j++)
             {
-                double x[] = xlist.get(j);
-                double y[] = ylist.get(j);
-                for(int k=0;k<x.length;k++){
-                    if(x[k] < x_min){ x_min = x[k];}
-                    if(x[k] > x_max){ x_max = x[k];}
-                    if(y[k] < y_min){ y_min = y[k];}
-                    if(y[k] > y_max){ y_max = y[k];}
-                }
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setStroke(new BasicStroke(1.0f));
+                 x = xlist.get(j);
+                 y = ylist.get(j);
+
+                //System.out.println("final y_max="+y_max);
+                //System.out.println("y_max="+x_max);
 
                 int boyut=Math.min(x.length,y.length);
                 xseries=new double[boyut];
@@ -342,8 +379,19 @@ return object;
 
                 double xrange=x_max-x_min; // En büyük değer - En küçük değer
                 double yrange=y_max-y_min; // En büyük değer - En küçük değer
-                double katsayıx=alanwidth/xrange;
-                double katsayıy=alanheight/yrange;
+//                System.out.println("final y_max="+y_max);
+//                System.out.println("yrange="+yrange);
+
+                double katsayıx;
+                double katsayıy;
+                if(xrange == 0.0){
+                    katsayıx = 0;
+                    katsayıy = 0;
+                }
+                else {
+                    katsayıx=alanwidth/xrange;
+                    katsayıy=alanheight/yrange;
+                }
 
                 for(int i=0;i<xseries.length;i++) {
                     g2.fillOval((int)((xseries[i]-x_min)*katsayıx+alanx-1),(int)(alany+alanheight-(yseries[i]-y_min)*katsayıy-1), 2,2);
@@ -363,66 +411,47 @@ return object;
 
                 }
 
-                g2.setColor(Color.black);
+                g2.setColor(colors[j]);
 
                 // Veri noktalarını bağlayan çizgiler ( Eğrinin kendisi yani )
                 for(int i=0; i<xseries.length-1;i++) {
+
                     g2.drawLine((int)((xseries[i]-x_min)*katsayıx+alanx),(int)(alany+alanheight-(yseries[i]-y_min)*katsayıy),
                             (int)((xseries[i+1]-x_min)*katsayıx+alanx),(int)(alany+alanheight-(yseries[i+1]-y_min)*katsayıy));
                 }
-                g2.setStroke(new BasicStroke(2.0f));
+                g2.setColor(Color.black);
+                g2.setStroke(new BasicStroke(1.5f));
                 // x çizgisini belirginleştirmek için kullanıldı.
                 g2.drawLine(alanx, (int)(alany+alanheight-(-y_min)*katsayıy),alanx+alanwidth, (int)(alany+alanheight-(-y_min)*katsayıy));
+                //System.out.println("katsayıx="+katsayıx+" katsayıy="+katsayıy+" ymin="+y_min+" xmin="+x_min);
                 // y çizgisini belirginleştirmek için kullanıldı.
                 g2.drawLine((int)(-x_min*katsayıx+alanx),alany,(int)(-x_min*katsayıx+alanx), (alany+alanheight));
 
                 for(int i=0;i<=5;i++) {
                     double xdegeri=(double)(xrange/5*i+x_min);
-
                     g2.drawString(""+(numberformat2.format(xdegeri)), alanx+(i*(alanwidth/5))-10, alany+alanheight+15);
                     g2.drawRect(alanx+(i*(alanwidth/5)), alany+alanheight-1, 1, 2);
                     g2.drawString(""+numberformat1.format((double)(yrange/5*i+y_min)), alanx-40, alany+alanheight-(i*(alanheight/5)));
-                    g2.drawRect(alanx-1,alany+alanheight-(i*(alanheight/5)), 2, 1);
-                }
+                    g2.drawRect(alanx-1,alany+alanheight-(i*(alanheight/5)), 2, 1); }
             }
 
+
             g2.setFont(new Font("arial", Font.BOLD, 10));
-            g2.drawString(xlabel, (alanx+alanwidth)/2+45, alany+alanheight+30);
+            g2.drawString(xlabel, (alanx+alanwidth)/2+10, alany+alanheight+30);
 
             AffineTransform at=new AffineTransform();
             at.rotate(-Math.PI/2);
             g2.setTransform(at);
             g2.setFont(new Font("arial", Font.BOLD, 15));
-            g2.drawString(ylabel,-(alany+alanheight)/2-150,alanx);
-
-
+            g2.drawString(ylabel,-(alany+alanheight)/2-140,alanx-50);
+            at.rotate(Math.PI/2);
+            g2.setTransform(at);
         }
 
         @Override
         public void paint(Graphics g) {
             // TODO Auto-generated method stub
             super.paint(g);
-            ArrayList<Double>x=new ArrayList<Double>();
-            ArrayList<Double>y=new ArrayList<Double>();
-            ArrayList<Double>y2=new ArrayList<Double>();
-
-
-
-
-            for(double i=0;i<5;i+=0.2) {
-                x.add(i);
-                y.add(Math.pow(Math.E,i));
-                y2.add(10*i+25);
-            }
-            double xseries[]=new double[x.size()];
-            double yseries[]=new double[x.size()];
-            double yseries2[]=new double[x.size()];
-            for(int i=0;i<x.size();i++) {
-                xseries[i]=x.get(i);
-                yseries[i]=y.get(i);
-                yseries2[i]=y2.get(i);
-            }
-
             myPaint(g);
 
         }
@@ -433,7 +462,7 @@ return object;
 
             if(e.getSource()==buton) {
                 tagsVisible = !tagsVisible;
-                System.out.println(tagsVisible);
+                //System.out.println(tagsVisible);
                 if(buton.getText()=="Veri etiketlerini gizle") {
                     buton.setText("Veri etiketlerini göster");
 
@@ -451,22 +480,44 @@ return object;
 
 
         public static void main(String[] args) {
-            ArrayList<Double>x=new ArrayList<Double>();
-            ArrayList<Double>y=new ArrayList<Double>();
+            ArrayList<double[]>x=new ArrayList<double[]>();
+            ArrayList<double[]>y=new ArrayList<double[]>();
 
             JFrame frame = new JFrame();
 
-            xy_grafik grafik=new xy_grafik("x label","y label");
+            xy_grafik grafik=new xy_grafik("x label","Viskozite");
+            xy_grafik grafik2=new xy_grafik("x label","Yoğunluk");
             grafik.setBackground(Color.green);
-            grafik.setBounds(20,20,300,300);
+            grafik.setBounds(20,20,400,300);
+            grafik2.setBackground(Color.pink);
+            grafik2.setBounds(450,20,400,300);
             //grafik.createGraphic("CO");
+            double x1[]=new double[11];
+            double y1[]=new double[11];
+            double x2[]=new double[11];
+            double y2[]=new double[11];
 
-            frame.add(grafik);
+            for(int i=0;i<11;i++){
+                int a = i-5;
+                x1[i] = a;
+                x2[i] = a;
+                y1[i] = a*a*a;
+                y2[i] = a*a;
+            }
+            x.add(x1);
+            x.add(x2);
+            y.add(y1);
+            y.add(y2);
+            grafik2.repaint();
             grafik.repaint();
+
+            grafik.setValues(x,y);
+            grafik2.setValues(x,y);
+            frame.add(grafik);
+            frame.add(grafik2);
             frame.setSize(700,700);
             frame.setLayout(null);
             frame.setVisible(true);
-            frame.add(grafik);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
