@@ -2,11 +2,11 @@ package bitirme_tezi;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class grafikPanel_last extends JPanel   {
     String liquid_name ;
+    xy_grafik g_vis,g_st,g_k,g_ro,g_cp;
 
 
 
@@ -20,20 +20,20 @@ public class grafikPanel_last extends JPanel   {
         JComboBox<String> isim_listesi = new JComboBox<String>(isimler);
         isim_listesi.setBounds(300,50,150,20);
         this.add(isim_listesi);
-        xy_grafik g_vis = new xy_grafik("Temperature(K)","Viskozite(Pa.s)");
-        g_vis.setBounds(400,100,300,300);
+         g_vis = new xy_grafik("Temperature(K)","Viskozite(Pa.s)");
+        g_vis.setBounds(50,100,400,300);
         this.add(g_vis);
-        xy_grafik g_st= new xy_grafik("Temp(K)","Yüzey gerilimi(N/m)");
-        g_st.setBounds(50,100,300,300);
+         g_st= new xy_grafik("Temperature(K)","Yüzey gerilimi(N/m)");
+        g_st.setBounds(500,100,400,300);
         this.add(g_st);
-        xy_grafik g_k= new xy_grafik("Temp(K)","Isıl iletk. kats. (W/(mK))");
-        g_k.setBounds(750,100,300,300);
+         g_k= new xy_grafik("Temperature(K)","Isıl iletk.kats.(W/(mK))");
+        g_k.setBounds(950,100,400,300);
         this.add(g_k);
-        xy_grafik g_ro= new xy_grafik("Temp (K)","Yogunluk(kg/m^3)");
-        g_ro.setBounds(50,450,300,300);
+         g_ro= new xy_grafik("Temperature(K)","Yogunluk(kg/m^3)");
+        g_ro.setBounds(50,450,400,300);
         this.add(g_ro);
-        xy_grafik g_cp= new xy_grafik("Temp (K)","Özgül ısı (kJ/kmol/K");
-        g_cp.setBounds(400,450,300,300);
+        g_cp= new xy_grafik("Temperature(K)","Özgül ısı (kJ/kmol/K");
+        g_cp.setBounds(500,450,400,300);
         this.add(g_cp);
 
         ActionListener ac_lis = new ActionListener() {
@@ -47,8 +47,12 @@ public class grafikPanel_last extends JPanel   {
                 g_cp.createGraphic(liquid_name,"özgül ısı");
 
 
+
+
             }
         };
+
+
         isim_listesi.addActionListener(ac_lis);
 
 

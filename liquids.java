@@ -29,7 +29,7 @@ public class liquids {
 
     String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap,cp_csp,vis_GCM,k_latini,ro2,sigma,sigma2,sigma3,sigma4,sigma5; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
     String vis_mix;
-    String malzemenin_turu;
+    String malzemenin_turu="";
     double T;
 
     double denklem;
@@ -339,7 +339,7 @@ public class liquids {
         // Latini et. al method
 
         double A,Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
-        double k=0;
+        double k=0.0;
         critical=values.get_critical(name);
         organiccompounds_classification=values.get_orgmat_classification(name);
 
@@ -351,10 +351,13 @@ public class liquids {
         alfa=organiccompounds_classification[1];
         beta=organiccompounds_classification[2];
         gamma=organiccompounds_classification[3];
-
-
+        if( M != 0 && Tb != 0 && Tc != 0 && Asharp != 0 && alfa != 0 && beta != 0 && gamma != 0){
             A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
             k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
+        }
+
+
+
 
             return k;
 
@@ -504,6 +507,48 @@ public class liquids {
 
 
     }
+
+    public double vis_GCM(String name, double T) { // Burada V değerlerini ro metodunu kullanarak hesapladım.
+// Bu metot çoğu sıvı için hesaplama yapamıyor.
+        // Przezdziecki and Sridhar Yöntemi ( Group Contribution Yöntemlerinden biri)
+        critical = values.get_critical(name);
+        double Tr, w, H1, H2, Tc, Vc, Pc, V;
+        double Vm, Vo, E;
+        Pc = critical[3];
+        w = critical[7];
+        Tc = critical[2]; // Kelvin
+        Vc = critical[4]; // (ml/mol), ( cm^3/mol) ikisi aynı şey
+        double M = critical[0];
+        double vis = 0.0;
+        Tr= T/Tc;
+
+        try {
+            Vm = M / Double.parseDouble(ro(Tf)) * 1000;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+        try {
+            V = M / Double.parseDouble(ro()) * 1000;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+
+
+         if( Tc != 0 && Vc != 0 && Pc !=0 && w != 0 && M != 0 && Tr>0.50){
+            Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
+            E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
+            vis = Vo / E / (V - Vo);
+            vis = vis / 1000; // Pa.s birimine çevirdim
+        }
+
+         return vis;
+
+
+
+    }
+
 
     public String vis_GCM2() { // Viskozite hesabını yaparken V değerlerini fT üzerinden hesaplamaya çalışacağım.
 
@@ -783,6 +828,54 @@ public class liquids {
 
         return ""+ro_mix;
     }
+    public double ro2(String name, double T) { // Viskozite hesabını yaparken V(molar hacim) hesabı için bir formül buldum. Onu kullanacağım.
+
+        double Tr, w, H1, H2, Tc, Vc, V;
+        double ro=0.0;//  ro (kg/m^3)
+        double fTreferans;// f(Treferans);
+        double Vreferans, Treferans;
+        double fT; // f(T) demek istedim.
+        critical=values.get_critical(name);
+        ro_c=values.getro(name);
+        Pc = critical[3];
+        w = critical[7];
+        Tc = critical[2]; // Kelvin
+        Vc = critical[4]; // (ml/mol), (cm^3/mol) ikisi aynı şey
+        Treferans = ro_c[4];
+        double M = critical[0];
+
+        try {
+            Vreferans = M/Double.parseDouble(ro(Treferans))*1000;
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            return 0.0;
+        }
+
+        if(Pc !=0 && Tc !=0 && Vc !=0 && w != 0 )
+        {
+            Tr = Treferans / Tc;
+            H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
+            H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
+            fTreferans = H1 * (1 - w * H2);
+
+
+
+
+            Tr = T / Tc;
+
+
+            H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
+            H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
+            fT = H1 * (1 - w * H2);
+
+            V=fT*Vreferans/fTreferans;
+            ro=M*1000/V;
+
+        }
+        return ro;
+    }
+
     public String ro2() { // Viskozite hesabını yaparken V(molar hacim) hesabı için bir formül buldum. Onu kullanacağım.
 
         double Tr, w, H1, H2, Tc, Vc, V,ro; //  ro (kg/m^3)
@@ -982,17 +1075,20 @@ public class liquids {
     }
     public double sur_tension2(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // BROCK and BIRD
-        double sigma;
+        double sigma=0;
         critical = values.get_critical(name);
         double Tb = critical[1];
         double Tc = critical[2];
         double Pc = critical[3];
-        double Tbr=Tb/Tc;
-        double Tr=T/Tc;
-        double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
-        sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
-        return sigma/1000;
 
+        if( Tb != 0 && Tc != 0 && Pc != 0) {
+            double Tbr=Tb/Tc;
+            double Tr=T/Tc;
+            double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
+            sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
+        }
+
+                return sigma/1000;
     }
 
     public String sur_tension3(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
@@ -1010,6 +1106,24 @@ public class liquids {
 
 
         return ""+sigma/1000;
+
+    }
+    public double sur_tension3(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+        // PITZER
+        double sigma=0;
+        critical = values.get_critical(name);
+        double w = critical[7];
+        double Tc = critical[2];
+        double Pc = critical[3];
+        double Tr=T/Tc;
+
+        if(w != 0 && Tc != 0 && Pc != 0){
+            sigma = Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*(1.86+1.18*w)/19.05*Math.pow((3.75+0.91*w)/(0.291-0.08*w),0.66666)*Math.pow(1-Tr,1.2222);
+        }
+
+
+
+        return sigma/1000;
 
     }
     public String sur_tension4(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
@@ -1041,6 +1155,77 @@ public class liquids {
         sigma=(Math.pow(Math.E,sigmar)-1)*(Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333));
 
         return ""+sigma/1000;
+
+    }
+    public double sur_tension4(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+        // ZUO-STENBY
+        double sigma=0;
+        critical = values.get_critical(name);
+        double w = critical[7];
+        double Tc = critical[2];
+        double Pc = critical[3];
+        double Tr=T/Tc;
+        double Tc1=190.56;
+        double Tc2=568.7;
+        double Pc1=45.99;
+        double Pc2=24.9;
+        double w1=0.011;
+        double w2=0.399;
+        if( Tc != 0 && Pc != 0) {
+            double sigma1=40.520*Math.pow(1-Tr,1.287);
+            double sigma2=52.095*Math.pow(1-Tr,1.21548);
+            double sigmar1=Math.log(1+sigma1/(Math.pow(Pc1,0.66666)*Math.pow(Tc1,0.33333)));
+            double sigmar2=Math.log(1+sigma2/(Math.pow(Pc2,0.66666)*Math.pow(Tc2,0.33333)));
+            double sigmar=sigmar1+(w-w1)/(w2-w1)*(sigmar2-sigmar1);
+            sigma=(Math.pow(Math.E,sigmar)-1)*(Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333));
+
+        }
+
+
+        /*System.out.println("sigma1:"+sigma1);
+        System.out.println("sigma2:"+sigma2);
+        System.out.println("sigmar1:"+sigmar1);
+        System.out.println("sigmar2:"+sigmar2);
+        System.out.println("sigmar:"+sigmar);*/
+
+        return sigma/1000;
+
+    }
+    public double sur_tension5(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+        // SASTRI-RAO
+        double sigma=0;
+        critical = values.get_critical(name);
+        double Tb=critical[1];
+        double Tc=critical[2];
+        double Pc=critical[3];
+        if (Tb != 0 && Tc != 0 && Pc != 0){
+            double Tr=T/Tc;
+            double Tbr=Tb/Tc;
+            double K=0.158;
+            double x=0.50;
+            double y=-1.5;
+            double z=1.85;
+            double m=1.22222;
+            if (malzemenin_turu.equals("alcohol")){
+                K=2.28;
+                x=0.25;
+                y=0.175;
+                z=0;
+                m=0.8;
+            }
+
+            else if(malzemenin_turu.equals("acid")){
+                K=0.125;
+                x=0.50;
+                y=0.-1.5;
+                z=1.85;
+                m=1.22222;
+            }
+            sigma= K*Math.pow(Pc,x)*Math.pow(Tb,y)*Math.pow(Tc,z)*Math.pow((1-Tr)/(1-Tbr),m);
+        }
+
+
+        return sigma/1000;
 
     }
     public String sur_tension5(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
@@ -1077,6 +1262,7 @@ public class liquids {
         return ""+sigma/1000;
 
     }
+
 
     public String sur_tension_mixtures(String sur_tension[],double mole_ratio[],double M[], String ro[]){
         boolean calculatable=true;
@@ -1150,7 +1336,7 @@ public class liquids {
        Tf=values.getTf(name);
        organiccompounds_classification=values.get_orgmat_classification(name);
        surtension_c=values.getsurtension(name);
-       malzemenin_turu= values.malzemenin_turu;;
+       malzemenin_turu= values.malzemenin_turu;
 
         vis=vis();
 
