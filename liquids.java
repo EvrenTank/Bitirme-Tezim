@@ -25,13 +25,14 @@ public class liquids {
     double M,Tb,Tc,Pc,Zc,wp,v0;
 
 
-    double vis_c[],k_c[],ro_c[],cp_c[],critical[],hvap_c[],a_values[],Tf,organiccompounds_classification[],surtension_c[];// viskozite coefficients
+    double vis_c[],k_c[],ro_c[],cp_c[], cpgas_c[],Pvapor_c[],critical[],hvap_c[],a_values[],Tf,organiccompounds_classification[],surtension_c[];// viskozite coefficients
 
-    String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap,cp_csp,vis_GCM,k_latini,ro2,sigma,sigma2,sigma3,sigma4,sigma5; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
+    String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap,cp_csp,vis_GCM,k_latini,ro2,sigma,sigma2,sigma3,sigma4,sigma5,Pvapor,ro_Tait; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
     String vis_mix;
     String malzemenin_turu="";
     double T;
-
+    double ro_Rackett,ro_Yamada_Gunn;
+    double cp_gas;
     double denklem;
     double h0,u0,s0;//kJ/kmol
     double Cv,g,viscosity;// g: gibbs free energy k: ısıl iletkenlik
@@ -52,6 +53,29 @@ public class liquids {
 
     public liquids() {
 
+    }
+
+    public String Pvapor() { //  ilk halinde mmhg olarak hesaplıyor. Ama ben onu kPa' çevireceğim.
+        // Pvapor organic and inorganic => A, B, C, D, E, Tmin, Tmax (Birimi: mmhg)
+        // Formülü: log10(P)=A+B/T+C*log10(T)+D*T+E*T^2
+        // 1 mmhg =0.133322368 kPa 1 kPa = 0.01 bar
+        double A,B,C,D,E,Tmin,Tmax;
+        double Pvapor=0;
+
+        if(Pvapor_c[5]<=T && T<=Pvapor_c[6])
+        {
+            A=Pvapor_c[0];
+            B=Pvapor_c[1];
+            C=Pvapor_c[2];
+            D=Pvapor_c[3];
+            E=Pvapor_c[4];
+            Pvapor=Math.pow(10,A+B/T+C*Math.log10(T)+D*T+E*T*T);
+            Pvapor *= 0.133322368; // Birimini kPa yaptım.
+            return (""+Pvapor);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
     }
 
 
@@ -91,23 +115,36 @@ public class liquids {
 
 
     }
+    public double cp_gas(String name,double T) { // (kJ/(kmolK))
+        double A,B,C,D,E,Tmin,Tmax;
+        double cp=0;
+        cpgas_c=values.getcpgas(name);
+        A=cpgas_c[0];
+        B=cpgas_c[1];
+        C=cpgas_c[2];
+        D=cpgas_c[3];
+        E=cpgas_c[4];
+        Tmin=cpgas_c[5];
+        Tmax=cpgas_c[6];
+        if(T >= Tmin && T<=Tmax){
+            cp=A+B*T+C*T*T+D*T*T*T+E*T*T*T*T;
+        }
+        return cp;
+    }
 
 
-
-    public String cp_CSP() { // (kJ/(kmolK))
+    public String cp_CSP(String name, double T) { // (kJ/(kmolK))
         // CSP: Corresponding States Method
 
         // Tmin ve Tmax değerleri verilmeyen malzemeler vardı. Onları her sıcaklıkta olur diye kabul ettiğim için
         // 0 ile 10000 arası diye kafama göre yazdım.
         double w,Tr,Tc,a0,a1,a2,a3,a4,Tmin,Tmax;
-        a0 = a_values[0];
-        a1 = a_values[1];
-        a2= a_values[2];
-        a3 = a_values[3];
-        a4 = a_values[4];
-        Tmin = a_values[5];
-        Tmax = a_values[6];
-        double cp_saturated;
+        cp_c= values.getcp(name);
+        critical=values.get_critical(name);
+        Tmin = cp_c[4];
+        Tmax = cp_c[5];
+
+        double cp_saturated=0.0;
         double cp=0;
         w=critical[7];
         Tc=critical[2];
@@ -115,13 +152,30 @@ public class liquids {
         double Ru= 8.3145; // kJ/(kmolK)
         Tr=T/Tc;
         double R = Ru/M;   // kJ/(kgK)
+        double cp_gas = cp_gas(name,T);
+        cp_gas = cp_gas/M; // Birimini kJ/(kgK) yaptım burada.
 
-
-        if( Tr < 0.99 && (T>=Tmin && T<= Tmax) )
+        if( (T <= Tmax && T >= Tmin) )
         {
-            cp = R* (1.586 + 0.49/(1-Tr)+w*(4.2775 + 6.3/Tr*Math.pow(1.0-Tr,0.3333)+0.4355/(1-Tr)) +a0+a1*T+a2*T*T+a3*T*T*T+a4*T*T*T*T) ;
-            cp_saturated =  cp - R* Math.pow(Math.E,20.1*Tr-17.9);
-            return (""+cp+"    "+cp_saturated);
+
+            if(cp_gas != 0){
+                cp = R* (1.586 + 0.49/(1-Tr)+w*(4.2775 + 6.3/Tr*Math.pow(1.0-Tr,0.3333)+0.4355/(1-Tr)))+cp_gas ;
+                cp_saturated =  cp - R* Math.pow(Math.E,20.1*Tr-17.9);
+                cp = cp*M; // Birimi kJ/ (kmolK) yaptım.
+                cp_saturated = cp_saturated*M;
+//                System.out.println("cpL="+cp);
+//                System.out.println("cp_saturated="+cp_saturated);
+//                System.out.println("%Hata= "+(cp-cp_saturated)/cp_saturated*100);
+                if ( Tr < 0.99){
+                    return ""+ cp_saturated;
+                }
+                else { return ""+cp; }
+            }
+
+            else{
+                return "cp ideal gaz hesaplanamadığı için hesap yapılamıyor.";
+            }
+
         }
         else {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
@@ -409,35 +463,67 @@ public class liquids {
     }
     public double vis(String name,double T) {
         double A,B,C,D;
-
         double vis=0;
         vis_c = values.getvis(name);
             A=vis_c[0];
             B=vis_c[1];
             C=vis_c[2];
             D=vis_c[3];
-            //System.out.println("A="+A);
-            //System.out.println("B="+B);
-            //System.out.println("C="+C);
-            //System.out.println("D="+D);
             vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
-            //System.out.println("double vis="+vis);
             vis=vis/1000; // Pa.s birimine çevirdim
-            //System.out.println("vis="+vis);
-
             return vis;
-
-
+    }
+    public String vis1(String name,double T) { // Bunu  vis_P ile kullanarak basıncın etkisini görebilmek için yapıyorum sadece.
+        // Bu metodu GUI'ye  eklemeyeceğim.
+        double A,B,C,D;
+        double vis=0;
+        vis_c=values.getvis(name);
+        critical=values.get_critical(name); // Sonra düzeltmek gerek
+        if(vis_c[4]<=T && T<=vis_c[5])
+        {
+            A=vis_c[0];
+            B=vis_c[1];
+            C=vis_c[2];
+            D=vis_c[3];
+            vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
+            vis=vis/1000; // Pa.s birimine çevirdim
+            return (""+vis);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
+    public String vis_P(String name,double T ,double Psat,double P) { // Bu hesaplamada basınç değeri de hesaba katılacak.
+        double A,B,C,D;
+        double vis_sat;
+        double Pc,w,Tc;
+        double vis=0;
+        vis_c=values.getvis(name);
+        critical=values.get_critical(name); // Sonra düzeltmek gerek
+        Pc = critical[3];
+        w= critical[7];
+        Tc = critical[2];
+        double Tr = T/Tc;
+        double Pr = P/Pc;
+        double deltaPr = (P-Psat)/Pc;// bar cinsinde verilecek.
+        A = 0.9991- (4.674E-4 / (1.0523* Math.pow(Tr,-0.03877)-1.0513));
+        C = -0.07921+2.1616*Tr-13.404*Tr*Tr+44.1706*Tr*Tr*Tr-84.8291*Tr*Tr*Tr*Tr+ 96.1209 * Tr* Tr*Tr*Tr*Tr - 59.8127*Tr*Tr*Tr*Tr*Tr*Tr+
+                15.6719*Tr*Tr*Tr*Tr*Tr*Tr*Tr;
+        D= (0.3257 /Math.pow (1.0039- Math.pow(Tr,2.573),0.2906))-0.2086;
+        try {
+            vis_sat = Double.parseDouble(vis1(name,T));
+            vis = vis_sat * ( 1+ D*Math.pow((deltaPr/2.118),A))/(1+C*w*deltaPr);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return " Bu sıcaklık aralığında hesap yapılamıyor.";
+        }
+            return ""+ vis;
     }
 
     public String vis() {
         double A,B,C,D;
 
         double vis=0;
-//        for(int i=0;i<vis_c.length;i++){
-//            System.out.println("vis_c["+i+"]="+vis_c[i]);
-//        }
-
         if(vis_c[4]<=T && T<=vis_c[5])
         {
             A=vis_c[0];
@@ -749,22 +835,15 @@ public class liquids {
         double A,B,C,n;
          ro_c = values.getro(name);
         double ro=0;
-
-
-
             A=ro_c[0];
             B=ro_c[1];
             C=ro_c[2];
             n=ro_c[3];
-
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
             //System.out.println("ro metodu içinde:density="+ro);
             //System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
             return ro;
-
-
-
     }
     public String ro() {
         double A,B,C,n;
@@ -779,19 +858,151 @@ public class liquids {
             B=ro_c[1];
             C=ro_c[2];
             n=ro_c[3];
-
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
             //System.out.println("ro metodu içinde:density="+ro);
             //System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
             return (""+ro);
-
         }
         else {
-
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+
+    public double  ro_Rackett(){ // Rackett Equation ile yapılmıştır.
+        double ro=0;
+        double Vc,Zc,Tc,M;
+        double Vs; // saturated liquid volume
+        Vc = critical[4]; // ml/mol
+        Zc = critical[6];
+        Tc = critical[2]; // K
+        M = critical[0];  // g/mol
+        if(Vc != 0 && Zc != 0 && Tc !=0){
+
+            Vs = Vc*Math.pow(Zc,Math.pow(1-T/Tc,0.2857)); // ml/mol
+        Vs = Vs/1000000; // m^3/mol
+        Vs = Vs/M; // m^3/g
+        Vs = Vs *1000; // (m^3/kg)
+        ro = 1/Vs; // kg/(m^3)
+             }
+        return ro;
+    }
+    public double  ro_Yamada_Gunn(){ // Yamada and Gunn(1973) Equation ile yapılmıştır.
+        double ro=0;
+        double Vc,Zc,Tc,M,w;
+        double Vs; // saturated liquid volume
+        Vc = critical[4]; // ml/mol
+        Zc = critical[6];
+        Tc = critical[2]; // K
+        M = critical[0];  // g/mol
+        w = critical[7];
+        if(Vc != 0 && Zc != 0 && Tc !=0 && w != 0){
+            Vs = Vc*Math.pow(0.29056-0.08775*w,Math.pow(1-T/Tc,0.2857)); // ml/mol
+            Vs = Vs/1000000; // m^3/mol
+            Vs = Vs/M; // m^3/g
+            Vs = Vs *1000; // (m^3/kg)
+            ro = 1/Vs; // kg/(m^3)
+        }
+
+        return ro;
+    }
+
+    public String ro_Tait(double P){
+        double w = critical[7];
+        double Tc = critical[2];
+        double Pc = critical[3]; // bar
+        Pc = Pc*100; // kPa
+        double Pvapor=0,ro_Saturated=0;
+        double a = -9.070217;
+        double b = 62.45326;
+        double d = -135.1102;
+        double f = 4.79594;
+        double g = 0.250047;
+        double h = 1.14188;
+        double j = 0.0861488;
+        double k = 0.0344483;
+        double Tr = T/Tc;
+        double e = Math.pow(Math.E,f+g*w+h*w*w);
+        double C = j+k*w;
+        double B = Pc*(-1+a*Math.pow(1-Tr,0.3333)+b*Math.pow(1-Tr,0.6666)+d*(1-Tr)+e*Math.pow(1-Tr,1.3333));
+
+        try {
+             Pvapor = Double.parseDouble(Pvapor()); // kPa
+        }
+        catch (NumberFormatException e1){
+            e1.printStackTrace();
+            return "Pvapor hesaplanmadığı için hesaplama yapılamıyor.";
+        }
+
+        try{
+             ro_Saturated = Double.parseDouble(ro());
+        }
+        catch (NumberFormatException e2){
+            e2.printStackTrace();
+            return "Doymuş sıvı yoğunluğu hesaplanamadığı için hesap yapılamıyor.";
+        }
+        double ro = ro_Saturated/(1-C*(Math.log((B+P)/(B+Pvapor))));
+
+        return ""+ro;
+    }
+
+    public double ro_mix_Aalto(double T,double P,String name[],double x[]){
+
+        double w, Tc,Pc,Vc; // Pc:bar,Tc:Kelvin,Vc: ml/mol
+        double Vcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
+        double Tcm=0.0;
+        double wsrkm=0; // wsrk mixture: Soawe Redlich Kwong accentric factor: direkt w değerini kullanmak da önemli hatalara neden olmaz.
+        // O yüzden ben onu kullanacağım.
+        double K1=00.,K2=0.0,K3=0.0;
+        double Ru = 8.134; // kJ/(kgK)
+        for(int i=0;i<name.length;i++){
+            critical = values.get_critical(name[i]);
+            w = critical[7];
+            Tc = critical[2];
+            Pc = critical[3]; // bar
+            Vc = critical[4]; // ml/mol
+            K1 += x[i]*Vc;
+            K2 += x[i]*Math.pow(Vc,0.6666);
+            K3 += x[i]*Math.pow(Vc,0.3333);
+            wsrkm += x[i]*Math.pow(w,0.5);
+            Tcm += x[i]*Math.pow(Vc*Tc,0.5);
+            System.out.println("w="+w);
+            System.out.println("xi="+x[i]);
+
+        }
+        Vcm = 0.25*(K1+3*K2*K3);
+        wsrkm = wsrkm*wsrkm;
+        Tcm= Tcm*Tcm/Vcm;
+        double Pcm = (0.291-0.08*wsrkm)*Ru*Tcm/Vcm*1000; // kPa
+        double Trm=T/Tcm;  // Treduced mixture
+        double Pvpr0=6.13144-6.30662/Trm-1.55663*Math.log(Trm)+0.17518*Math.pow(Trm,6.0); // Pvpr hesaplanırken kullanılacak.
+        double Pvpr1=2.99938-3.08508/Trm+1.26573*Math.log(Trm)+0.08560*Math.pow(Trm,6.0); // Pvpr hesaplanırken kullanılacak.
+        double Pvpr = Math.pow(Math.E,Pvpr0+wsrkm*Pvpr1); // Pvapor reduced
+        double a0=-170.335,a1 = -28.578, a2=124.809,a3=-55.5393,a4=130.01,b0=0.164813,b1=-0.0914427,C=Math.E,D=1.00588;
+        double A = a0+a1*Trm+a2*Trm*Trm*Trm+a3*Trm*Trm*Trm*Trm*Trm*Trm+a4/Trm;
+        double B = b0+wsrkm*b1;
+        double Vs = 116.43; // Vref gibi kullanılacak.
+        double Pvp=5399; // Pref gibi kullanılacak. Pbubble basıncı da denilebilir.
+        double V = Vs*(A*Pcm+Math.pow(C,Math.pow(D-Trm,B))*(P-Pvp))/(A*Pcm+C*(Pcm-Pvp));
+        System.out.println("wsrkm="+wsrkm);
+        System.out.println("Pcm="+Pcm);
+        System.out.println("Vcm="+Vcm);
+        System.out.println("P="+P);
+        System.out.println("Trm="+Trm);
+        System.out.println("Pvpr0="+Pvpr0);
+        System.out.println("Pvpr1="+Pvpr1);
+        System.out.println("A="+A);
+        System.out.println("B="+B);
+        System.out.println("V="+V);
+        return V;
+
+    }
+
+
+
+
+
+
 
     public String ro_mix_molar(String ro[],double x[],double M[]) {
         double ro_mix=0;
@@ -1337,6 +1548,8 @@ public class liquids {
        organiccompounds_classification=values.get_orgmat_classification(name);
        surtension_c=values.getsurtension(name);
        malzemenin_turu= values.malzemenin_turu;
+       Pvapor_c = values.getPvapor(name);
+
 
         vis=vis();
 
@@ -1346,7 +1559,9 @@ public class liquids {
 
         cp_kg=cp2();
 
-        cp_csp=cp_CSP();
+        cp_csp=cp_CSP(name,T);
+
+        cp_gas=cp_gas(name,T);
 
         ro=ro();
 
@@ -1372,23 +1587,48 @@ public class liquids {
 
         ro2=ro2();
 
+        ro_Rackett = ro_Rackett();
+
+        ro_Yamada_Gunn = ro_Yamada_Gunn();
+
+        ro_Tait = ro_Tait(P);
+        double v_Tait=0;
+        try {
+            v_Tait = 1/Double.parseDouble(ro_Tait);
+
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            System.out.println("ro_Tait değeri hesaplatılamamış");
+        }
+
         sigma = sur_tension();
         sigma2 = sur_tension2();
         sigma3 = sur_tension3();
         sigma4 = sur_tension4();
         sigma5 = sur_tension5();
+        Pvapor= Pvapor();
+
+        double Tmin_for_cp_gas = (cpgas_c[5] <= cp_c[4]) ? cp_c[4] : cpgas_c[5];
+        double Tmax_for_cp_gas = (cpgas_c[6] <= cp_c[5]) ?  cpgas_c[6] : cp_c[5];
+
 
         Object result[][]= {{"T,sıcaklık:",T,"K"," "},{"P,basınç:",P,"kPa"," "},{"Tc,kritik sıcaklık",critical[2],"K",""},
                 {"Tb, kaynama sıcaklığı",critical[1],"K",""},
-                {"Tf,donma sıcaklığı",Tf,"K",""},{"Pc,kritik basınç",critical[3],"bar",""},
-                {"Vc,kritik hacim",critical[4],"ml/mol veya cm^3/mol",""},{"w,accentr,c factor",critical[7],"Birimsiz",""},
-                {"cp,sabit basınçta özgül ısı:",cp,"kJ/kmolK",cp_c[4]+"-"+cp_c[5]},{"cp,sabit basınçta özgül ısı:",cp_cal,"kcal/kmolK",cp_c[4]+"-"+cp_c[5]}
-                ,{"cp, sabit basınçta özgül ısı:",cp_kg,"kJ/kgK"," "},{"cv, sabit hacimde özgül ısı:",Cv,"kJ/kmolK"," "},
-                {"cp_csp, sabit basınçta özgül ısı:",cp_csp,"kJ/kgK", a_values[5]+"-"+a_values[6]},
+                {"Tf,donma sıcaklığı",Tf,"K",""},{"Pc,kritik basınç",critical[3]*100,"kPa",""},{"M,molar küte",critical[0],"kg/kmol",""},
+                {"Vc,kritik özgül hacim",critical[4],"ml/mol veya cm^3/mol",""},{"w,accentric factor",critical[7],"Birimsiz",""},
+                {"Pvapor,buhar basıncı",Pvapor,"kPa",Pvapor_c[5]+"-"+Pvapor_c[6]}, {"cp,sabit basınçta özgül ısı:",cp,"kJ/(kmolK)",cp_c[4]+"-"+cp_c[5]},
+                {"cp,sabit basınçta özgül ısı:",cp_cal,"kcal/(kmolK)",cp_c[4]+"-"+cp_c[5]}
+                ,{"cp, sabit basınçta özgül ısı:",cp_kg,"(kJ/kgK)"," "},{"cv, sabit hacimde özgül ısı:",Cv,"(kJ/kmolK)"," "},
+                 {"cp ideal gas,ideal gaz sabit hacimde özgül ısı:",cp_gas,"(kJ/kmolK)"," "},
+                {"cp_csp, sabit basınçta özgül ısı:",cp_csp,"kJ/(kmolK)", Tmin_for_cp_gas+"-"+Tmax_for_cp_gas},
                 {"h,entalpi:",h,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},{"h,entalpi:",h_kg,"kJ/kg",cp_c[4]+"-"+cp_c[5]},{"hvap,buharlaşma entalpisi:",hvap,"kJ/kg",hvap_c[3]+"-"+hvap_c[4]},
                 {"u, iç enerji:",u,"kJ/kmol",cp_c[4]+"-"+cp_c[5]},
                 {"s, entropi:",s,"kJ/(kgK)",cp_c[4]+"-"+cp_c[5]},{"v, özgül hacim:",v,"m^3/kg",ro_c[4]+"-"+ro_c[5]},
-                {"ro,yoğunluk:",ro,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"ro,yoğunluk(diğer bir yöntem):",ro2,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"g, gibbs serbest enerjisi:",g,"kJ/kmol",""},
+                {"ro,yoğunluk:",ro,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"ro,yoğunluk(diğer bir yöntem):",ro2,"kg/m^3",ro_c[4]+"-"+ro_c[5]},
+                {"ro,Rackett:",ro_Rackett,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"ro,Yamada and Gunn:",ro_Yamada_Gunn,"kg/m^3",ro_c[4]+"-"+ro_c[5]},
+                {"ro,Tait:",ro_Tait,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"v,Tait:",v_Tait,"m^3/kg",ro_c[4]+"-"+ro_c[5]},
+                {"g, gibbs serbest enerjisi:",g,"kJ/kmol",""},
                 {"viskozite:",vis," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"viskozite,GCM:",vis_GCM," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
                 {"k, ısıl iletkenlik:",k," W/(mK)",k_c[3]+"-"+k_c[4]},
                 {"k, ısıl iletkenlik(latini met.):",k_latini," W/(mK)",k_c[3]+"-"+k_c[4]},{"sigma, yüzey gerilimi:",sigma," N/m",surtension_c[3]+"-"+surtension_c[4]},
@@ -1550,7 +1790,7 @@ public class liquids {
     public Object[][] calculate_values_for_mixtures2(String liquid_names[],double mole[],double Ti) {
 
         String vis_mix,k_mix,surten_mix,ro_mix,cp_mix;
-
+        double ro_mixture;
 
         String h[]=new String[liquid_names.length];
         String cp[]=new String[liquid_names.length];
@@ -1611,7 +1851,7 @@ public class liquids {
         for(int i=0;i<liquid_names.length;i++){
             String name=liquid_names[i];
             //double m=mass[i];
-            x[i]=M/total_mole;
+            x[i]=mole[i]/total_mole;
             ro_c=values.getro(name);
             vis_c=values.getvis(name);
             cp_c=values.getcp(name);
@@ -1649,6 +1889,7 @@ public class liquids {
         ro_mix = ro_mix_molar(ro,x,molar_mass);
         vis_mix = vis_mix_GN2(vis,x);
         cp_mix=cp_mix2(cp,x);
+        ro_mixture = ro_mix_Aalto(T,P,liquid_names,x);
         double stTmin = findMax(surten_Tmin); // yüzey gerilimi hesaplaması yapılabilecek aralık için min değeri
         double stTmax = findMin(surten_Tmax);
         double cpTmin = findMax(cp_Tmin); // cp hesaplaması yapılabilecek aralık için min değeri
@@ -1682,8 +1923,8 @@ public class liquids {
         Object result[][]= {{"T,sıcaklık:",T,"K",""},{"P,basınç:",P,"kPa",""},
                 {"cp_mix,sabit basınçta özgül ısı:",cp_mix,"kJ/kmolK",cpTmin+"-"+cpTmax},
                 {"ro_mix,yoğunluk:",ro_mix,"kg/m^3",roTmin+"-"+roTmax},{"surten_mix,yüzey gerilimi:",surten_mix,"N/m",stTmin+"-"+stTmax},
-                {"vis_mix,viskozite:",vis_mix," Ns/m^2",visTmin+"-"+visTmax},{"k_mix, ısıl iletkenlik:",0,"W/(mK)",kTmin+"-"+kTmax}
-
+                {"vis_mix,viskozite:",vis_mix," Ns/m^2",visTmin+"-"+visTmax},{"k_mix, ısıl iletkenlik:",0,"W/(mK)",kTmin+"-"+kTmax},
+                {"ro_mix_Aalto:",ro_mixture," Ns/m^2",visTmin+"-"+visTmax}
         };
 
 
