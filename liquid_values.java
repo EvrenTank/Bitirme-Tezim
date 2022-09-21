@@ -16,6 +16,11 @@ public class liquid_values {
     // Surface tension organic and inorganic (dynes/cm) Ben bunu N/m'ye dönüştüreceğim.
     // A,B,C,Tmin,Tmax
 
+    // cp organic and inorganic gas = A+B*T+C*(T^2)+D*(T^3)+E*(T^4)
+
+    // Pvapor organic and inorganic => A, B, C, D, E, Tmin, Tmax (Birimi: mmhg)
+    // Formülü: log10(P)=A+B/T+C*log10(T)+D*T+E*T^2
+    // 1 mmhg =0.133322368 kPa 1 kPa = 0.01 bar
 
     // Cp organic liq =A+B*T+C*(T^2)+D*(T^3)	( J/(molK))
     // A,B,C,D,Tmin,Tmax
@@ -32,7 +37,7 @@ public class liquid_values {
     // A, Tc, n, Tmin, Tmax, T, Hvap@T
 
     // Critical values organic and inorganic
-    // NO, formula,Name, MW (g/mol), Tb(K), Tc, Pc(bar), Vc ( ml/mol) , RHOC, ZC, omega
+    // NO, formula,Name, MW (g/mol), Tb(K), Tc, Pc(bar), Vc ( ml/mol) , RHOC, Zc, omega
 
     // viskozite organic - centipoise
     //log10(μ liq) = A + B/T + C*T + D*T^2
@@ -54,6 +59,8 @@ public class liquid_values {
     ArrayList <String[]> Tf= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> org_compounds= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> surtension_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> cpgas_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> Pvapor_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
 
 
 
@@ -93,6 +100,8 @@ public class liquid_values {
  File Tfreezing_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\Tfreezing.txt");
  File organic_compounds= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\organiccompounds_classification.txt");
  File surtensionvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\surfacetension.txt");
+ File cpgasvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\cp_gas.txt");
+ File Pvaporvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\Pvapor.txt");
 
    cp_katsayilar= read_file(cpvalues_File);
    critical_katsayilar =read_file(criticalvalues_File);
@@ -104,6 +113,9 @@ public class liquid_values {
    Tf= read_file(Tfreezing_File);
    org_compounds=read_file(organic_compounds);
    surtension_katsayilar=read_file(surtensionvalues_File);
+   cpgas_katsayilar=read_file(cpgasvalues_File);
+   cpgas_katsayilar=read_file(cpgasvalues_File);
+   Pvapor_katsayilar=read_file(Pvaporvalues_File);
 
    /*for(int i=0;i<5;i++){
        System.out.println(cp_katsayilar.get(i));
@@ -115,8 +127,8 @@ public class liquid_values {
 
 
         //JOptionPane.showMessageDialog(null,"read_all_Files metodu çalıştı.");
-
         // Bunlar büyük ihtimalle kullanılmıyor. Silsem de olur muhtemelen ama şimdi hata falan verir diye silmiyorum.
+
         String temp_array[];
         String cp_values [] =new String[cp_katsayilar.size()] ; // ArrayListleri, arraylere dönüşürdüm.
         String density_values [] =new String[density_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
@@ -153,7 +165,48 @@ public class liquid_values {
 //           System.out.println(hvap_values[i]);
 //           System.out.println(viscosity_values[i]);
 //        }
-}
+
+    }
+    public double[] getPvapor(String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double Pvapor_coefficients []= {0,0,0,0,0,0,0};
+        for(String [] i:Pvapor_katsayilar){
+            if(  i[0].equals(name)){
+                Pvapor_coefficients [0] = Double.parseDouble(i[1]);
+                Pvapor_coefficients [1] = Double.parseDouble(i[2]);
+                Pvapor_coefficients [2] = Double.parseDouble(i[3]);
+                Pvapor_coefficients [3] = Double.parseDouble(i[4]);
+                Pvapor_coefficients [4] = Double.parseDouble(i[5]);
+                Pvapor_coefficients [5] = Double.parseDouble(i[6]);
+                Pvapor_coefficients [6] = Double.parseDouble(i[7]);
+            }
+        }
+
+        return Pvapor_coefficients;
+    }
+    public double[] getcpgas(String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double cpgas_coefficients []= {0,0,0,0,0,0,0};
+        for(String [] i:cpgas_katsayilar){
+            if(  i[0].equals(name)){
+                cpgas_coefficients [0] = Double.parseDouble(i[1]);
+                cpgas_coefficients [1] = Double.parseDouble(i[2]);
+                cpgas_coefficients [2] = Double.parseDouble(i[3]);
+                cpgas_coefficients [3] = Double.parseDouble(i[4]);
+                cpgas_coefficients [4] = Double.parseDouble(i[5]);
+                cpgas_coefficients [5] = Double.parseDouble(i[6]);
+                cpgas_coefficients [6] = Double.parseDouble(i[7]);
+            }
+        }
+
+        return cpgas_coefficients;
+    }
     public double[] getsurtension(String name){
         if(a == 0){
             read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
@@ -232,7 +285,8 @@ public class liquid_values {
             read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
         }
         a++;
-        double Tf = 0;
+        double Tf = 0.0; // Belki Tf değeri gerçekten sıfır olan bir sıvı falan olur da ben değer sıfır olduğu için
+        // Tf değeri bilinmeyen bir sıvı sanırım diye düşünüp bu şekilde -1 yaptım.
         for(String [] i:this.Tf){
             if(  i[0].equals(name)){
                 //cp = new double[i.length-1];
@@ -360,7 +414,6 @@ public class liquid_values {
             read_all_Files();
         }
         a++;
-
         double critic []= {0,0,0,0,0,0,0,0};
         for(String [] i:critical_katsayilar){
             if(  i[0].equals(name)){
@@ -379,6 +432,7 @@ public class liquid_values {
         return critic;
     }
     public double[] get_a_values(String name){ // for cp_CSP method
+
         if(a == 0){
             read_all_Files();
         }

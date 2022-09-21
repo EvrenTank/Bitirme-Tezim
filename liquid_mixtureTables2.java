@@ -30,11 +30,11 @@ public class liquid_mixtureTables2 extends JPanel {
     public liquid_mixtureTables2()
     {
 
-        label_T=new JLabel("T:");
-        label_T.setBounds(20,100,20,30);
+        label_T=new JLabel("T(K):");
+        label_T.setBounds(20,100,30,30);
         this.add(label_T);
         field_T=new JTextField(""+T,10);
-        field_T.setBounds(100,100,50,30);
+        field_T.setBounds(60,100,50,30);
         Border blackline=BorderFactory.createLineBorder(Color.BLACK);
         field_T.setBorder(blackline);
         this.add(field_T);
@@ -50,23 +50,25 @@ public class liquid_mixtureTables2 extends JPanel {
 
 
         JLabel label=new JLabel("Enter the comp. numbers in the mixture:");
-        JRadioButton rb1=new JRadioButton("Molar orana göre hesapla");
+/*        JRadioButton rb1=new JRadioButton("Molar orana göre hesapla");
         JRadioButton rb2=new JRadioButton("Kütlesel orana göre hesapla");
         ButtonGroup buttonGroup=new ButtonGroup();
         //rb1.setBounds(50,180,75,30);
-        //rb2.setBounds(130,180,75,30);
-        //this.add(rb1);
-        //this.add(rb2);
+
         buttonGroup.add(rb1);
-        buttonGroup.add(rb2);
-        rb1.setSelected(true);
-
-
+        buttonGroup.add(rb2)
+        rb1.setSelected(true);*/
+        JLabel label_P=new JLabel("P(kPa):");
+        field_P = new JTextField("",10);
+        label_P.setBounds(120,100,40,30);
+        field_P.setBounds(160,100,50,30);
+        this.add(label_P);
+        this.add(field_P);
         label.setBorder(blackline);
-        label.setBounds(170,100,200,30 );
+        label.setBounds(220,100,200,30 );
         this.add(label);
         JTextField field=new JTextField(10);
-        field.setBounds(400,100,30,30);
+        field.setBounds(440,100,30,30);
         this.add(field);
         sp=new JScrollPane(table);
         sp.setBounds(600,20,500,700);
@@ -74,11 +76,11 @@ public class liquid_mixtureTables2 extends JPanel {
 
 
         JButton hesapla_butonu=new JButton("Hesapla butonu");
-        hesapla_butonu.setBounds(250,180,100,20);
+        hesapla_butonu.setBounds(250,150,100,20);
         this.add(hesapla_butonu);
 
 
-        ActionListener radiolistener=new ActionListener() {
+/*        ActionListener radiolistener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(rb1.isSelected()){
@@ -93,8 +95,7 @@ public class liquid_mixtureTables2 extends JPanel {
                 }
             }
         };
-        rb1.addActionListener(radiolistener);
-        rb2.addActionListener(radiolistener);
+*/
 
 
 
@@ -103,19 +104,21 @@ public class liquid_mixtureTables2 extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 T=field_T.getText();
+                P=field_P.getText();
+                System.out.println(P);
                 String liquid_names[] = new String[comboboxes.size()];
                 double mole[] = new double[comboboxes.size()];
                 for(int i=0;i<comboboxes.size();i++){
                     liquid_names[i] = labels.get(i).getText();
                     mole[i] = Double.parseDouble(textfields.get(i).getText());
                 }
-                row=sample.calculate_values_for_mixtures2(liquid_names,mole,Double.parseDouble(T));
+                row=sample.calculate_values_for_mixtures2(liquid_names,mole,Double.parseDouble(T),Double.parseDouble(P));
                 liquid_mixtureTables2.this.remove(sp);
                 table=new JTable(row , column);
                 sp=new JScrollPane(table);
                 sp.setBounds(600,20,500,700);
                 liquid_mixtureTables2.this.add(sp);
-                liquid_mixtureTables2.this.repaint();
+                //liquid_mixtureTables2.this.repaint();
                 liquid_mixtureTables2.this.revalidate();
 
 
@@ -143,7 +146,7 @@ public class liquid_mixtureTables2 extends JPanel {
                 Component[] components=liquid_mixtureTables2.this.getComponents();
                 //field.setBackground(Color.red);  Bu çalışıyor.
 
-                for(int j=6;j<components.length;j++){
+                for(int j=8;j<components.length;j++){
                     liquid_mixtureTables2.this.remove(components[j]);
                 }
 
@@ -152,7 +155,7 @@ public class liquid_mixtureTables2 extends JPanel {
                 textfields.clear();
                 labels.clear();
                 //System.out.println("Deneme");
-                int x=20;int y=220;
+                int x=20;int y=180;
                 for(int i=0;i<compound_number;i++){
 
                     c=new JComboBox<String>(isimler);
@@ -208,11 +211,10 @@ public class liquid_mixtureTables2 extends JPanel {
         label_m2=new JLabel("m2");
         //label_w1=new JLabel("m1");
         //label_w2=new JLabel("m2");
-        field_m1=new JTextField("1",5);
-        field_m2=new JTextField("1",5);
+        field_m1=new JTextField("1",5); // mol sayilarini girmek icin olan alan
+        field_m2=new JTextField("1",5); // mol sayilarini girmek için olan alan
 
-        field_P=new JTextField(""+P,10);
-        field_P.setBackground(this.getBackground());
+
         //field.setSelectedTextColor(Color.yellow);
         //field.setForeground(Color.cyan);
         JComboBox <String> isim_listesi=new JComboBox<String>(isimler);
@@ -268,18 +270,19 @@ public class liquid_mixtureTables2 extends JPanel {
                 sp.setSize(100, 400);
                 liquid_mixtureTables2.this.add(sp);
                 liquid_mixtureTables2.this.revalidate();
+                liquid_mixtureTables2.this.repaint();
 //		        /*Object comp[]=this.getComponents();
 //		        for(int i=0;i<comp.length;i++) {
 //		        	 intln(comp[i]);
 //		        }*/
             }
         };
-        field_P.addActionListener(ac_lis);
+/*        field_P.addActionListener(ac_lis);
         field_T.addActionListener(ac_lis);
         isim_listesi.addActionListener(ac_lis);
         isim_listesi2.addActionListener(ac_lis);
         field_m1.addActionListener(ac_lis);
-        field_m2.addActionListener(ac_lis);
+        field_m2.addActionListener(ac_lis);*/
     }
 
 

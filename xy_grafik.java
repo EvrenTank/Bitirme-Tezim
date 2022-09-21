@@ -114,7 +114,9 @@ import javax.swing.JPanel;
             ArrayList<double[]> x = new ArrayList<double[]>();
             ArrayList<double[]> y = new ArrayList<double[]>();
             double x_ekseni[]  = new double[20];
+            double x_ekseni2[]  = new double[20];
             double y_ekseni[]  = new double[20];
+            double y_ekseni2[]  = new double[20];
             double Tmin= cp_c[4];
             double Tmax= cp_c[5];
             double T;
@@ -123,14 +125,25 @@ import javax.swing.JPanel;
             for(int i=0;i<20;i++){
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
+                x_ekseni2[i] = T;
                 cp = liquids.cp(name,T);
                 //System.out.println("cp="+cp);
                 y_ekseni[i] = cp;
+                try {
+                    cp = Double.parseDouble(liquids.cp_CSP(name,T));
+                }
+                catch (NumberFormatException e){
+                    e.printStackTrace();
+                    cp = 0.0;
+                }
+                y_ekseni2[i] = cp;
             }
             x.add(x_ekseni);
             y.add(y_ekseni);
+            x.add(x_ekseni2);
+            y.add(y_ekseni2);
 
-            String curve_names[] = {"Katsayılar"};
+            String curve_names[] = {"Katsayılar","CSP metodu"};
             setCurves(curve_names);
 
 
