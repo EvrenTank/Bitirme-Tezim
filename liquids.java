@@ -28,7 +28,7 @@ public class liquids {
     double vis_c[],k_c[],ro_c[],cp_c[], cpgas_c[],Pvapor_c[],critical[],hvap_c[],a_values[],Tf,organiccompounds_classification[],surtension_c[];// viskozite coefficients
 
     String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,cp_kg,hvap,cp_csp,vis_GCM,k_latini,ro2,sigma,sigma2,sigma3,sigma4,sigma5,Pvapor,ro_Tait,ro_Chand_and_Zhao,ro_HBT; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
-    String vis_mix;
+    String vis_mix,vis_mix_Teja_and_Rice;
     String vis_Lucas,vis_Przezdziecki_and_Sridhar,vis_Letsou_and_Stiel;
     String malzemenin_turu="";
     double T;
@@ -476,7 +476,7 @@ public class liquids {
         double vis=0;
         vis_c=values.getvis(name);
         critical=values.get_critical(name); // Sonra düzeltmek gerek
-        if(vis_c[4]<=(T-5) && T<=vis_c[5]+5)
+        if(vis_c[4]<=(T-10) && T<=vis_c[5]+10)
         {
             A=vis_c[0];
             B=vis_c[1];
@@ -497,6 +497,7 @@ public class liquids {
         double Pc,w,Tc;
         double vis=0;
         double Pvapor=0; // Birimi kPa
+        Pvapor_c = values.getPvapor(name);
         try {
              Pvapor = Double.parseDouble(Pvapor());
         }
@@ -600,8 +601,11 @@ public class liquids {
             return ("" + vis);        }
     }
 
-    public String vis_Przezdziecki_and_Sridhar (){ // 1985 yılında geliştirilmiş.
+    public String vis_Przezdziecki_and_Sridhar (String name,double T){ // 1985 yılında geliştirilmiş.
         // vis = Vo/(E(V-Vo));
+        critical = values.get_critical(name);
+        ro_c = values.getro(name);
+        Tf = values.getTf(name);
         double Vm=0, Vo, E;
         double Pc = critical[3]; //bar
         double w = critical[7];
@@ -629,9 +633,7 @@ public class liquids {
                 return "Vm hesaplanamadığı için işlem yapılamıyor";
             }
 
-            if ( Tr > 0.753){ // Aslında 0.75 ama ben pay verdim.
-                return "Tr 0.75'den büyük olmamalıdır.";
-            }
+
 
             Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tfreezing / Tc) + 0.894);
             E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tfreezing - 11.58 * (Tfreezing / Tc));
@@ -661,6 +663,212 @@ public class liquids {
     }
 
 
+
+    public String vis_Teja_and_Rice(String name[], double x[],double P){
+        double Pc; //bar
+        double w;
+        double Tc; // Kelvin
+        double Vc; // (ml/mol), ( cm^3/mol) ikisi aynı şey
+        double M;  // g/mol
+        double epsilon1,epsilon2,epsilonm;
+        double vis1,vis2;
+        double T1,T2;
+        double vis_mix=0;
+        double Tc1,Tc2,Tcm;
+        double Vcij,Vc1,Vc2,Vcm;
+        double w1,w2,wm; //accentric factor
+        double x1,x2,M1,M2,Mm;
+        double interaction_coefficient=1.00; // sulu karışımlar için
+        double N1,N2; // mol sayısı
+        if (name[0].equals("H2O_water") || name[1].equals("H2O_water")) {
+            interaction_coefficient = 1.37;
+        }
+        System.out.println("interaction coefficient="+interaction_coefficient);
+
+        critical=values.get_critical(name[0]);
+        Pc = critical[3];
+        w = critical[7];
+        Tc = critical[2];
+        Vc = critical[4];
+        M1 = critical[0];
+        x1= x[0];
+        N1=x1;
+        Tc1 = Tc;
+        Vc1 = Vc;
+        w1 = w;
+
+        critical=values.get_critical(name[1]);
+        Pc = critical[3];
+        w = critical[7];
+        Tc = critical[2];
+        Vc = critical[4];
+        M2 = critical[0];
+        x2=x[1];
+        N2=x2;
+        Tc2=Tc;
+        Vc2=Vc;
+        w2 = w;
+
+        x1 = (x1)/(x1+x2);
+        x2 = 1-x1;
+
+        if( Tc1 != 0.0 && w1 != 0.0 && Vc1 != 0.0 && M1 != 0 && Tc2 != 0.0 && w2 != 0.0 && Vc2 != 0.0 && M2 != 0){
+            epsilon1 = Math.pow(Vc1,0.6666)/Math.pow(Tc1*M1,0.5);
+            epsilon2 = Math.pow(Vc2,0.6666)/Math.pow(Tc2*M2,0.5);
+            Vcij = (Math.pow(Vc1,0.3333)+Math.pow(Vc2,0.3333))/8;
+            Vcm = x1*x1*Vc1+2*x1*x2*Math.pow((Math.pow(Vc1,0.3333)+Math.pow(Vc2,0.3333)),3)/8+x2*x2*Vc2;
+            Mm= x1*M1+x2*M2;
+            wm= x1*w1+x2*w2;
+            Tcm = 1/Vcm*(x1*x1*Math.pow(Tc1*Tc1*Vc1*Vc1,0.5)+2*x1*x2*interaction_coefficient*Math.pow(Tc1*Tc2*Vc1*Vc2,0.5)+x2*x2*Math.pow(Tc2*Tc2*Vc2*Vc2,0.5));
+            epsilonm=Math.pow(Vcm,0.6666)/Math.pow(Tcm*Mm,0.5);
+            System.out.println("Tcm Teja and Rice="+Tcm);
+            System.out.println("Vcm Teja and Rice="+Vcm);
+            System.out.println("Tc1 Teja and Rice="+Tc1);
+            System.out.println("Tc2 Teja and Rice="+Tc2);
+            try{
+
+                System.out.println("vis1="+vis1(name[0],T*Tc1/Tcm ));
+                System.out.println("vis2="+vis1(name[1],T*Tc2/Tcm ));
+                vis_c = values.getvis(name[0]);
+                vis1 = Double.parseDouble(vis_Lucas(name[0],T*Tc1/Tcm,P ));
+                vis_c = values.getvis(name[1]);
+                vis2 = Double.parseDouble(vis_Lucas(name[1],T*Tc2/Tcm,P));
+                vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
+                System.out.println("Lucas metodu ile hesaplandı.");
+            }
+            catch(NumberFormatException e ){
+                e.printStackTrace();
+
+                try {
+                    vis_c = values.getvis(name[0]);
+                    vis1 = Double.parseDouble(vis1(name[0],T*Tc1/Tcm ));
+                    vis_c = values.getvis(name[1]);
+                    vis2 = Double.parseDouble(vis1(name[1],T*Tc2/Tcm));
+                    vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
+                    System.out.println("Katsayılar ile hesaplandı.");
+
+                }
+                catch (NumberFormatException e1){
+                    e1.printStackTrace();
+
+                    try{
+                        vis_c = values.getvis(name[0]);
+                        ro_c = values.getvis(name[0]);
+                        vis1 = Double.parseDouble(vis_Przezdziecki_and_Sridhar(name[0],T*Tc1/Tcm ));
+                        vis_c = values.getvis(name[1]);
+                        ro_c = values.getvis(name[1]);
+                        vis2 = Double.parseDouble(vis_Przezdziecki_and_Sridhar(name[1],T*Tc2/Tcm));
+                        vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
+                        System.out.println("Przezdziecki ve Sridhar yöntemi ile hesaplandı.");
+
+                    }
+                    catch (NumberFormatException e2){
+                        e2.printStackTrace();
+                        return "Üç farklı yöntem ile denenmesine rağmen referans viskoziteleri hesaplanamdı";
+
+                    }
+
+                }
+                //return "Referans viskozite değerleri hesaplanamadığı için hesapl yapılamıyor";
+            }
+        }
+        else{
+            return "Kritik değerlerden birisi veya molar kütle bilinmiyor";
+        }
+
+        for(int i=2;i<name.length;i+=1){
+            if(name[i].equals("H2O_water"))
+            {
+                interaction_coefficient= 1.37;
+            }
+            System.out.println("interaction coefficient="+interaction_coefficient);
+            critical=values.get_critical(name[i]);
+            Pc = critical[3];
+            w = critical[7];
+            Tc = critical[2];
+            Vc = critical[4];
+            M1 = critical[0];
+            N2=N1+N2;
+            N1=x[i];
+            x1= x[i]/(x[i]+N1+N2);
+            Tc1 = Tc;
+            Vc1 = Vc;
+            w1 = w;
+
+
+
+            M2 =Mm;
+            x2=1-x1;
+            Tc2=Tcm;
+            Vc2=Vcm;
+            w2 = wm;
+
+            if( Tc1 != 0.0 && w1 != 0.0 && Vc1 != 0.0 && M1 != 0 && Tc2 != 0.0 && w2 != 0.0 && Vc2 != 0.0 && M2 != 0){
+                epsilon1 = Math.pow(Vc1,0.6666)/Math.pow(Tc1*M1,0.5);
+                epsilon2 = Math.pow(Vc2,0.6666)/Math.pow(Tc2*M2,0.5);
+                Vcij = (Math.pow(Vc1,0.3333)+Math.pow(Vc2,0.3333))/8;
+                Vcm = x1*x1*Vc1+2*x1*x2*Math.pow((Math.pow(Vc1,0.3333)+Math.pow(Vc2,0.3333)),3)/8+x2*x2*Vc2;
+                Mm= x1*M1+x2*M2;
+                wm= x1*w1+x2*w2;
+                Tcm = 1/Vcm*(x1*x1*Math.pow(Tc1*Tc1*Vc1*Vc1,0.5)+2*interaction_coefficient*x1*x2*Math.pow(Tc1*Tc2*Vc1*Vc2,0.5)+x2*x2*Math.pow(Tc2*Tc2*Vc2*Vc2,0.5));
+                epsilonm=Math.pow(Vcm,0.6666)/Math.pow(Tcm*Mm,0.5);
+                try{
+
+                    System.out.println("vis1="+vis1(name[0],T*Tc1/Tcm ));
+                    System.out.println("vis2="+vis1(name[1],T*Tc2/Tcm ));
+                    vis_c = values.getvis(name[i]);
+                    vis1 = Double.parseDouble(vis_Lucas(name[i],T*Tc1/Tcm,P ));
+                    vis2 = vis_mix;
+                    vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
+                    System.out.println("Lucas metodu ile hesaplandı.");
+                }
+                catch(NumberFormatException e ){
+                    e.printStackTrace();
+
+                    try {
+                        vis_c = values.getvis(name[i]);
+                        vis1 = Double.parseDouble(vis1(name[i],T*Tc1/Tcm ));
+                        vis2 = vis_mix;
+                        vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
+                        System.out.println("Katsayılar ile hesaplandı.");
+
+                    }
+                    catch (NumberFormatException e1){
+                        e1.printStackTrace();
+
+                        try{
+                            vis_c = values.getvis(name[i]);
+                            ro_c = values.getvis(name[i]);
+                            vis1 = Double.parseDouble(vis_Przezdziecki_and_Sridhar(name[i],T*Tc1/Tcm ));
+
+                            vis2 =vis_mix;
+                            vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
+                            System.out.println("Przezdziecki ve Sridhar yöntemi ile hesaplandı.");
+
+                        }
+                        catch (NumberFormatException e2){
+                            e2.printStackTrace();
+                            return "Üç farklı yöntem ile denenmesine rağmen referans viskoziteleri hesaplanamdı";
+
+                        }
+
+                    }
+                    //return "Referans viskozite değerleri hesaplanamadığı için hesapl yapılamıyor";
+                }
+
+                return ""+vis_mix;
+            }
+
+            else{
+                return "Kritik değerlerden birisi veya molar kütle bilinmiyor";
+            }
+
+
+
+        }
+
+        return ""+vis_mix;
+    }
 
 
 
@@ -1752,7 +1960,7 @@ public class liquids {
 
         vis_Lucas = vis_Lucas(name,T,P);
 
-        vis_Przezdziecki_and_Sridhar = vis_Przezdziecki_and_Sridhar();
+        vis_Przezdziecki_and_Sridhar = vis_Przezdziecki_and_Sridhar(name,T);
 
         vis_Letsou_and_Stiel=vis_Letsou_and_Stiel();
 
@@ -2067,8 +2275,18 @@ public class liquids {
         surten_mix = sur_tension_mixtures(sur_tension,x,molar_mass,ro);
         ro_mix = ro_mix_molar(ro,x,molar_mass);
         vis_mix = vis_mix_GN2(vis,x);
+        vis_mix_Teja_and_Rice = vis_Teja_and_Rice(liquid_names,x,P);
         cp_mix=cp_mix2(cp,x);
         ro_mixture = ro_mix_Aalto(T,P,liquid_names,x);
+
+        double kinematic_vis = 0;
+        try {
+            kinematic_vis = Double.parseDouble(vis_mix_Teja_and_Rice)/(ro_mixture);
+        }
+        catch (NumberFormatException e ) {
+            e.printStackTrace();
+        }
+
         double stTmin = findMax(surten_Tmin); // yüzey gerilimi hesaplaması yapılabilecek aralık için min değeri
         double stTmax = findMin(surten_Tmax);
         double cpTmin = findMax(cp_Tmin); // cp hesaplaması yapılabilecek aralık için min değeri
@@ -2102,7 +2320,9 @@ public class liquids {
         Object result[][]= {{"T,sıcaklık:",T,"K",""},{"P,basınç:",P,"kPa",""},
                 {"cp_mix,sabit basınçta özgül ısı:",cp_mix,"kJ/kmolK",cpTmin+"-"+cpTmax},
                 {"ro_mix,yoğunluk:",ro_mix,"kg/m^3",roTmin+"-"+roTmax},{"surten_mix,yüzey gerilimi:",surten_mix,"N/m",stTmin+"-"+stTmax},
-                {"vis_mix,viskozite:",vis_mix," Ns/m^2",visTmin+"-"+visTmax},{"k_mix, ısıl iletkenlik:",0,"W/(mK)",kTmin+"-"+kTmax},
+                {"vis_mix,viskozite:",vis_mix," Ns/m^2",visTmin+"-"+visTmax},{"vis_mix Teja and Rice,viskozite:",vis_mix_Teja_and_Rice," Ns/m^2",visTmin+"-"+visTmax},
+                {"kinematic_viskozite :",kinematic_vis," m^2/s",visTmin+"-"+visTmax},
+                {"k_mix, ısıl iletkenlik:",0,"W/(mK)",kTmin+"-"+kTmax},
                 {"ro_mix_Aalto:",ro_mixture," kg/m^3",roTmin+"-"+roTmax}
         };
 
