@@ -4032,7 +4032,6 @@ C23H46O_12tricosanone ketone 0.00383 1.2 0.5 0.167
 C27H54O_14heptacosanone ketone 0.00383 1.2 0.5 0.167
 C31H62O_16hentriacontanone ketone 0.00383 1.2 0.5 0.167
 C35H70O_18pentatriacontanone ketone 0.00383 1.2 0.5 0.167
-
 C3H6_cyclopropane cycloparaffins 0.031 1.2 1.0 0.167
 C3H6S_thiacyclobutane cycloparaffins 0.031 1.2 1.0 0.167
 C3H6S_2methylthiacyclopropane cycloparaffins 0.031 1.2 1.0 0.167
@@ -4412,7 +4411,6 @@ C86H172_octacontylcyclohexane cycloparaffins 0.031 1.2 1.0 0.167
 C87H174_henoctacontylcyclohexane cycloparaffins 0.031 1.2 1.0 0.167
 C88H176_dooctacontylcyclohexane cycloparaffins 0.031 1.2 1.0 0.167
 C89H178_trioctacontylcyclohexane cycloparaffins 0.031 1.2 1.0 0.167
-
 C2HF5O_trifluoromethyldifluoromethylether ether 0.0385 1.2 1.0 0.167
 C2H2F4O_tetrafluorodimethylether ether 0.0385 1.2 1.0 0.167
 C2H3F3O_methyltrifluoromethylether ether 0.0385 1.2 1.0 0.167
@@ -4521,7 +4519,6 @@ C16H34O_bis2ethylhexylether ether 0.0385 1.2 1.0 0.167
 C18H38O_dinonylether ether 0.0385 1.2 1.0 0.167
 C20H42O_didecylether ether 0.0385 1.2 1.0 0.167
 C32H66O_dihexadecylether ether 0.0385 1.2 1.0 0.167
-
 CH4N2S_ammoniumthiocyanate ester 0.0415 1.2 1.0 0.167
 C2H3ClO2_methylchloroformate ester 0.0415 1.2 1.0 0.167
 C2H3NO_methylisocyanate ester 0.0415 1.2 1.0 0.167
