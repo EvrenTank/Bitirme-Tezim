@@ -164,6 +164,12 @@ import javax.swing.JPanel;
             double y_ekseni[]  = new double[20];
             double x_ekseni2[]  = new double[20];
             double y_ekseni2[]  = new double[20];
+            double x_ekseni3[]  = new double[20];
+            double y_ekseni3[]  = new double[20];
+            double x_ekseni4[]  = new double[20];
+            double y_ekseni4[]  = new double[20];
+            double x_ekseni5[]  = new double[20];
+            double y_ekseni5[]  = new double[20];
             double Tmin= ro_c[4];
             double Tmax= ro_c[5];
             double T;
@@ -173,18 +179,31 @@ import javax.swing.JPanel;
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
                 x_ekseni2[i] = T;
+                x_ekseni3[i] = T;
+                x_ekseni4[i] = T;
+                x_ekseni5[i] = T;
                 ro = liquids.ro(name,T);
                 //System.out.println("ro="+ro);
                 y_ekseni[i] = ro;
                 ro = liquids.ro2(name,T);
                 y_ekseni2[i] = ro;
+                ro = liquids.ro_Rackett(name,T);
+                y_ekseni3[i] = ro;
+                ro = liquids.ro_Yamada_Gunn(name,T);
+                y_ekseni4[i] = ro;
+
+
             }
             x.add(x_ekseni);
             y.add(y_ekseni);
             x.add(x_ekseni2);
             y.add(y_ekseni2);
+            x.add(x_ekseni3);
+            y.add(y_ekseni3);
+            x.add(x_ekseni4);
+            y.add(y_ekseni4);
 
-            String curve_names[] = {"Katsayılar","2.yöntem"};
+            String curve_names[] = {"Katsayılar","2.yöntem","Rackett Yöntemi","Yamada ve Gunn Yöntemi"};
             setCurves(curve_names);
 
             Object [] object =new Object[2];
@@ -297,7 +316,7 @@ import javax.swing.JPanel;
             y.add(y_ekseni5);
             boolean isNan = false;
             /* Bazı sıvılar için sur_tension2 metodunda kullanılan kritik değerler bilinmediği için bu değerler 0 olarak kabul ediliyor.
-            Bu da sigma değerin NaN sonucu vermesine neden oluyor. Bu durumda grafikte sorun çıkacağı için eğer değerler arasında NaN
+            Bu da sigma değerinin NaN sonucu vermesine neden oluyor. Bu durumda grafikte sorun çıkacağı için eğer değerler arasında NaN
             varsa onun grafiğini çizdirmeyecek şekilde ayarladım.
             */
 /*            for(int j=0;j<y_ekseni2.length;j++){

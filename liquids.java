@@ -402,6 +402,7 @@ public class liquids {
         alfa=organiccompounds_classification[1];
         beta=organiccompounds_classification[2];
         gamma=organiccompounds_classification[3];
+
         if( M != 0 && Tb != 0 && Tc != 0 && Asharp != 0  && beta != 0 && gamma != 0){
             A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
             k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
@@ -415,20 +416,50 @@ public class liquids {
 
     }
 
-    public String k_Latini(){
+    public void A_parameter() {
+        liquid_names names = new liquid_names();
+        String name;
+        String isimler[] = names.get_names();
+        for ( int i=0;i<isimler.length;i++){
+            name = isimler[i];
+            double A = values.getAparameter_for_kLatini(name);
+            if( A != 0.0){
+                System.out.println("malzeme:"+name+" A value: "+A);
+                double Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
+                double k=0;
+                critical = values.get_critical(name);
+                M=critical[0];
+                Tb=critical[1];
+                Tc=critical[2];
+                Tr=T/Tc;
+                organiccompounds_classification = values.get_orgmat_classification(name);
+                Asharp=organiccompounds_classification[0];
+                alfa=organiccompounds_classification[1];
+                beta=organiccompounds_classification[2];
+                gamma=organiccompounds_classification[3];
+                A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
+                System.out.println("malzeme:"+name+" A value: "+A);
+            }
+        }
+    }
+
+    public String k_Latini(String name){
         // Latini et. al method
 
-        double A,Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
+        double A = values.getAparameter_for_kLatini(name);
+        double Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
         double k=0;
+        critical = values.get_critical(name);
+        organiccompounds_classification = values.get_orgmat_classification(name);
         M=critical[0];
         Tb=critical[1];
         Tc=critical[2];
         Tr=T/Tc;
+
         Asharp=organiccompounds_classification[0];
         alfa=organiccompounds_classification[1];
         beta=organiccompounds_classification[2];
         gamma=organiccompounds_classification[3];
-
         if( M == 0 || Tb == 0 || Tc == 0 ){
             return "M, Tb, Tc değerlerinden en az biri bilinmiyor";
         }
@@ -438,7 +469,9 @@ public class liquids {
 
         if(k_c[3]<=T && T<=k_c[4])
         {
-            A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
+            if ( A == 0.0){
+                A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
+            }
             k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
             //System.out.println("k_Latini metodundaki A değeri:"+A);
             return (""+k);
@@ -446,7 +479,6 @@ public class liquids {
         else {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
-
     }
 
     public String k_Sastri(String name){
@@ -836,7 +868,7 @@ return ""+k_high_pressure;
 
         return ""+kmix;
     }
-    public String k_mix_Baroncini_compressed(String name[], double x[]){
+    public String k_mix_Baroncini_compressed(String name[], double x[],double P){
         // Baroncini 1981a,1983,1984
 
         if( name.length > 2) {
@@ -866,7 +898,7 @@ return ""+k_high_pressure;
         k_c = values.getk(name[0]);
 
         try{
-            k1 = Double.parseDouble(k());
+            k1 = Double.parseDouble(k_Missenard(name[0],T,P ));
             System.out.println("k1="+k1);}
         catch (NumberFormatException e){
             e.printStackTrace();
@@ -892,7 +924,7 @@ return ""+k_high_pressure;
         k_c = values.getk(name[1]);
 
         try{
-            k2 = Double.parseDouble(k());
+            k2= Double.parseDouble(k_Missenard(name[1],T,P ));
             System.out.println("k2="+k2);}
         catch (NumberFormatException e){
             e.printStackTrace();
@@ -927,7 +959,7 @@ return ""+k_high_pressure;
         double Vc;
         for(int k = 0; k< names.length;k++){
 
-            //ro_c = values.getro(names[k]);
+            ro_c = values.getro(names[k]);
             critical = values.get_critical(names[k]);
             M = critical[0];
             Vc = critical[4];
@@ -935,9 +967,9 @@ return ""+k_high_pressure;
                 return names[k]+" malzemesinin M değeri bilinmiyor";
             }
             try {
-                //ro = Double.parseDouble(ro(T));
-                //toplam_x_times_v += x[k]*(1/ro)*M;
-                toplam_x_times_v += x[k]*Vc;
+                ro = Double.parseDouble(ro(T));
+                toplam_x_times_v += x[k]*(1/ro)*M;
+                //toplam_x_times_v += x[k]*Vc;
             }
             catch(NumberFormatException e ){
                 e.printStackTrace();
@@ -1012,10 +1044,10 @@ return ""+k_high_pressure;
                     return names[j]+" malzemesinin ısıl iletkenlik değeri hesaplanamıyor";
                 }
                 xj = x[j];
-                //fi_number_i = xi/roi*Mi;
-                fi_number_i = xi*Vci/toplam_x_times_v;
-                //fi_number_j = xj/roj*Mj;
-                fi_number_j = xj*Vcj/toplam_x_times_v;
+                fi_number_i = xi/roi*Mi/toplam_x_times_v;
+                //fi_number_i = xi*Vci/toplam_x_times_v;
+                fi_number_j = xj/roj*Mj/toplam_x_times_v;
+                //fi_number_j = xj*Vcj/toplam_x_times_v;
                 kji = 2/(1/ki+1/kj);
                 k += fi_number_i*fi_number_j*kji;
             }
@@ -1746,9 +1778,10 @@ return ""+k_high_pressure;
         }
     }
 
-    public double  ro_Rackett(){ // Rackett Equation ile yapılmıştır.
+    public double  ro_Rackett(String name,double T){ // Rackett Equation ile yapılmıştır.
         double ro=0;
         double Vc,Zc,Tc,M;
+        critical = values.get_critical(name);
         double Vs; // saturated liquid volume
         Vc = critical[4]; // ml/mol
         Zc = critical[6];
@@ -1764,10 +1797,11 @@ return ""+k_high_pressure;
              }
         return ro;
     }
-    public double  ro_Yamada_Gunn(){ // Yamada and Gunn(1973) Equation ile yapılmıştır.
+    public double  ro_Yamada_Gunn(String name,double T){ // Yamada and Gunn(1973) Equation ile yapılmıştır.
         double ro=0;
         double Vc,Zc,Tc,M,w;
         double Vs; // saturated liquid volume
+        critical = values.get_critical(name);
         Vc = critical[4]; // ml/mol
         Zc = critical[6];
         Tc = critical[2]; // K
@@ -1783,7 +1817,7 @@ return ""+k_high_pressure;
 
         return ro;
     }
-    public String ro_HBT(){ // Hankinson and Thomson
+    public String ro_HBT(double T){ // Hankinson and Thomson
         // Doymuş sıvı için hesaplama yapar. İstenilirse karışımlar için de kullanılabilir.
         double w = critical[7];
         double Tc = critical[2];
@@ -1818,7 +1852,7 @@ return ""+k_high_pressure;
     }
 
 
-    public String ro_Tait(double P){
+    public String ro_Tait(double T,double P){
         double w = critical[7];
         double Tc = critical[2];
         double Pc = critical[3]; // bar
@@ -2564,7 +2598,7 @@ return ""+k_high_pressure;
 
         vis_Letsou_and_Stiel=vis_Letsou_and_Stiel();
 
-        k_latini=k_Latini();
+        k_latini=k_Latini(name);
 
         k_Sastri=k_Sastri(name);
 
@@ -2574,15 +2608,15 @@ return ""+k_high_pressure;
 
         ro2=ro2();
 
-        ro_Rackett = ro_Rackett();
+        ro_Rackett = ro_Rackett(name,T);
 
-        ro_Yamada_Gunn = ro_Yamada_Gunn();
+        ro_Yamada_Gunn = ro_Yamada_Gunn(name,T);
 
-        ro_Tait = ro_Tait(P);
+        ro_Tait = ro_Tait(T,P);
 
         ro_Chand_and_Zhao = ro_Chang_and_Zhao(P);
 
-        ro_HBT = ro_HBT();
+        ro_HBT = ro_HBT(T);
         double v_Tait=0;
         try {
             v_Tait = 1/Double.parseDouble(ro_Tait);
