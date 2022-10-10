@@ -26,11 +26,11 @@ public class liquids {
 
     String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,
     ro_mixture_Aalto,
-
     cp_kg,hvap,cp_csp,vis_GCM,
             k_latini,k_Sastri,k_Missenard,k_Latini_and_Baroncini, k_mix_Filippov , k_mix_Baroncini, k_mix_Li,k_mix_PowerLaw,
-            ro2,sigma,sigma2,sigma3,sigma4,sigma5,surten_mix_MacleodSugden,surten_mix_Hadden,surten_mix_ZuoandStendby,
-            surten_mix_ZuoandStendby_Kays,surten_mix_ParachorModel,
+            ro2,
+            surten,surten_MacleodandSugden,surten_BrockandBird,surten_Pitzer,surten_ZuoandStendby,surten_SastriandRao,
+            surten_mix_MacleodSugden,surten_mix_Hadden,surten_mix_ZuoandStendby, surten_mix_ZuoandStendby_Kays,surten_mix_ParachorModel,
             Pvapor,ro_Tait,ro_Chand_and_Zhao,ro_HBT; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
     String vis_mix,vis_mix_Teja_and_Rice;
     String vis_Lucas,vis_Przezdziecki_and_Sridhar,vis_Letsou_and_Stiel;
@@ -1467,42 +1467,29 @@ return ""+k_high_pressure;
                     }
                     catch (NumberFormatException e1){
                         e1.printStackTrace();
-
                         try{
                             vis_c = values.getvis(name[i]);
                             ro_c = values.getvis(name[i]);
                             vis1 = Double.parseDouble(vis_Przezdziecki_and_Sridhar(name[i],T*Tc1/Tcm ));
-
                             vis2 =vis_mix;
                             vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
                            // System.out.println("Przezdziecki ve Sridhar yöntemi ile hesaplandı.");
-
                         }
                         catch (NumberFormatException e2){
                             e2.printStackTrace();
                             return "Üç farklı yöntem ile denenmesine rağmen referans viskoziteleri hesaplanamdı";
-
                         }
-
                     }
                     //return "Referans viskozite değerleri hesaplanamadığı için hesapl yapılamıyor";
                 }
-
                 return ""+vis_mix;
             }
-
             else{
                 return "Kritik değerlerden birisi veya molar kütle bilinmiyor";
             }
-
-
-
         }
-
         return ""+vis_mix;
     }
-
-
 
     public double vis_CSP(String name, double T) { // Burada V değerlerini ro metodunu kullanarak hesapladım.
 // Bu metot çoğu sıvı için hesaplama yapamıyor.
@@ -1529,8 +1516,6 @@ return ""+k_high_pressure;
             e.printStackTrace();
             return 0.0;
         }
-
-
          if( Tc != 0 && Vc != 0 && Pc !=0 && w != 0 && M != 0 && Tr>0.50){
             Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
             E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
@@ -1540,11 +1525,7 @@ return ""+k_high_pressure;
 
          return vis;
 
-
-
     }
-
-
     public String vis_GCM2() { // Viskozite hesabını yaparken V değerlerini fT üzerinden hesaplamaya çalışacağım.
 
         // Przezdziecki and Sridhar Yöntemi ( Group Contribution Yöntemlerinden biri)
@@ -1684,9 +1665,6 @@ return ""+k_high_pressure;
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-
-
-
     // Grunberg and Nissan Method
         public String vis_mix_GN(double vis1, double vis2,double x1,double x2) {// sıvı karışımının viskozite değeri
         double power=x1*Math.log(vis1)+x2*Math.log(vis2);// vis1 ve vis2 değerlerini centipoise biriiminden hesaplamam gerekiyor.
@@ -1716,8 +1694,6 @@ return ""+k_high_pressure;
     }
     //Teja and Rice Method
 
-
-
     public String ro(double T) {
         double A,B,C,n;
 
@@ -1729,7 +1705,6 @@ return ""+k_high_pressure;
             B=ro_c[1];
             C=ro_c[2];
             n=ro_c[3];
-
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
             //System.out.println("density="+ro);
@@ -1868,7 +1843,6 @@ return ""+k_high_pressure;
         double e = Math.pow(Math.E,f+g*w+h*w*w);
         double C = j+k*w;
         double B = Pc*(-1+a*Math.pow(1-Tr,0.3333)+b*Math.pow(1-Tr,0.6666)+d*(1-Tr)+e*Math.pow(1-Tr,1.3333));
-
         try {
              Pvapor = Double.parseDouble(Pvapor()); // kPa
         }
@@ -1876,7 +1850,6 @@ return ""+k_high_pressure;
             e1.printStackTrace();
             return "Pvapor hesaplanmadığı için hesaplama yapılamıyor.";
         }
-
         try{
              ro_Saturated = Double.parseDouble(ro());
         }
@@ -2081,26 +2054,16 @@ return ""+k_high_pressure;
             H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
             H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
             fTreferans = H1 * (1 - w * H2);
-
-
-
-
             Tr = T / Tc;
-
-
             H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
             H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
             fT = H1 * (1 - w * H2);
-
             V=fT*Vreferans/fTreferans;
             ro=M*1000/V;
-
         }
         return ro;
     }
-
     public String ro2() { // Viskozite hesabını yaparken V(molar hacim) hesabı için bir formül buldum. Onu kullanacağım.
-
         double Tr, w, H1, H2, Tc, Vc, V,ro; //  ro (kg/m^3)
         double fTreferans;// f(Treferans);
         double Vreferans, Treferans;
@@ -2111,16 +2074,13 @@ return ""+k_high_pressure;
         Vc = critical[4]; // (ml/mol), (cm^3/mol) ikisi aynı şey
         Treferans = ro_c[4];
         double M = critical[0];
-
         try {
             Vreferans = M/Double.parseDouble(ro(Treferans))*1000;
         }
         catch (NumberFormatException e){
             e.printStackTrace();
             return "Bu sıcaklıkta hesaplama yapılamıyor";
-
         }
-
         Tr = Treferans / Tc;
         H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
         H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
@@ -2132,13 +2092,8 @@ return ""+k_high_pressure;
 //        System.out.println("fT:"+fT);
 //        System.out.println("Treferans(Tfp):"+Treferans);
 //        System.out.println("w"+w);
-//
-
-
 
         Tr = T / Tc;
-
-
         H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
         H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
         fT = H1 * (1 - w * H2);
@@ -2146,20 +2101,13 @@ return ""+k_high_pressure;
       V=fT*Vreferans/fTreferans;
       ro=M*1000/V;
 
-
-
-
-
         if( w == 0.0 ){
             return "Accentric factor bilinmiyor.";
         }
         else{
             return ""+ro;
         }
-
-
     }
-
     public String v() {
         double A,B,C,n;
 
@@ -2185,16 +2133,12 @@ return ""+k_high_pressure;
 
     public double  v(double T) {
         double A,B,C,n;
-
         double ro=0;
         double v=0;
-
-
         A=ro_c[0];
         B=ro_c[1];
         n=ro_c[3];
         C=ro_c[2];
-
         ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
         //System.out.println(ro);
         ro*=1000; // Birimi kg/m^3 yaptım.
@@ -2202,6 +2146,7 @@ return ""+k_high_pressure;
         //System.out.println(v);
         return (v);
     }
+
 
     public String Pr(String cp, String k, String vis){
         // Hesaplanırken cp birimi kmol ile değil kg ile olmalıydı. Onu düzelt!!!
@@ -2237,12 +2182,8 @@ return ""+k_high_pressure;
         double n = surtension_c[2];
         double Tmin = surtension_c[3];
         double Tmax = surtension_c[4];
-
-
             sigma = A*Math.pow(1-T/B,n);
             sigma = sigma/1000; // Birimini N/m' ye çevirmek için yaptım.
-
-
         return  sigma;
 
     }
@@ -2255,29 +2196,49 @@ return ""+k_high_pressure;
         double n = surtension_c[2];
         double Tmin = surtension_c[3];
         double Tmax = surtension_c[4];
-
         if(Tmin<=T && T<=Tmax)
         {
           sigma = A*Math.pow(1-T/B,n);
           sigma = sigma/1000; // Birimini N/m' ye çevirmek için yaptım.
-
-
             return (""+sigma);
         }
         else {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
-
     }
-    public String sur_tension2(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public String surten_MacleodandSugden(String  name,double T,double P){
+        critical = values.get_critical(name);
+        ro_c = values.getro(name);
+        double ro;
+        double Tc = critical[2];
+        double Pc = critical[3];
+        double w = critical[7];
+        double M = critical[0];
+        double  Parachor = 40.1684*(0.151-0.0464*w)*Math.pow(Tc,1.08333)/Math.pow(Pc,0.833333);
+        System.out.println("Parachor="+Parachor);
+        try{
+            ro = Double.parseDouble(ro_Tait(T,P)); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
+            // ro hesabı yapılırken basıncı da hesaba katan ro_Tait yöntemini kullandım.
+            // Böylece yüzey gerilimi hesaplanırken de basınç hesaba katılmış olacak.
+            ro = ro/1000/M; // Birimini mol/cm^3 yaptım.
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            return "Yoğunluk hesaplanamadığı için hesap yapılamıyor";
+        }
+
+        double sigma = Math.pow(Parachor*ro,4.0); // dyn/cm
+
+        return ""+sigma/1000; // Birimini N/m yaptım.
+    }
+
+    public String surten_BrockandBird(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // BROCK and BIRD
         double sigma;
         double Tb = critical[1];
         double Tc = critical[2];
         double Pc = critical[3]; // bar
         // P değerleri bar biriminden olmalı
-
-
         if((Tb !=0) && (Tc != 0) && (Pc != 0) ){
             double Tbr=Tb/Tc;
             double Tr=T/Tc;
@@ -2298,7 +2259,7 @@ return ""+k_high_pressure;
         //System.out.println("Tb="+Tb+" Tc="+Tc+" Pc="+Pc+" Tbr="+Tbr+" Tr="+Tr+" Q="+Q);*/
 
     }
-    public double sur_tension2(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public double surten_BrockandBird(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // BROCK and BIRD
         double sigma=0;
         critical = values.get_critical(name);
@@ -2316,7 +2277,7 @@ return ""+k_high_pressure;
                 return sigma/1000;
     }
 
-    public String sur_tension3(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public String surten_Pitzer(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // PITZER
         double sigma=0;
         double w = critical[7];
@@ -2333,7 +2294,7 @@ return ""+k_high_pressure;
         }
     }
 
-    public double sur_tension3(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public double surten_Pitzer(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // PITZER
         double sigma=0;
         critical = values.get_critical(name);
@@ -2347,7 +2308,7 @@ return ""+k_high_pressure;
         return sigma/1000;
     }
 
-    public String sur_tension4(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public String surten_ZuoandStendby(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // ZUO-STENBY
         double sigma;
         double w = critical[7];
@@ -2381,7 +2342,7 @@ return ""+k_high_pressure;
 
 
     }
-    public double sur_tension4(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public double surten_ZuoandStendby(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // ZUO-STENBY
         double sigma=0;
         critical = values.get_critical(name);
@@ -2415,7 +2376,7 @@ return ""+k_high_pressure;
         return sigma/1000;
 
     }
-    public double sur_tension5(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public double surten_SastriandRao(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // SASTRI-RAO
         double sigma=0;
         critical = values.get_critical(name);
@@ -2452,7 +2413,7 @@ return ""+k_high_pressure;
         return sigma/1000;
 
     }
-    public String sur_tension5(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
+    public String surten_SastriandRao(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // SASTRI-RAO
         double sigma;
         double Tb=critical[1];
@@ -2906,11 +2867,12 @@ return ""+k_high_pressure;
             //System.out.println("ro_Tait değeri hesaplatılamamış");
         }
 
-        sigma = sur_tension(T);
-        sigma2 = sur_tension2();
-        sigma3 = sur_tension3();
-        sigma4 = sur_tension4();
-        sigma5 = sur_tension5();
+        surten = sur_tension(T);
+        surten_MacleodandSugden = surten_MacleodandSugden(name,T,P);
+        surten_BrockandBird = surten_BrockandBird();
+        surten_Pitzer = surten_Pitzer();
+        surten_ZuoandStendby = surten_ZuoandStendby();
+        surten_SastriandRao = surten_SastriandRao();
         Pvapor= Pvapor();
 
         double Tmin_for_cp_gas = (cpgas_c[5] <= cp_c[4]) ? cp_c[4] : cpgas_c[5];
@@ -2938,11 +2900,12 @@ return ""+k_high_pressure;
                 {"k, ısıl iletkenlik(Sastri met.):",k_Sastri," W/(mK)",k_c[3]+"-"+k_c[4]},
                 {"k,Missenard metodu sıkıştırılmış sıvı:",k_Missenard," W/(mK)",k_c[3]+"-"+k_c[4]},
                 {"k,Latini ve Baroncini metodu sıkıştırılmış sıvı:",k_Latini_and_Baroncini," W/(mK)",k_c[3]+"-"+k_c[4]},
-                {"sigma, yüzey gerilimi:",sigma," N/m",surtension_c[3]+"-"+surtension_c[4]},
-                {"sigma( Brock and Bird), yüzey gerilimi:",sigma2," N/m",surtension_c[3]+"-"+surtension_c[4]},
-                {"sigma(Pitzer), yüzey gerilimi:",sigma3," N/m",surtension_c[3]+"-"+surtension_c[4]},
-                {"sigma(Zuo-Stenby), yüzey gerilimi:",sigma4," N/m",surtension_c[3]+"-"+surtension_c[4]},
-                {"sigma(Sastri-Rao), yüzey gerilimi:",sigma5," N/m",surtension_c[3]+"-"+surtension_c[4]},{"Prandtl Number:",Pr," Birimsiz"," "},
+                {"sigma, yüzey gerilimi:",surten," N/m",surtension_c[3]+"-"+surtension_c[4]},
+                {"sigma(Macleod-Sugden), yüzey gerilimi:",surten_MacleodandSugden," N/m",surtension_c[3]+"-"+surtension_c[4]},
+                {"sigma( Brock and Bird), yüzey gerilimi:",surten_BrockandBird," N/m",surtension_c[3]+"-"+surtension_c[4]},
+                {"sigma(Pitzer), yüzey gerilimi:",surten_Pitzer," N/m",surtension_c[3]+"-"+surtension_c[4]},
+                {"sigma(Zuo-Stenby), yüzey gerilimi:",surten_ZuoandStendby," N/m",surtension_c[3]+"-"+surtension_c[4]},
+                {"sigma(Sastri-Rao), yüzey gerilimi:",surten_SastriandRao," N/m",surtension_c[3]+"-"+surtension_c[4]},{"Prandtl Number:",Pr," Birimsiz"," "},
                 {"termal difüzivite:",alfa,"m^2/s",""}
         };
 
