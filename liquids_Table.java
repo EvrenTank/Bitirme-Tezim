@@ -1,7 +1,6 @@
 package bitirme_tezi;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -14,7 +13,7 @@ public class liquids_Table extends JPanel{
     liquid_names l_names= new liquid_names();
     JLabel label;
     JTable table;
-    Object row[][]={{1,2,3,4},{4,5,6,7}};
+    Object row[][];
     JScrollPane sp;
     JTextField field_T,field_P;
     String T="300.0";
@@ -33,7 +32,9 @@ public class liquids_Table extends JPanel{
         field_P.setBackground(this.getBackground());
         //field.setSelectedTextColor(Color.yellow);
         //field.setForeground(Color.cyan);
+        liquids liquid=new liquids();
 
+        row=liquid.calculate_values_for_pure("H2O_water",Double.parseDouble(T),Double.valueOf(P));
 
 
 
@@ -56,8 +57,8 @@ public class liquids_Table extends JPanel{
                 "C2H3F","C2H3F3","C2H3N","C2H3NO","C2H4","С2Н4Вr2_11","С2Н4Вr2_12"};*/
         String isimler[] = l_names.get_names();
         JComboBox <String> isim_listesi=new JComboBox<String>(isimler);
-
-        label=new JLabel(" Label ");
+        isim_listesi.setSelectedItem("H2O_water");
+        label=new JLabel(" H2O_water ");
         //label.setSize(100,100); 7
         this.add(label);
 
@@ -74,16 +75,12 @@ public class liquids_Table extends JPanel{
         String column[]= {"Property"," Value"," Unit"," Available temp. range"};
 
         table=new JTable(row, column);
-        //table.setBackground(Color.red);
-        //this.add(table);
-
+        table.setPreferredScrollableViewportSize(new Dimension(600,600));
         sp=new JScrollPane(table);
-
         this.add(sp);
-        liquids liquid=new liquids();
+
 
         //System.out.print(this.getClass().getName());
-
 
         ActionListener ac_lis=new ActionListener() {
             @Override
@@ -97,8 +94,9 @@ public class liquids_Table extends JPanel{
                 label.setText(liquid_name);
                 row=liquid.calculate_values_for_pure(liquid_name,Double.parseDouble(T),Double.valueOf(P));
                 table=new JTable(row, column);
+                table.setPreferredScrollableViewportSize(new Dimension(600,600));
+
                 sp=new JScrollPane(table);
-                sp.setSize(100, 400);
                 liquids_Table.this.add(sp);
                 liquids_Table.this.revalidate();
 //		        /*Object comp[]=this.getComponents();

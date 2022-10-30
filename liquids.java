@@ -356,7 +356,7 @@ public class liquids {
         cp_c = values.getcp(name[1]);
         Tc2 = critical[2];
         w2 = critical[7];
-        T2 = T/Tcm*Tc1;
+        T2 = T/Tcm*Tc2;
         try{
             cp2 = Double.parseDouble(cp(T2));
             cpgas2 = Double.parseDouble(cp_gas(T2,name[1]));

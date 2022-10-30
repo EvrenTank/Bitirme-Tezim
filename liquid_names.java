@@ -14,7 +14,7 @@ public class liquid_names {
     public  String[] get_names() {
         ArrayList <String> isimler = new ArrayList<String>();
         try {
-            File myObj = new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\isimler_liste.txt");
+            File myObj = new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\isimler_liste.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -43,7 +43,7 @@ public class liquid_names {
     public static void main(String[] args) {
         ArrayList <String> isimler = new ArrayList<String>();
         try {
-            File myObj = new File("D:\\Kullanıcılar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\isimler_liste.txt");
+            File myObj = new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\isimler_liste.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();

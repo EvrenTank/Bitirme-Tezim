@@ -59,7 +59,7 @@ public class liquid_mixtureTables2 extends JPanel {
         buttonGroup.add(rb2)
         rb1.setSelected(true);*/
         JLabel label_P=new JLabel("P(kPa):");
-        field_P = new JTextField("",10);
+        field_P = new JTextField(""+P,10);
         label_P.setBounds(120,100,40,30);
         field_P.setBounds(160,100,50,30);
         this.add(label_P);
@@ -184,9 +184,9 @@ public class liquid_mixtureTables2 extends JPanel {
                     labels2.add(l2);
                     liquid_mixtureTables2.this.add(l2);
 
-                    t=new JTextField(5);
+                    t=new JTextField();
                     t.setText("1");
-                    t.setBounds(x+470,y+30*i,25,20);
+                    t.setBounds(x+470,y+30*i,45,20);
                     textfields.add(t);
                     liquid_mixtureTables2.this.add(t);
 
@@ -244,39 +244,6 @@ public class liquid_mixtureTables2 extends JPanel {
 //        this.add(sp);
         liquids liquid=new liquids();
         //System.out.print(this.getClass().getName());
-        ActionListener ac_lis=new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                liquid_mixtureTables2.this.remove(sp);
-                T=(field_T.getText());
-                P=(field_P.getText());
-                m1=Double.parseDouble(field_m1.getText());
-                m2=Double.parseDouble(field_m2.getText());
-                if(liquid_name2==null){
-                    liquid_name2="CO";
-                }
-                if(liquid_name1==null){
-                    liquid_name1="CO";
-                }
-                liquid_name1=(String) isim_listesi.getSelectedItem();
-                liquid_name2=(String) isim_listesi2.getSelectedItem();
-                //label.setText(this.getLayout().getClass().getName());
-                label_l1.setText(liquid_name1);
-                label_l2.setText(liquid_name2);
-                row=liquid.calculate_values_for_mixtures(liquid_name1,liquid_name2,Double.parseDouble(T),m1,m2);
-                table=new JTable(row, column);
-                sp=new JScrollPane(table);
-                sp.setSize(100, 400);
-                liquid_mixtureTables2.this.add(sp);
-                liquid_mixtureTables2.this.revalidate();
-                liquid_mixtureTables2.this.repaint();
-//		        /*Object comp[]=this.getComponents();
-//		        for(int i=0;i<comp.length;i++) {
-//		        	 intln(comp[i]);
-//		        }*/
-            }
-        };
 /*        field_P.addActionListener(ac_lis);
         field_T.addActionListener(ac_lis);
         isim_listesi.addActionListener(ac_lis);

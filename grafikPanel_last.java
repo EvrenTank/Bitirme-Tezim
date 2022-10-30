@@ -51,14 +51,7 @@ public class grafikPanel_last extends JPanel   {
 
             }
         };
-
-
         isim_listesi.addActionListener(ac_lis);
-
-
-
-
-
     }
 
     public static void main(String[] args) {

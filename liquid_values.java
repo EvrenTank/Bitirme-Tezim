@@ -61,6 +61,7 @@ public class liquid_values {
     ArrayList <String[]> surtension_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> cpgas_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> Pvapor_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
+    ArrayList <String[]> k_Latini_A_parameter= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
 
 
 
@@ -102,6 +103,7 @@ public class liquid_values {
  File surtensionvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\surfacetension.txt");
  File cpgasvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\cp_gas.txt");
  File Pvaporvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\Pvapor.txt");
+ File kLatiniA_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\k_Latini_equation_A_parametresi.txt");
 
    cp_katsayilar= read_file(cpvalues_File);
    critical_katsayilar =read_file(criticalvalues_File);
@@ -116,6 +118,8 @@ public class liquid_values {
    cpgas_katsayilar=read_file(cpgasvalues_File);
    cpgas_katsayilar=read_file(cpgasvalues_File);
    Pvapor_katsayilar=read_file(Pvaporvalues_File);
+   k_Latini_A_parameter=read_file(kLatiniA_File); // k değeri için Latini metodunda kullanılacak olan A değerinin direkt olarak verilmiş hali
+        // sadece 137 malzeme için mevcut zaten ama hatayı azaltmak için bunu eklemek istedim.
 
    /*for(int i=0;i<5;i++){
        System.out.println(cp_katsayilar.get(i));
@@ -167,6 +171,20 @@ public class liquid_values {
 //        }
 
     }
+    public double getAparameter_for_kLatini(String name){
+        if(a == 0){
+            read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
+        }
+        a++;
+        double A = 0.0 ;
+        for(String [] i:k_Latini_A_parameter){
+            if(  i[0].equals(name)){
+                A = Double.parseDouble(i[1]);
+            }
+        }
+        return A;
+    }
+
     public double[] getPvapor(String name){
         if(a == 0){
             read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
@@ -237,6 +255,7 @@ public class liquid_values {
         }
         a++;
         double org_compound_coefficients []= {0,0,0,0};
+        malzemenin_turu="";
         for(String [] i:org_compounds){
             if(  i[0].equals(name)){
                 //cp = new double[i.length-1];

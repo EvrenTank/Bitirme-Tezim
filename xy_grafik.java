@@ -294,13 +294,13 @@ import javax.swing.JPanel;
                 x_ekseni5[i] = T;
                 sigma = liquids.sur_tension(name,T);
                 y_ekseni[i] = sigma;
-                sigma = liquids.sur_tension2(name,T);
+                sigma = liquids.surten_BrockandBird(name,T);
                 y_ekseni2[i] = sigma;
-                sigma = liquids.sur_tension3(name,T);
+                sigma = liquids.surten_Pitzer(name,T);
                 y_ekseni3[i] = sigma;
-                sigma = liquids.sur_tension4(name,T);
+                sigma = liquids.surten_ZuoandStendby(name,T);
                 y_ekseni4[i] = sigma;
-                sigma = liquids.sur_tension5(name,T);
+                sigma = liquids.surten_SastriandRao(name,T);
                 y_ekseni5[i] = sigma;
 
             }
@@ -333,14 +333,11 @@ import javax.swing.JPanel;
             }
 
  */
-            String curve_names[] = {"Katsayılar","2.yöntem","3.yöntem","4.yöntem","5.yöntem"};
+            String curve_names[] = {"Katsayılar","Brock-Bird","Pitzer","Zuo-Stendby","Sastri-Rao"};
             setCurves(curve_names);
-
-
             Object [] object =new Object[2];
             object[0] = x;
             object[1] = y;
-
             return object;
         }
 
