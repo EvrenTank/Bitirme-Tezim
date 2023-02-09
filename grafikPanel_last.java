@@ -7,9 +7,7 @@ import java.awt.event.*;
 public class grafikPanel_last extends JPanel   {
     String liquid_name ;
     xy_grafik g_vis,g_st,g_k,g_ro,g_cp;
-
-
-
+    double P=100;
     public grafikPanel_last(){
         setLayout(null);
         setSize(1000,1000);
@@ -18,8 +16,17 @@ public class grafikPanel_last extends JPanel   {
         String isimler[] = liquid_names.get_names();
         liquid_name = isimler[0];
         JComboBox<String> isim_listesi = new JComboBox<String>(isimler);
+        //isim_listesi.setEditable(true);
         isim_listesi.setBounds(300,50,150,20);
         this.add(isim_listesi);
+        JLabel label_Pressure = new JLabel("P(kPa):");
+        label_Pressure.setBounds(500,50,50,20);
+        this.add(label_Pressure);
+        JTextField field_P = new JTextField();
+        field_P.setText(""+P);
+        field_P.setBounds(570,50,50,20);
+        this.add(field_P);
+
         g_vis = new xy_grafik("Temperature(K)","Viskozite(Pa.s)");
         g_vis.setBounds(50,100,400,300);
         this.add(g_vis);
@@ -40,30 +47,23 @@ public class grafikPanel_last extends JPanel   {
             @Override
             public void actionPerformed(ActionEvent e) {
                 liquid_name=(String) isim_listesi.getSelectedItem();
-                g_vis.createGraphic(liquid_name,"viscosity");
-                g_st.createGraphic(liquid_name,"surface tension");
-                g_k.createGraphic(liquid_name,"ısıl iletkenlik");
-                g_ro.createGraphic(liquid_name,"yoğunluk");
-                g_cp.createGraphic(liquid_name,"özgül ısı");
-
-
-
-
+                P=Double.parseDouble(field_P.getText());
+                g_vis.createGraphic(liquid_name,"viscosity",P);
+                g_st.createGraphic(liquid_name,"surface tension",P);
+                g_k.createGraphic(liquid_name,"ısıl iletkenlik",P);
+                g_ro.createGraphic(liquid_name,"yoğunluk",P);
+                g_cp.createGraphic(liquid_name,"özgül ısı",P);
             }
         };
         isim_listesi.addActionListener(ac_lis);
+        field_P.addActionListener(ac_lis);
     }
-
     public static void main(String[] args) {
-
         grafikPanel_last g = new grafikPanel_last(); // Panel
         JFrame frame = new JFrame(" Grafik Paneli");
         frame.setSize(1000,1000);
         frame.add(g);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
     }
-
 }

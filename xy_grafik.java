@@ -72,42 +72,38 @@ import javax.swing.JPanel;
             this.ylist= ylist;
         }
 
-        public void createGraphic(String name,String graphic_name){
+        public void createGraphic(String name,String graphic_name,double P){
             // name : liquid name'i ifade eder.
             Object o[];
             if(graphic_name.equalsIgnoreCase("viscosity")){
-                o = viscosity_values(name);
+                o = viscosity_values(name,P);
             }
             else if(graphic_name.equalsIgnoreCase("surface tension")){
-                o = surten_values(name);
+                o = surten_values(name,P);
             }
             else if(graphic_name.equalsIgnoreCase("ısıl iletkenlik")){
-                o= k_values(name);
+                o= k_values(name,P);
             }
             else if(graphic_name.equalsIgnoreCase("yoğunluk")){
-                o= ro_values(name);
+                o= ro_values(name,P);
             }
             else {
-                o = cp_values(name);
+                o = cp_values(name,P);
             }
-
-
             ArrayList<double[]> x ;
             ArrayList<double[]> y ;
             x = (ArrayList<double[]>) o[0];
             y = (ArrayList<double[]>) o[1];
             setValues(x,y);
             repaint();
-
      /*       for(int i=0;i<x.size();i++){
                 for(int k=0;k<x.get(i).length;k++){
                     System.out.println("x değeri:"+x.get(i)[k]);
                     System.out.println("y değeri:"+y.get(i)[k]);
                 }
             }*/
-
         }
-        public Object[] cp_values(String name) {
+        public Object[] cp_values(String name,double P) {
             liquid_values values = new liquid_values();
             liquids liquids = new liquids();
             double cp_c[]=values.getcp(name);
@@ -121,7 +117,6 @@ import javax.swing.JPanel;
             double Tmax= cp_c[5];
             double T;
             double cp; // Özgül ısı, Birimi kJ/(kmolK)
-
             for(int i=0;i<20;i++){
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
@@ -142,19 +137,14 @@ import javax.swing.JPanel;
             y.add(y_ekseni);
             x.add(x_ekseni2);
             y.add(y_ekseni2);
-
             String curve_names[] = {"Katsayılar","CSP metodu"};
             setCurves(curve_names);
-
-
             Object [] object =new Object[2];
             object[0] = x;
             object[1] = y;
-
             return object;
         }
-
-        public Object[] ro_values(String name) {
+        public Object[] ro_values(String name,double P) {
             liquid_values values = new liquid_values();
             liquids liquids = new liquids();
             double ro_c[]=values.getro(name);
@@ -170,11 +160,14 @@ import javax.swing.JPanel;
             double y_ekseni4[]  = new double[20];
             double x_ekseni5[]  = new double[20];
             double y_ekseni5[]  = new double[20];
+            double x_ekseni6[]  = new double[20];
+            double y_ekseni6[]  = new double[20];
+            double x_ekseni7[]  = new double[20];
+            double y_ekseni7[]  = new double[20];
             double Tmin= ro_c[4];
             double Tmax= ro_c[5];
             double T;
             double ro; // Yoğunluk, Birimi kg/m^3
-
             for(int i=0;i<20;i++){
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
@@ -182,6 +175,8 @@ import javax.swing.JPanel;
                 x_ekseni3[i] = T;
                 x_ekseni4[i] = T;
                 x_ekseni5[i] = T;
+                x_ekseni6[i] = T;
+                x_ekseni7[i] = T;
                 ro = liquids.ro(name,T);
                 //System.out.println("ro="+ro);
                 y_ekseni[i] = ro;
@@ -191,8 +186,12 @@ import javax.swing.JPanel;
                 y_ekseni3[i] = ro;
                 ro = liquids.ro_Yamada_Gunn(name,T);
                 y_ekseni4[i] = ro;
-
-
+                ro = liquids.ro_HBT(name,T);
+                y_ekseni5[i] = ro;
+                ro= liquids.ro_Tait(name,T,P);
+                y_ekseni6[i] = ro;
+                ro = liquids.ro_Chang_and_Zhao(name,T,P);
+                y_ekseni7[i] = ro;
             }
             x.add(x_ekseni);
             y.add(y_ekseni);
@@ -202,18 +201,20 @@ import javax.swing.JPanel;
             y.add(y_ekseni3);
             x.add(x_ekseni4);
             y.add(y_ekseni4);
-
-            String curve_names[] = {"Katsayılar","2.yöntem","Rackett Yöntemi","Yamada ve Gunn Yöntemi"};
+            x.add(x_ekseni5);
+            y.add(y_ekseni5);
+            x.add(x_ekseni6);
+            y.add(y_ekseni6);
+            x.add(x_ekseni6);
+            y.add(y_ekseni7);
+            String curve_names[] = {"Katsayılar","2.yöntem","Rackett Yöntemi","Yamada-Gunn ","HBT yöntemi","Tait","Chang ve Zhao"};
             setCurves(curve_names);
-
             Object [] object =new Object[2];
             object[0] = x;
             object[1] = y;
-
             return object;
         }
-
-        public Object[] k_values(String name) {
+        public Object[] k_values(String name, double P) {
             liquid_values values = new liquid_values();
             liquids liquids = new liquids();
             double k_c[]=values.getk(name);
@@ -225,26 +226,42 @@ import javax.swing.JPanel;
             double y_ekseni[]  = new double[20];
             double x_ekseni2[]  = new double[20];
             double y_ekseni2[]  = new double[20];
+            double x_ekseni3[]  = new double[20];
+            double y_ekseni3[]  = new double[20];
+            double x_ekseni4[]  = new double[20];
+            double y_ekseni4[]  = new double[20];
+            double x_ekseni5[]  = new double[20];
+            double y_ekseni5[]  = new double[20];
             double Tmin= k_c[3];
             double Tmax= k_c[4];
             double T;
             double k; // Isıl iletkenlik katsayısı: N/m
-
             for(int i=0;i<20;i++){
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
                 x_ekseni2[i] = T;
+                x_ekseni3[i] = T;
+                x_ekseni4[i] = T;
+                x_ekseni5[i] = T;
                 k = liquids.k(name,T);
-               //System.out.println("k="+k);
                 y_ekseni[i] = k;
                 k = liquids.k_Latini(name,T);
                 y_ekseni2[i] = k;
+                k=liquids.k_Sastri(name,T);
+                y_ekseni3[i] = k;
+                k=liquids.k_Missenard(name,T,P,"double");
+                y_ekseni4[i] = k;
             }
             x.add(x_ekseni);
             x.add(x_ekseni2);
+            x.add(x_ekseni3);
+            x.add(x_ekseni4);
             y.add(y_ekseni);
             y.add(y_ekseni2);
-            String curve_names[] = {"Katsayılar","2.yöntem"};
+            y.add(y_ekseni3);
+            y.add(y_ekseni4);
+
+            String curve_names[] = {"Katsayılar","Latini","Sastri","Missenard"};
             setCurves(curve_names);
 /*
             for(int i=0;i<20;i++){
@@ -257,14 +274,13 @@ import javax.swing.JPanel;
             x.add(x_ekseni);
             y.add(y_ekseni);
 */
-
             Object [] object =new Object[2];
             object[0] = x;
             object[1] = y;
 
             return object;
         }
-        public Object[] surten_values(String name) {
+        public Object[] surten_values(String name, double P) {
             liquid_values values = new liquid_values();
             liquids liquids = new liquids();
             double surten_c[]=values.getsurtension(name);
@@ -275,11 +291,13 @@ import javax.swing.JPanel;
             double x_ekseni3[]  = new double[20];
             double x_ekseni4[]  = new double[20];
             double x_ekseni5[]  = new double[20];
+            double x_ekseni6[]  = new double[20];
             double y_ekseni[]  = new double[20];
             double y_ekseni2[]  = new double[20];
             double y_ekseni3[]  = new double[20];
             double y_ekseni4[]  = new double[20];
             double y_ekseni5[]  = new double[20];
+            double y_ekseni6[]  = new double[20];
             double Tmin= surten_c[3];
             double Tmax= surten_c[4];
             double T;
@@ -292,6 +310,7 @@ import javax.swing.JPanel;
                 x_ekseni3[i] = T;
                 x_ekseni4[i] = T;
                 x_ekseni5[i] = T;
+                x_ekseni6[i] = T;
                 sigma = liquids.sur_tension(name,T);
                 y_ekseni[i] = sigma;
                 sigma = liquids.surten_BrockandBird(name,T);
@@ -302,7 +321,8 @@ import javax.swing.JPanel;
                 y_ekseni4[i] = sigma;
                 sigma = liquids.surten_SastriandRao(name,T);
                 y_ekseni5[i] = sigma;
-
+                //sigma = liquids.surten_MacleodandSugden(name,T,100,"double");
+                //y_ekseni6[i] = sigma;
             }
             x.add(x_ekseni);
             y.add(y_ekseni);
@@ -314,6 +334,8 @@ import javax.swing.JPanel;
             y.add(y_ekseni4);
             x.add(x_ekseni5);
             y.add(y_ekseni5);
+            //x.add(x_ekseni6);
+            //y.add(y_ekseni6);
             boolean isNan = false;
             /* Bazı sıvılar için sur_tension2 metodunda kullanılan kritik değerler bilinmediği için bu değerler 0 olarak kabul ediliyor.
             Bu da sigma değerinin NaN sonucu vermesine neden oluyor. Bu durumda grafikte sorun çıkacağı için eğer değerler arasında NaN
@@ -334,6 +356,7 @@ import javax.swing.JPanel;
 
  */
             String curve_names[] = {"Katsayılar","Brock-Bird","Pitzer","Zuo-Stendby","Sastri-Rao"};
+           // String curve_names[] = {"Katsayılar","Brock-Bird","Pitzer","Zuo-Stendby","Sastri-Rao","Macleod and Sugden"};
             setCurves(curve_names);
             Object [] object =new Object[2];
             object[0] = x;
@@ -341,7 +364,7 @@ import javax.swing.JPanel;
             return object;
         }
 
-        public Object[] viscosity_values(String name) {
+        public Object[] viscosity_values(String name,double P) {
             liquid_values values = new liquid_values();
             liquids liquids = new liquids();
             double vis_c[]=values.getvis(name);
@@ -351,6 +374,10 @@ import javax.swing.JPanel;
             double y_ekseni[]  = new double[20];
             double x_ekseni2[]  = new double[20];
             double y_ekseni2[]  = new double[20];
+            double x_ekseni3[]  = new double[20];
+            double y_ekseni3[]  = new double[20];
+            double x_ekseni4[]  = new double[20];
+            double y_ekseni4[]  = new double[20];
             double Tmin= vis_c[4];
             double Tmax= vis_c[5];
             double T;
@@ -359,27 +386,36 @@ import javax.swing.JPanel;
             for(int i=0;i<20;i++){
                 T = Tmin+(Tmax-Tmin)/19*i;
                 x_ekseni[i] = T;
+                x_ekseni2[i] = T;
+                x_ekseni3[i] = T;
+                x_ekseni4[i] = T;
                // x_ekseni2[i] = T;
                 vis = liquids.vis(name,T);
                 y_ekseni[i] = vis;
-               // vis = liquids.vis_GCM(name,T);
-               // y_ekseni2[i] = vis;
+                vis = liquids.vis_Przezdziecki_and_Sridhar(name,T,"double");
+                y_ekseni2[i] = vis;
+                vis = liquids.vis_Letsou_and_Stiel(name,T);
+                y_ekseni3[i] = vis;
+                vis = liquids.vis_Lucas(name,T,P,"double");
+                System.out.println("vis Lucas="+vis);
+                y_ekseni4[i] = vis;
+
             }
             x.add(x_ekseni);
             y.add(y_ekseni);
-           // x.add(x_ekseni2);
-            //y.add(y_ekseni2);
-            String curve_names[] = {"Katsayılar","2.yöntem"};
+            x.add(x_ekseni2);
+            y.add(y_ekseni2);
+            x.add(x_ekseni3);
+            y.add(y_ekseni3);
+            x.add(x_ekseni4);
+            y.add(y_ekseni4);
+            String curve_names[] = {"Katsayılar","Przezdziecki ve Sridhar","Letsou ve Stiel","Lucas"};
             setCurves(curve_names);
-
-
 Object [] object =new Object[2];
 object[0] = x;
 object[1] = y;
-
 return object;
         }
-
 
         public void myPaint(Graphics g){
 
@@ -415,7 +451,7 @@ return object;
             double y_max = 0.0;
             double x[];
             double y[];
-            Color colors[] = {Color.black,Color.red,Color.blue,Color.green.darker().darker(),Color.magenta.darker()};
+            Color colors[] = {Color.black,Color.red,Color.blue,Color.pink,Color.magenta.darker(),Color.yellow,Color.green};
 
             for ( int j1=0;j1<xlist.size();j1++){
                 double xd[] = xlist.get(j1);

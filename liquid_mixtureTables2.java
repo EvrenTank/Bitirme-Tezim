@@ -3,10 +3,7 @@ package bitirme_tezi;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -29,7 +26,6 @@ public class liquid_mixtureTables2 extends JPanel {
     ArrayList<JTextField> textfields=new ArrayList<JTextField>();
     public liquid_mixtureTables2()
     {
-
         label_T=new JLabel("T(K):");
         label_T.setBounds(20,100,30,30);
         this.add(label_T);
@@ -38,23 +34,18 @@ public class liquid_mixtureTables2 extends JPanel {
         Border blackline=BorderFactory.createLineBorder(Color.BLACK);
         field_T.setBorder(blackline);
         this.add(field_T);
-
         liquid_names l_names= new liquid_names();
         String isimler [] = l_names.get_names();
         this.setLayout(null);
         JPanel panel_compounds=new JPanel();// Bu paneli malzeme sayısına göre oluşturulacak olan alanlar için kullanacağım. GridLayout yaparak
         // direkt olarak elemanları buna ekleyip, bu paneli de ana panele ekleyeceğim.
-
         String column[]= {"Şey"," Value"," Unit","Available temp. range"};
         table=new JTable(row , column);
-
-
         JLabel label=new JLabel("Enter the comp. numbers in the mixture:");
 /*        JRadioButton rb1=new JRadioButton("Molar orana göre hesapla");
         JRadioButton rb2=new JRadioButton("Kütlesel orana göre hesapla");
         ButtonGroup buttonGroup=new ButtonGroup();
         //rb1.setBounds(50,180,75,30);
-
         buttonGroup.add(rb1);
         buttonGroup.add(rb2)
         rb1.setSelected(true);*/
@@ -73,13 +64,9 @@ public class liquid_mixtureTables2 extends JPanel {
         sp=new JScrollPane(table);
         sp.setBounds(600,20,500,700);
         liquid_mixtureTables2.this.add(sp);
-
-
         JButton hesapla_butonu=new JButton("Hesapla butonu");
         hesapla_butonu.setBounds(250,150,100,20);
         this.add(hesapla_butonu);
-
-
 /*        ActionListener radiolistener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,10 +83,6 @@ public class liquid_mixtureTables2 extends JPanel {
             }
         };
 */
-
-
-
-
         ActionListener get_values=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,16 +111,6 @@ public class liquid_mixtureTables2 extends JPanel {
         };
 
         hesapla_butonu.addActionListener(get_values);
-
-
-
-
-
-
-
-
-
-
 
         field.addActionListener(new ActionListener() {
             @Override

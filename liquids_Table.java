@@ -74,7 +74,7 @@ public class liquids_Table extends JPanel{
 
         String column[]= {"Property"," Value"," Unit"," Available temp. range"};
 
-        table=new JTable(row, column);
+        table=new JTable(row,column);
         table.setPreferredScrollableViewportSize(new Dimension(600,600));
         sp=new JScrollPane(table);
         this.add(sp);
@@ -95,7 +95,6 @@ public class liquids_Table extends JPanel{
                 row=liquid.calculate_values_for_pure(liquid_name,Double.parseDouble(T),Double.valueOf(P));
                 table=new JTable(row, column);
                 table.setPreferredScrollableViewportSize(new Dimension(600,600));
-
                 sp=new JScrollPane(table);
                 liquids_Table.this.add(sp);
                 liquids_Table.this.revalidate();

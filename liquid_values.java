@@ -1,15 +1,11 @@
 package bitirme_tezi;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class liquid_values {
-
-
 
     // ısıl iletkenlik=> A,B,C,Tmin,Tmax  birimi: W/(mK)  Kontrol et
 
@@ -43,7 +39,6 @@ public class liquid_values {
     //log10(μ liq) = A + B/T + C*T + D*T^2
     // A,B,C,D,Tmin,Tmax,T,vis@T
 
-
     int a=0; // Bunu kullanarak bir if komutu oluşturacağım ve böylece dosyalar sadece bir defa okunacak. Fonksiyonlar her çağırıldığında
     // tekrar tekrar dosyaları okumak programı yavaşlatır.
 
@@ -62,11 +57,6 @@ public class liquid_values {
     ArrayList <String[]> cpgas_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> Pvapor_katsayilar= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
     ArrayList <String[]> k_Latini_A_parameter= new ArrayList<String[]>();// İlk olarak dosyalarda okunulan satırları kaydetmek için ArrayList oluşturuyorum.
-
-
-
-
-
 
     public ArrayList<String[]> read_file(File file){
     String[] a=null;
@@ -202,7 +192,6 @@ public class liquid_values {
                 Pvapor_coefficients [6] = Double.parseDouble(i[7]);
             }
         }
-
         return Pvapor_coefficients;
     }
     public double[] getcpgas(String name){
@@ -238,8 +227,6 @@ public class liquid_values {
                 surface_tension_coefficients [2] = Double.parseDouble(i[3]);
                 surface_tension_coefficients [3] = Double.parseDouble(i[4]);
                 surface_tension_coefficients [4] = Double.parseDouble(i[5]);
-
-
             }
         }
 
