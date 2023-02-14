@@ -62,24 +62,39 @@ public class liquid_values {
     String[] a=null;
     ArrayList <String []> katsayilar = new ArrayList< String[] >();
     Scanner myReader;
+
     try {
         myReader = new Scanner(file);
         while(myReader.hasNextLine()){
             String data = myReader.nextLine();
             String veri[]= data.split("\\s+");
             katsayilar.add(veri);
-
         }
     } catch (FileNotFoundException e) {
 
         e.printStackTrace();
     }
-
-
-
-
     return  katsayilar;
 }
+    public ArrayList<String[]> read_file_forTablevalues(File file){
+        String[] a=null;
+        ArrayList <String []> katsayilar = new ArrayList< String[] >();
+        Scanner myReader;
+
+        try {
+            myReader = new Scanner(file);
+            while(myReader.hasNextLine()){
+                String data = myReader.nextLine();
+                String veri[]= data.split("\\s+");
+                katsayilar.add(veri);
+            }
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+        }
+        return  katsayilar;
+    }
+
     public void  read_all_Files(){
  File cpvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\cp.txt");
  File criticalvalues_File= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\katsayilar\\critical values.txt");
@@ -130,13 +145,8 @@ public class liquid_values {
         String hvap_values [] =new String[hvap_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
         String viscosity_values [] =new String[viscosity_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
         String k_values [] =new String[k_katsayilar.size()] ;// ArrayListleri, arraylere dönüşürdüm.
-
-
-
 //        for (int i=0;i<cp_katsayilar.size();i++){
 //            cp_values[i] = String.valueOf(cp_katsayilar.get(i).split(" "));
-//
-//
 //        }
 //        for (int i=0;i<density_katsayilar.size();i++){
 //            density_values[i] = density_katsayilar.get(i);
@@ -159,7 +169,6 @@ public class liquid_values {
 //           System.out.println(hvap_values[i]);
 //           System.out.println(viscosity_values[i]);
 //        }
-
     }
     public double getAparameter_for_kLatini(String name){
         if(a == 0){
@@ -174,7 +183,19 @@ public class liquid_values {
         }
         return A;
     }
-
+    public double[][] getTableValues(String name){
+        // Bu metot hata hesaplamalarini yapmak icin text dosyalarina girdigim tablo degerlerini okuyacak.
+        File tableFile= new File("D:\\Kullanicilar-Lenovo-silme\\eclipse-workspace\\Bitirme Tezi\\src\\bitirme_tezi\\tablolar\\"+name+".txt");
+        // Temperature, density, specific heat, thermal conductivity, surface tension, viscosity
+        ArrayList <String[]> tableValuesArrayList= read_file(tableFile);
+        double tableValues [][]= new double[tableValuesArrayList.size()][tableValuesArrayList.get(0).length];
+        for(int i= 0;i<tableValuesArrayList.size();i++){
+            for(int j=0;j<tableValuesArrayList.get(0).length;j++){
+                tableValues[i][j] = Double.parseDouble(tableValuesArrayList.get(i)[j]);
+            }
+        }
+        return tableValues;
+    }
     public double[] getPvapor(String name){
         if(a == 0){
             read_all_Files();// Burada bir hata yok. Olması gerektiği gibi çağırıyor.
@@ -211,7 +232,6 @@ public class liquid_values {
                 cpgas_coefficients [6] = Double.parseDouble(i[7]);
             }
         }
-
         return cpgas_coefficients;
     }
     public double[] getsurtension(String name){
@@ -229,12 +249,8 @@ public class liquid_values {
                 surface_tension_coefficients [4] = Double.parseDouble(i[5]);
             }
         }
-
         return surface_tension_coefficients;
     }
-
-
-
 
     public double[] get_orgmat_classification(String name){
         if(a == 0){
@@ -251,8 +267,6 @@ public class liquid_values {
                 org_compound_coefficients [1] = Double.parseDouble(i[3]);
                 org_compound_coefficients [2] = Double.parseDouble(i[4]);
                 org_compound_coefficients [3] = Double.parseDouble(i[5]);
-
-
             }
         }
 //        for(int i1=0;i1<cp.length;i1++){

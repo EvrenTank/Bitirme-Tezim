@@ -164,65 +164,29 @@ public class liquid_mixtureTables2 extends JPanel {
                     liquid_mixtureTables2.this.add(t);
 
                 }
-               /* for(int a=0;a< labels.size();a++){
-                    System.out.println(labels.get(a));
-                    System.out.println(comboboxes.get(a));
-                    System.out.println(textfields.get(a));
-                }
-*/
-//                sp.setBounds(20,150+compound_number*30+30,500,700);
-
 
                 liquid_mixtureTables2.this.repaint();
 
                 liquid_mixtureTables2.this.revalidate();
             }
         });
-//         this.setMinimumSize(new Dimension(700,500));
+
         label_P=new JLabel("P:");
         label_m1=new JLabel("m1");
         label_m2=new JLabel("m2");
-        //label_w1=new JLabel("m1");
-        //label_w2=new JLabel("m2");
+
         field_m1=new JTextField("1",5); // mol sayilarini girmek icin olan alan
         field_m2=new JTextField("1",5); // mol sayilarini girmek için olan alan
 
-
-        //field.setSelectedTextColor(Color.yellow);
-        //field.setForeground(Color.cyan);
         JComboBox <String> isim_listesi=new JComboBox<String>(isimler);
         JComboBox <String> isim_listesi2=new JComboBox<String>(isimler);
         label_l1=new JLabel(" Label L1 ");
-        //label.setSize(100,100); 7
-//        this.add(label_l1);
         label_l2=new JLabel("Label L2");
         isim_listesi.setBounds(200, 100, 120, 150);
         isim_listesi2.setBounds(200, 100, 120, 150);
-//        this.add(isim_listesi);
-//       this.add(label_l2);
-//        this.add(isim_listesi2);
-//        this.add(label_P);
-//        this.add(field_P);
-//        this.add(label_m1);
-//        this.add(field_m1);
-//        this.add(label_m2);
-//        this.add(field_m2);
-//        this.add(label_w1);
-//        this.add(field_w1);
-//        this.add(label_w2);
-//        this.add(field_w2);
 
-        //table.setBackground(Color.red);
-        //this.add(table);
-//        this.add(sp);
         liquids liquid=new liquids();
-        //System.out.print(this.getClass().getName());
-/*        field_P.addActionListener(ac_lis);
-        field_T.addActionListener(ac_lis);
-        isim_listesi.addActionListener(ac_lis);
-        isim_listesi2.addActionListener(ac_lis);
-        field_m1.addActionListener(ac_lis);
-        field_m2.addActionListener(ac_lis);*/
+
     }
 
 

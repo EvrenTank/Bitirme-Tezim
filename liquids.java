@@ -2298,14 +2298,14 @@ return ""+k_high_pressure;
             double Pvpr1=2.99938-3.08508/Tr+1.26573*Math.log(Tr)+0.08560*Math.pow(Tr,6.0); // Pvpr hesaplanırken kullanılacak.
             Pvpr = Math.pow(Math.E,Pvpr0+w*Pvpr1); // Pvapor reduced
         }
-        try {
+       /* try {
             Pvapor = Double.parseDouble(Pvapor()); // kPa
             // System.out.println("Katsayılar ile hesaplatılan Pvapor="+Pvapor);
             //System.out.println("Denklem ile hesaplatılan Pvapor="+Pvpr*Pc);
         }
         catch (NumberFormatException e1){
             e1.printStackTrace();
-        }
+        }*/
          return ro;
     }
 
