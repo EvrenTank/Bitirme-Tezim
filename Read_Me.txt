@@ -10,3 +10,12 @@ Ar, Bi, Br2, C2H6,C2H6O, C3H6O, C3H8O3,C4H10( ikisi de), C6H6, C10H22, CCl4, CF4
 
 bu malzemelerin hepsi Perry kitabından alındı. Kaynakları daha sonra eklenecektir. Hepsin de surface tension eksik, onları başka tablolardan
 bulmam lazım. Bulursam kaynakçada belirtmem gerek.( Unutulmamalı) .
+
+Yukarıdaki malzemelerden C4H10_isobutane, CH4,CH4O,C3H8O3,Hg,Bi,Pb,Na,K galiba baska Akışkanlar mekanigi kitabından alinmisti. Onları kontrol etmek gerekli.
+
+He_helium4 icin sur ten., k ve viscosity eksik. Bulabilirsem onları eklemem lazim.
+
+Viskozite hesaplamalarında teze Letsou ve Stiel yöntemini eklemeişim. Neden? Tezde olmadıgı icin simdilik
+hata analizlerine de eklenmemis.
+
+Perry's Chemical kitabında bazı akışkanlar var. Sanırım onlar karışım malzemeler. Onları hata analizi yaparken kullanabilirim.
