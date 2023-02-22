@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.swing.JOptionPane;
+
 // Sıvılar
 //Evren TANIK Ege Üniversitesi Makina Mühendisliği
 
 public class liquids {
-
     // Sınıf değişkenlerinin tanımlanması
 
     //==============================================================
@@ -1436,13 +1436,16 @@ return ""+k_high_pressure;
         double A,B,C,D;
         double vis=0;
         vis_c = values.getvis(name);
+        if(vis_c[4]<=(T+10) && T<=vis_c[5]+10)
+        {
             A=vis_c[0];
             B=vis_c[1];
             C=vis_c[2];
             D=vis_c[3];
             vis=Math.pow(10.0, A+B/T+C*T+D*T*T); // kitaptan çekilen katsayılar ile elde edilen değerler centipoise birimindedir
             vis=vis/1000; // Pa.s birimine çevirdim
-            return vis;
+        }
+    return vis;
     }
     public String vis1(String name,double T) { // Bunu  vis_Lucas ile kullanarak basıncın etkisini görebilmek için yapıyorum sadece.
         // Bu metodu GUI'ye  eklemeyeceğim.
@@ -1450,7 +1453,7 @@ return ""+k_high_pressure;
         double vis=0;
         vis_c=values.getvis(name);
         critical=values.get_critical(name); // Sonra düzeltmek gerek
-        if(vis_c[4]<=(T-10) && T<=vis_c[5]+10)
+        if(vis_c[4]<=(T+10) && T<=vis_c[5]+10)
         {
             A=vis_c[0];
             B=vis_c[1];

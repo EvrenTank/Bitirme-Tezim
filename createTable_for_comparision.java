@@ -16,9 +16,10 @@ public class createTable_for_comparision extends JPanel {
      */
     JTable table;
     JLabel label = new JLabel("");
-    String liquids[] = { "CH4_methane","CF4_carbontetrafluoride","CCl4_carbontetrachloride","C3H6O_acetone","CH4O_methanol","C4H10_butane","C4H10_isobutane","C3H8O3_glycerol",
-                         "CHCl3_chloroform","C6H6_benzene","C2H6_ethane","C2H6O_ethylalcohol","CO2_carbondioxide","C10H22_decane","Ar_argon","Br2_bromine","NH3_ammonia",
-                         "Hg_mercury","Bi_bismuth","Pb_lead","Na_sodium","K_potassium" };
+    String liquids[] = { "CH4_methane","C3H8_propane","C3H6_propylene","CF4_carbontetrafluoride","CCl4_carbontetrachloride","C3H6O_acetone","CH4O_methanol","C4H10_butane","C4H10_isobutane","C7H16_heptane","C3H8O3_glycerol",
+                         "CHCl3_chloroform","CH3Cl_methylchloride","C6H6_benzene","C2H6_ethane","C2H6O_ethylalcohol","CO2_carbondioxide","C7H8_toluene","C8H18_octane","C9H20_nonane","C10H22_decane","Ar_argon","Br2_bromine",
+                         "N2_nitrogen","NH3_ammonia","O2_oxygen","He_helium4",
+                         "Hg_mercury","H2O2_hydrogenperoxide","Bi_bismuth","Pb_lead","Na_sodium","K_potassium" };
     String properties[] = {"Density","Surface tension","Thermal conductivity","Viscosity","Specific heat"};
     JComboBox <String> liquid_list=new JComboBox<String>(liquids);
     JComboBox <String> property_list=new JComboBox<String>(properties);
@@ -122,7 +123,7 @@ public class createTable_for_comparision extends JPanel {
         double T;
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
         symbol.setDecimalSeparator('.');
-        NumberFormat formatter = new DecimalFormat("#0.00000",symbol);
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         for(int i=0;i<table_Values.length;i++){
             //row[i][1]=String.format("%,.5f", sigma); Boyle de formatlanabilir. Bircok yontem var.
@@ -170,7 +171,7 @@ public class createTable_for_comparision extends JPanel {
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
         symbol.setDecimalSeparator('.');
-        NumberFormat formatter = new DecimalFormat("#0.00000",symbol);
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         double T;
         double vis; // Pa.s
@@ -214,7 +215,7 @@ public class createTable_for_comparision extends JPanel {
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
         symbol.setDecimalSeparator('.');
-        NumberFormat formatter = new DecimalFormat("#0.00000",symbol);
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         double T;
         double cp; // Pa.s
@@ -247,7 +248,7 @@ public class createTable_for_comparision extends JPanel {
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
         symbol.setDecimalSeparator('.');
-        NumberFormat formatter = new DecimalFormat("#0.00000",symbol);
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         double T;
         double ro; // Pa.s
@@ -285,7 +286,7 @@ public class createTable_for_comparision extends JPanel {
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
         symbol.setDecimalSeparator('.');
-        NumberFormat formatter = new DecimalFormat("#0.00000",symbol);
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         double T;
         double k; // Pa.s

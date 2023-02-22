@@ -1,4 +1,4 @@
-Temperature(K) Density(kg/m^3) cp(J/kgK) k(W/mK) SurfaceTension(N/m)
+Temperature(K) Density(kg/m^3) cp(J/kgK) k(W/mK) SurfaceTension(N/m) Dynamicviscosity(Pa.s)
 Surface tension ile ilgili yanlışlık olabilir. Onu kontrol etmek lazım. ( Edit : Surface tension değilmiş. viskozite ile ilgili bir seey imiş.)
 Normalde metotlarda hesaplatılan degerlerde cp birimleri genelde biriminden ancak tablodan
 okunan deger J/(kgK)  buna dikkat etmek gerekiyor. O yüzden onun birimini de kJ/(kmolK) yapacagim.
