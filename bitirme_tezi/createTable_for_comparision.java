@@ -28,7 +28,8 @@ public class createTable_for_comparision extends JPanel {
                          "CHCl3_chloroform","CH3Cl_methylchloride","C6H6_benzene","C2H6_ethane","C2H6O_ethylalcohol","CO2_carbondioxide","C7H8_toluene","C8H18_octane","C9H20_nonane","C10H22_decane","Ar_argon","Br2_bromine",
                          "N2_nitrogen","NH3_ammonia","O2_oxygen","He_helium4",
                          "Hg_mercury","H2O2_hydrogenperoxide","Bi_bismuth","Pb_lead","Na_sodium","K_potassium" };*/
-    String properties[] = {"Density","Surface tension","Thermal conductivity","Viscosity","Specific heat"};
+    String properties[] = {"Density (kg/m^3)","Surface tension (N/m)","Thermal conductivity (W/(mK))","Viscosity (Pa.s)",
+            "Specific heat (kJ/(kmolK))","hbuharlasma (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};
     String liquids[] = {"Ar_argon","CH4_methane","C2H2F4_1112tetrafluoroethane","C2H3F3_111trifluoroethane","C2H4F2_11difluoroethane",
             "C2HF5_pentafluoroethane","C2HClF4_2chloro1112tetrafluoroethane","C2HCl2F3_22dichloro111trifluoroethane","C2H2F4_1112tetrafluoroethane",
             "C3H8_propane","C3H6_propylene","C4H10_butane","C4H10_isobutane","CCl2F2_dichlorodifluoromethane","CH2F2_difluoromethane",
@@ -82,30 +83,40 @@ public class createTable_for_comparision extends JPanel {
     }
     public Object[][] calculate(String liquid,String property){
         Object row[][] ;
-        if(property == "Density"){
+
+        if(property == "Density (kg/m^3)"){
             row = density_values_for_Table(liquid);
         }
-        else if(property == "Surface tension"){
+        else if(property == "Surface tension (N/m)"){
             row = surten_values_for_Table(liquid);
         }
-        else if(property == "Thermal conductivity"){
+        else if(property == "Thermal conductivity (W/(mK))"){
             row = thermalconductivity_values_for_Table(liquid);
         }
-        else if(property == "Viscosity"){
+        else if(property == "Viscosity (Pa.s)"){
             row = viscosity_values_for_Table(liquid);
         }
-        else if(property == "Specific heat"){
+        else if(property == "Specific heat (kJ/(kmolK))"){
             row = cp_values_for_Table(liquid);
+        }
+        else if(property == "hbuharlasma (kJ/(kmol))"){
+            row = hbuharlasma_values_for_Table(liquid);
+        }
+        else if(property == "deltah (kJ/(kmol))"){
+            row = deltah_values_for_Table(liquid);
+        }
+        else if(property == "deltas (kJ/(kmolK))"){
+            row = deltas_values_for_Table(liquid);
+        }
+        else if(property == "Pvapor (kPa)"){
+            row = Pvapor_values_for_Table(liquid);
         }
         else{
             row = density_values_for_Table(liquid);
         }
-        //System.out.println("Sütunlar"+column[2]+" "+ column[3]);
 
         return  row;
     }
-
-
 
     public Object[][] surten_values_for_Table (String name){
         liquid_values values = new liquid_values();
@@ -114,7 +125,6 @@ public class createTable_for_comparision extends JPanel {
         double surten_c[]=values.getsurtension(name);
         String metot_names[]= {"T(Kelvin)","Tablo","Katsayılar (% Hata)","Brock ve Bird(Yüzde Hata)","Pitzer(% Hata)","Zuo ve Stendby( % Hata)","Sastri ve Rao(% Hata)"};
         column = metot_names;
-
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         double sigma; // Yüzey gerilimi Birimi: N/m
         double sigma_referans;
@@ -219,7 +229,7 @@ public class createTable_for_comparision extends JPanel {
         NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         double T;
-        double cp; // Pa.s
+        double cp;
         double cp_referans;
         double percent_error;
         for(int i=0;i<table_Values.length;i++){
@@ -291,7 +301,7 @@ public class createTable_for_comparision extends JPanel {
         NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
         double T;
-        double k; // Pa.s
+        double k;
         double k_referans;
         double percent_error;
         for(int i=0;i<table_Values.length;i++){
@@ -313,6 +323,158 @@ public class createTable_for_comparision extends JPanel {
         }
         return row;
     }
+
+    public Object[][] hbuharlasma_values_for_Table(String name) {
+        // Degerlerin okundugu tablodaki birim kJ/kg
+        // Hata analizi Tablosundaki degerler kJ/kmol biriminden olacak. Onun icin M'yi kullanmam gerekli.
+        liquid_values values = new liquid_values();
+        double table_Values[][] = values.getTableValues(name);
+        liquids liquids = new liquids();
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar( % Hata)"};
+        column = metot_names;
+        double critical_values[] = values.get_critical(name);
+        double M = critical_values[0];
+        Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
+        DecimalFormatSymbols symbol= new DecimalFormatSymbols();
+        symbol.setDecimalSeparator('.');
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
+        NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
+        double T;
+        double hf,hg;
+        double hvap; //
+        double hvap_referans;
+        double percent_error;
+        for(int i=0;i<table_Values.length;i++){
+            T = table_Values[i][1];
+            row[i][0] = T;
+            hf = table_Values[i][5];
+            hg =  table_Values[i][6];
+            hvap = (hg - hf); // Birimi kJ/kg. Ben bunu kJ/kmol yapacagim.
+            hvap = hvap * M;
+            hvap_referans = hvap;
+            row[i][1]=formatter.format(hvap);
+            hvap = liquids.hvap(name,T);
+            percent_error = (hvap-hvap_referans)/hvap_referans*100;
+            row[i][2]=formatter.format(hvap) + "(%" + formatter2.format(percent_error) + ")";
+        }
+        return row;
+    }
+    public Object[][] deltah_values_for_Table(String name) {
+        // Degerlerin okundugu tablodaki birim kJ/kg
+        // Hata analizi Tablosundaki degerler kJ/kmol biriminden olacak. Onun icin M'yi kullanmam gerekli.
+        //Referans h degerlerinin farkli olmasi h degerlerinin de farkli olmasina neden olacagi icin ben hata analizi direkt olarak deltah
+        // yani (h(T2) - h(T1)) uzerinden yapacagim ki href degerlerinin onemi kalmasin. Entropide de ayni sekilde yapacagim.
+
+        liquid_values values = new liquid_values();
+        double table_Values[][] = values.getTableValues(name);
+        liquids liquids = new liquids();
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar (% Hata)"};
+        column = metot_names;
+        double critical_values[] = values.get_critical(name);
+        double M = critical_values[0];
+        Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
+        DecimalFormatSymbols symbol= new DecimalFormatSymbols();
+        symbol.setDecimalSeparator('.');
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
+        NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
+        double T1,T2;
+        double h1,h2;
+        double deltah; //
+        double deltah_referans;
+        double percent_error;
+        for(int i=0;i<table_Values.length-1;i++){
+            T1 = table_Values[i][1];
+            T2 = table_Values[i+1][1];
+            row[i][0] = (T1 + " - "+ T2);
+            h1 = table_Values[i][5];
+            h2 =  table_Values[i+1][5];
+            deltah = (h2 - h1); // Birimi kJ/kg. Ben bunu kJ/kmol yapacagim.
+            deltah = deltah * M;
+            deltah_referans = deltah;
+            row[i][1]=formatter.format(deltah);
+            h1 = liquids.h(name,T1);
+            h2 = liquids.h(name,T2);
+            deltah = h2-h1;// Bunun birimi zaten kJ/kmol. O yuzden birimine dokunmuyorum.
+            percent_error = (deltah-deltah_referans)/deltah_referans*100;
+            row[i][2]=formatter.format(deltah) + "(%" + formatter2.format(percent_error) + ")";
+        }
+        return row;
+    }
+    public Object[][] deltas_values_for_Table(String name) {
+        // Degerlerin okundugu tablodaki birim kJ/kg
+        // Hata analizi Tablosundaki degerler kJ/kmol biriminden olacak. Onun icin M'yi kullanmam gerekli.
+        //Referans s degerlerinin farkli olmasi s degerlerinin de farkli olmasina neden olacagi icin ben hata analizi direkt olarak deltah
+        // yani (s(T2) - s(T1)) uzerinden yapacagim ki sref degerlerinin onemi kalmasin. Entalpide de ayni sekilde yapacagim.
+
+        liquid_values values = new liquid_values();
+        double table_Values[][] = values.getTableValues(name);
+        liquids liquids = new liquids();
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar (% Hata)"};
+        column = metot_names;
+        double critical_values[] = values.get_critical(name);
+        double M = critical_values[0];
+        Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
+        DecimalFormatSymbols symbol= new DecimalFormatSymbols();
+        symbol.setDecimalSeparator('.');
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
+        NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
+        double T1,T2;
+        double s1,s2;
+        double deltas; //
+        double deltas_referans;
+        double percent_error;
+        for(int i=0;i<table_Values.length-1;i++){
+            T1 = table_Values[i][1];
+            T2 = table_Values[i+1][1];
+            row[i][0] = (T1 + " - "+ T2);
+            s1 = table_Values[i][7];
+            s2 =  table_Values[i+1][7];
+            deltas = (s2 - s1); // Birimi kJ/kg. Ben bunu kJ/kmol yapacagim.
+            deltas = deltas * M;
+            deltas_referans = deltas;
+            row[i][1]=formatter.format(deltas);
+            s1 = liquids.s(name,T1);
+            s2 = liquids.s(name,T2);
+            deltas = s2-s1;// Bunun birimi  kJ/(kgK).  Ben bunu kJ/kmol yapacagim.
+            deltas = deltas * M;
+            percent_error = (deltas-deltas_referans)/deltas_referans*100;
+            row[i][2]=formatter.format(deltas) + "(%" + formatter2.format(percent_error) + ")";
+        }
+        return row;
+    }
+
+    public Object[][] Pvapor_values_for_Table(String name) { // Pbuhar = Pdoyma
+        // Degerlerin okundugu tablodaki birim MPa
+        // Hata analizi Tablosundaki degerler kPa biriminden olacak.
+
+        liquid_values values = new liquid_values();
+        double table_Values[][] = values.getTableValues(name);
+        liquids liquids = new liquids();
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar (% Hata)"};
+        column = metot_names;
+        Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
+        DecimalFormatSymbols symbol= new DecimalFormatSymbols();
+        symbol.setDecimalSeparator('.');
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
+        NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
+        double Pvapor;
+        double Pvapor_referans;
+        double percent_error;
+        double T;
+        for(int i=0;i<table_Values.length;i++){
+            T = table_Values[i][1];
+            row[i][0] = (T);
+            Pvapor = table_Values[i][2]; // Birimi MPa. 1000 ile çarparak kPa yapacagim.
+            Pvapor = Pvapor * 1000;
+            Pvapor_referans = Pvapor;
+            row[i][1]=formatter.format(Pvapor);
+            Pvapor = liquids.Pvapor(name,T,"double");
+            percent_error = (Pvapor-Pvapor_referans)/Pvapor_referans*100;
+            row[i][2]=formatter.format(Pvapor) + "(%" + formatter2.format(percent_error) + ")";
+        }
+        return row;
+    }
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Farklı Metotlar ile Elde Edilen Değerlerin Tablo Değerleri ile Karşılaştırılması");
         frame.setSize(800,800);

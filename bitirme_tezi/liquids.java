@@ -118,7 +118,30 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+    public double Pvapor(String name, double T,String type) {  // type parametresi String return eden metot ile karismamasi icin eklendi. Bir islevi yok yani.
+        //  ilk halinde mmhg olarak hesaplıyor. Ama ben onu kPa' çevireceğim.
+        // Pvapor organic and inorganic => A, B, C, D, E, Tmin, Tmax (Birimi: mmhg)
+        // Formülü: log10(P)=A+B/T+C*log10(T)+D*T+E*T^2
+        // 1 mmhg =0.133322368 kPa 1 kPa = 0.01 bar
+        double A,B,C,D,E,Tmin,Tmax;
+        double Pvapor=0;
+        Pvapor_c = values.getPvapor(name);
 
+        if(Pvapor_c[5]<=T && T<=Pvapor_c[6])
+        {
+            A=Pvapor_c[0];
+            B=Pvapor_c[1];
+            C=Pvapor_c[2];
+            D=Pvapor_c[3];
+            E=Pvapor_c[4];
+            Pvapor=Math.pow(10,A+B/T+C*Math.log10(T)+D*T+E*T*T);
+            Pvapor *= 0.133322368; // Birimini kPa yaptım.
+            return (Pvapor);
+        }
+        else {
+            return 0;
+        }
+    }
 
     public String cp() { // (kJ/(kmolK))
         double A,B,C,D;
@@ -500,7 +523,7 @@ public class liquids {
         double href=0;
         double sref=0;
         double M=critical[0];
-            if(cp_c[4]<=T && T<=cp_c[5])
+            if((cp_c[4]-5 )<=T && T<=(cp_c[5]+5))
             {
                 A=cp_c[0];
                 B=cp_c[1];
@@ -514,8 +537,51 @@ public class liquids {
             }
 
         }
+    public double h(String name, double T) {  //  kJ/kmol
+        double A,B,C,D;
+        double h=0;
+        double Tref=0;
+        double href=0;
+        double sref=0;
+        critical = values.get_critical(name);
+        cp_c = values.getcp(name);
+        double M=critical[0];
+        if((cp_c[4]-5 )<=T && T<=(cp_c[5]+5))
+        {
+            A=cp_c[0];
+            B=cp_c[1];
+            C=cp_c[2];
+            D=cp_c[3];
+            h=(A*T+B*T*T/2+C*T*T*T/3+D*T*T*T*T/4)-(A*Tref+B*Tref*Tref/2+C*Tref*Tref*Tref/3+D*Tref*Tref*Tref*Tref/4)+(href*M); // kJ/kmol
+            return  h;
+        }
+        else {
+            return 0;
+        }
+
+    }
+    public String h2() {  // kJ/kg
+        double A,B,C,D;
+        double h=0;
+        double Tref=0;
+        double href=0;
+        double sref=0;
+        double M= critical[0];
+        if((cp_c[4]-5 )<=T && T<=(cp_c[5]+5))
+        {
+            A=cp_c[0];
+            B=cp_c[1];
+            C=cp_c[2];
+            D=cp_c[3];
+            h=((A*T+B*T*T/2+C*T*T*T/3+D*T*T*T*T/4)-(A*Tref+B*Tref*Tref/2+C*Tref*Tref*Tref/3+D*Tref*Tref*Tref*Tref/4)+(href*M))/M; // kJ/kg
+            return (""+h);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
     public String hvap(double T) {  //  (kJ / kmol)
-        // kJ/mol
+        // kJ/mol: Bu katsayilar kullanilarak hesapl yapilinca elde edilen degerin birimi.
         // A*((1 - T/Tc)^n)
         // A, Tc, n, Tmin, Tmax, T, Hvap@T
         double A,Tc,n;
@@ -526,11 +592,32 @@ public class liquids {
             A=hvap_c[0];
             Tc=hvap_c[1];
             n=hvap_c[2];
-            hvap = A* Math.pow(1-T/Tc,n)*1000/M;
+            hvap = A* Math.pow(1-T/Tc,n)*1000;
             return (""+hvap);
         }
         else {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
+    public double hvap(String name,double T) {  //  (kJ / kmol)
+        // kJ/mol
+        // A*((1 - T/Tc)^n)
+        // A, Tc, n, Tmin, Tmax, T, Hvap@T
+        hvap_c = values.gethvap(name);
+        critical = values.get_critical(name);
+        double A,Tc,n;
+        double hvap=0;
+        double M=critical[0];
+        if(hvap_c[3]<=T && T<=hvap_c[4])
+        {
+            A=hvap_c[0];
+            Tc=hvap_c[1];
+            n=hvap_c[2];
+            hvap = A* Math.pow(1-T/Tc,n)*1000;
+            return (hvap);
+        }
+        else {
+            return 0;
         }
     }
     public String hvap_2() {  //  (kJ / kg)
@@ -552,28 +639,9 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public String h2() {  // kJ/kg
-        double A,B,C,D;
-        double h=0;
-        double Tref=0;
-        double href=0;
-        double sref=0;
-        double M= critical[0];
-            if(cp_c[4]<=T && T<=cp_c[5])
-            {
-                A=cp_c[0];
-                B=cp_c[1];
-                C=cp_c[2];
-                D=cp_c[3];
-                h=((A*T+B*T*T/2+C*T*T*T/3+D*T*T*T*T/4)-(A*Tref+B*Tref*Tref/2+C*Tref*Tref*Tref/3+D*Tref*Tref*Tref*Tref/4)+(href*M))/M; // kJ/kg
-                return (""+h);
-            }
-            else {
-                return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
-            }
-    }
 
-    public String s() {// kJ/kg
+
+    public String s() {// kJ/(kgK)
         double A,B,C,D;
         double s=0;
         double Tref=1,href=0,sref=0,M=critical[0], vref,v;
@@ -581,7 +649,7 @@ public class liquids {
             vref=v(Tref); // m^3/kg
             v=v(T);
             //System.out.println("vref="+vref+" v="+v);
-            if(cp_c[4]<=T && T<=cp_c[5])
+            if((cp_c[4]-5)<=T && T<=(cp_c[5]+5))
             {
                 A=cp_c[0];
                 B=cp_c[1];
@@ -594,6 +662,31 @@ public class liquids {
             else {
                 return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
             }
+    }
+    public double s(String name, double T) {// kJ/(kgK)
+        double A,B,C,D;
+        critical = values.get_critical(name);
+        cp_c = values.getcp(name);
+        ro_c = values.getro(name);
+        double s=0;
+        double Tref=1,href=0,sref=0,M=critical[0], vref,v;
+        double Ru=8.3145; // kJ/(kmolK)
+        vref=v(Tref); // m^3/kg
+        v=v(T);
+        //System.out.println("vref="+vref+" v="+v);
+        if((cp_c[4]-5)<=T && T<=(cp_c[5]+5))
+        {
+            A=cp_c[0];
+            B=cp_c[1];
+            C=cp_c[2];
+            D=cp_c[3];
+            //s=(((A-Ru)*Math.log(T)+B*T+C*T*T/2+D*T*T*T/3)-((A-Ru)*Math.log(Tref)+B*Tref+C*Tref*Tref/2+D*Tref*Tref*Tref/3)+ Ru*Math.log(v/vref))/M+sref; // kJ/kg
+            s = ((A*Math.log(T)+B*T+C*T*T/2+D*T*T*T/3)-(A*Math.log(Tref)+B*Tref+C*Tref*Tref/2+D*Tref*Tref*Tref/3)+(sref*M))/M;
+            return (s);
+        }
+        else {
+            return 0;
+        }
     }
     public double k(String name,double T) {
         double A,B,C;
