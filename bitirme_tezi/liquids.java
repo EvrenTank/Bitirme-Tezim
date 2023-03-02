@@ -1,6 +1,9 @@
 package bitirme_tezi;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -465,7 +468,7 @@ public class liquids {
        }
        catch(NumberFormatException e){
            e.printStackTrace();
-           return name[0]+" malzemesinin sıvı veya gaz hali için özgül ısı değeri hesaplanamıyor";
+           return name[0]+"  malzemesinin sıvı veya gaz hali için özgül ısı değeri hesaplanamıyor";
        }
         critical = values.get_critical(name[1]);
         cp_c = values.getcp(name[1]);
@@ -1089,7 +1092,24 @@ return ""+k_high_pressure;
             critical = values.get_critical(name[j]);
             M = critical[0];
             x[j] = w[j]/M/Ntotal ;
-            //System.out.println("Sıvı:"+name[j]+" mole fraction:"+x[j]);
+            System.out.println("Sıvı: "+name[j]+ "  weight fraction: "+ w[j]+ " mole fraction: "+x[j]);
+        }
+
+    }
+    public void M_mix(String name[], double w[]){
+        double Ntotal=0;
+        double M;
+        double x[] = new double[name.length];
+        for ( int i=0;i<name.length;i++){
+            critical = values.get_critical(name[i]);
+            M = critical[0];
+            Ntotal += w[i]/M;
+        }
+        for ( int j=0;j<name.length;j++){
+            critical = values.get_critical(name[j]);
+            M = critical[0];
+            x[j] = w[j]/M/Ntotal ;
+            System.out.println("Sıvı: "+name[j]+ "  weight fraction: "+ w[j]+ " mole fraction: "+x[j]);
         }
 
     }
@@ -1854,6 +1874,11 @@ return ""+k_high_pressure;
         double x1,x2,M1,M2,Mm;
         double interaction_coefficient=1.00; // susuz karışımlar için
         double N1,N2; // mol sayısı
+
+        DecimalFormatSymbols symbol= new DecimalFormatSymbols();
+        symbol.setDecimalSeparator('.');
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
+
         if (name[0].equals("H2O_water") || name[1].equals("H2O_water")) {
             interaction_coefficient = 1.37;
         }
@@ -2026,13 +2051,13 @@ return ""+k_high_pressure;
                     }
                     //return "Referans viskozite değerleri hesaplanamadığı için hesapl yapılamıyor";
                 }
-                return ""+vis_mix;
+                return ""+formatter.format(vis_mix);
             }
             else{
                 return "Kritik değerlerden birisi veya molar kütle bilinmiyor";
             }
         }
-        return ""+vis_mix;
+        return ""+formatter.format(vis_mix);
     }
 
     public double vis_CSP(String name, double T) { // Burada V değerlerini ro metodunu kullanarak hesapladım.
@@ -2218,6 +2243,9 @@ return ""+k_high_pressure;
         return ""+viskozite;
     }
     public String vis_mix_GN2(String vis[],double x[]) {// sıvı karışımının viskozite değeri
+        DecimalFormatSymbols symbol= new DecimalFormatSymbols();
+        symbol.setDecimalSeparator('.');
+        NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
        double power=0;
        for(int i=0;i<vis.length;i++){
            //System.out.println("viskozite:"+ vis[i]);
@@ -2234,7 +2262,7 @@ return ""+k_high_pressure;
        double viskozite= Math.pow(Math.E, power);
 
 
-        return ""+viskozite;
+        return ""+formatter.format(viskozite);
     }
     //Teja and Rice Method
 
@@ -2588,8 +2616,7 @@ return ""+k_high_pressure;
             Z_RAi = 0.29056-0.08775*w;
             Z_RAm += x[i]*Z_RAi;
             L1 += x[i]*Tc/Pc;
-            //System.out.println("w="+w);
-            //System.out.println("xi="+x[i]);
+
 
         }
         Vcm = 0.25*(K1+3*K2*K3);
@@ -2622,28 +2649,7 @@ return ""+k_high_pressure;
 
         double V = Vm2*(A*Pcm+Math.pow(C,Math.pow(D-Trm,B))*(P-Pvp))/(A*Pcm+C*(P-Pvp));
         double V_ikinciyol ;
-       /* System.out.println("wsrkm="+wsrkm);
-        System.out.println("Tcm="+Tcm);
-        System.out.println("Tcm="+Tcm);
-        System.out.println("Trm="+Trm);
-        System.out.println("V0="+V0);
-        System.out.println("Vsigma="+Vsigma);
-        System.out.println("wsrkm="+wsrkm);
-        System.out.println("Pcm="+Pcm);
-        System.out.println("P="+P);
-        System.out.println("Vcm="+Vcm);
-        System.out.println("P="+P);
-        System.out.println("Trm="+Trm);
-        System.out.println("Pvpr0="+Pvpr0);
-        System.out.println("Pvpr1="+Pvpr1);
-        System.out.println("Pvpr="+Pvpr);
-        System.out.println("Pvp="+Pvp);
-        System.out.println("A="+A);
-        System.out.println("B="+B);
-        System.out.println("Vm="+Vm);
-        System.out.println("Vm2="+Vm2);
-        System.out.println("Molar mass mixture="+Molar_mass_mixture);
-        System.out.println("V="+V);*/
+
         return ""+1/(V/Molar_mass_mixture /1000);
 
 

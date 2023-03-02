@@ -9,13 +9,18 @@ public class deneme2 {
 
     public static void main(String[] args) {
  liquids liquids = new liquids();
-/*String name[] = {"C4H10O_butanol","CHCl3_chloroform","CCl4_carbontetrachloride"};
-double w[] = {0.33,0.33,0.34};
-liquids.A_parameter();
-  liquids.weight_fraction_to_mole_fraction(name,w);
+String name[] = {"C4H8O2_isobutanoicacid","H2O_water"};
+double w_array[][] = {{0.38, 1-0.38}};
+
+
+        for(int i = 0;i< w_array.length;i++){
+            liquids.weight_fraction_to_mole_fraction(name,w_array[i]);
+        }
+
+
  //System.out.println( liquids.vis_P("C3H8_propane",273,5.5,20));
-        System.out.println(liquids.k_mix_Flippov(0.210,0.152,0.4,0.6));*/
-        System.out.println(liquids.Parachor("C10H22_decane"));
+        //System.out.println(liquids.k_mix_Flippov(0.210,0.152,0.4,0.6));
+       /* System.out.println(liquids.Parachor("C10H22_decane"));
         String names [] = {"C3H8O_propylalcohol","C4H11N_diethylamine"};
         double x1[] = {0.0,1.0};
         double x2[] = {0.1,1-0.1};
@@ -24,7 +29,8 @@ liquids.A_parameter();
         double x5[] = {0.7,1-0.7};
         double x6[] = {0.9,1-0.9};
         double x7[] = {1.0,0.0};
-        double T = 100; // farketmez
+        double T = 100; // farketmez*/
+
   /*      liquids.surten_mix_ZuoandStendby_Kays(names,x1,T);
         liquids.surten_mix_ZuoandStendby(names,x1,T);
         liquids.surten_mix_ZuoandStendby_Kays(names,x2,T);

@@ -959,8 +959,8 @@ C2H3F3_111trifluoroethane refrigerant 0.494 0.0 0.5 -0.167
 C2H4F2_11difluoroethane refrigerant 0.494 0.0 0.5 -0.167
 C3H3F5_11133pentafluoropropane refrigerant 0.494 0.0 0.5 -0.167
 NH3_ammonia refrigerant 0.494 0.0 0.5 -0.167
-CH4_methane refrigerant 0.494 0.0 0.5 -0.167
-C2H6_ethane refrigerant 0.494 0.0 0.5 -0.167
+CH4_methane saturated_hydrocarbon 0.494 0.0 0.5 -0.167
+C2H6_ethane saturated_hydrocarbon 0.494 0.0 0.5 -0.167
 C3H8_propane refrigerant 0.494 0.0 0.5 -0.167
 C4H10_butane refrigerant 0.494 0.0 0.5 -0.167
 C4H10_isobutane refrigerant 0.494 0.0 0.5 -0.167

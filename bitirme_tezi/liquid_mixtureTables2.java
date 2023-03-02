@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 public class liquid_mixtureTables2 extends JPanel {
     liquids sample=new liquids();
@@ -41,6 +43,8 @@ public class liquid_mixtureTables2 extends JPanel {
         // direkt olarak elemanları buna ekleyip, bu paneli de ana panele ekleyeceğim.
         String column[]= {"Şey"," Value"," Unit","Available temp. range"};
         table=new JTable(row , column);
+        resizeTableColumnWidth();
+        table.setPreferredScrollableViewportSize(new Dimension(600,600));
         JLabel label=new JLabel("Enter the comp. numbers in the mixture:");
 /*        JRadioButton rb1=new JRadioButton("Molar orana göre hesapla");
         JRadioButton rb2=new JRadioButton("Kütlesel orana göre hesapla");
@@ -62,7 +66,7 @@ public class liquid_mixtureTables2 extends JPanel {
         field.setBounds(440,100,30,30);
         this.add(field);
         sp=new JScrollPane(table);
-        sp.setBounds(600,20,500,700);
+        sp.setBounds(600,20,600,600);
         liquid_mixtureTables2.this.add(sp);
         JButton hesapla_butonu=new JButton("Hesapla butonu");
         hesapla_butonu.setBounds(250,150,100,20);
@@ -98,8 +102,10 @@ public class liquid_mixtureTables2 extends JPanel {
                 row=sample.calculate_values_for_mixtures2(liquid_names,mole,Double.parseDouble(T),Double.parseDouble(P));
                 liquid_mixtureTables2.this.remove(sp);
                 table=new JTable(row , column);
+                resizeTableColumnWidth();
+                table.setPreferredScrollableViewportSize(new Dimension(600,600));
                 sp=new JScrollPane(table);
-                sp.setBounds(600,20,500,700);
+                sp.setBounds(600,20,600,600);
                 liquid_mixtureTables2.this.add(sp);
                 //liquid_mixtureTables2.this.repaint();
                 liquid_mixtureTables2.this.revalidate();
@@ -186,6 +192,36 @@ public class liquid_mixtureTables2 extends JPanel {
         isim_listesi2.setBounds(200, 100, 120, 150);
 
         liquids liquid=new liquids();
+
+    }
+    public void resizeTableColumnWidth(){
+        // Loop through all columns
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+
+            // Calculate the maximum width of the content in the column
+            int maxColumnWidth = 0;
+            for (int j = 0; j < table.getRowCount(); j++) {
+                TableCellRenderer cellRenderer = table.getCellRenderer(j, i);
+                Object value = table.getValueAt(j, i);
+                Component component = cellRenderer.getTableCellRendererComponent(table, value, false, false, j, i);
+                maxColumnWidth = Math.max(maxColumnWidth, component.getPreferredSize().width);
+            }
+
+            // Calculate the maximum width of the header text for the column
+            TableCellRenderer headerRenderer = column.getHeaderRenderer();
+            if (headerRenderer == null) {
+                headerRenderer = table.getTableHeader().getDefaultRenderer();
+            }
+            Object headerValue = column.getHeaderValue();
+            Component headerComponent = headerRenderer.getTableCellRendererComponent(table, headerValue, false, false, 0, i);
+            int maxHeaderWidth = headerComponent.getPreferredSize().width;
+
+            // Set the preferred width of the column to the maximum of the content and header widths
+            int preferredWidth = Math.max(maxColumnWidth, maxHeaderWidth);
+            column.setPreferredWidth(preferredWidth);
+        }
+
 
     }
 
