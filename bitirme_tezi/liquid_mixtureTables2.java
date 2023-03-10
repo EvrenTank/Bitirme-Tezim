@@ -71,22 +71,7 @@ public class liquid_mixtureTables2 extends JPanel {
         JButton hesapla_butonu=new JButton("Hesapla butonu");
         hesapla_butonu.setBounds(250,150,100,20);
         this.add(hesapla_butonu);
-/*        ActionListener radiolistener=new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(rb1.isSelected()){
-                    for(int i=0;i<labels2.size();i++){
-                        labels2.get(i).setText((i+1)+".malzeme mol sayısı:");
-                    }
-                }
-                else if(rb2.isSelected()){
-                    for(int i=0;i<labels2.size();i++){
-                        labels2.get(i).setText((i+1)+".malzeme kütlesi:");
-                    }
-                }
-            }
-        };
-*/
+
         ActionListener get_values=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

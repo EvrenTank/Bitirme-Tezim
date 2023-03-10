@@ -156,14 +156,16 @@ public class liquids_Table extends JPanel{
 
     public static void main(String args[]) {
 
-        JFrame frame=new JFrame(" Sıvıların Gazların Özellikleri:  ");
+        JFrame frame=new JFrame(" Properties of Liquids:  ");
         JTabbedPane tabbedPane=new JTabbedPane(JTabbedPane.TOP);
         liquids_Table panel=new liquids_Table();
         liquid_mixtureTables2 panel2=new liquid_mixtureTables2();
         grafikPanel_last panel3 = new grafikPanel_last();
-        tabbedPane.addTab("Saf Sıvılar",panel);
-        tabbedPane.addTab("Karışım",panel2);
-        tabbedPane.addTab("Özellik grafikleri",panel3);
+        createTable_for_comparision panel4 = new createTable_for_comparision();
+        tabbedPane.addTab("Pure liquids",panel);
+        tabbedPane.addTab("Mixtures",panel2);
+        tabbedPane.addTab("Property graphics",panel3);
+        tabbedPane.addTab("Error calculations",panel4);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.add(tabbedPane);

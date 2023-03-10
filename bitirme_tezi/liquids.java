@@ -28,7 +28,8 @@ public class liquids {
     double vis_c[],k_c[],ro_c[],cp_c[], cpgas_c[],Pvapor_c[],critical[],hvap_c[],a_values[],Tf,organiccompounds_classification[],surtension_c[];// viskozite coefficients
 
     String vis,k,ro,cp,v,cp_cal,h,u,s,h_kg,Pr,alfa,
-    ro_mixture_Aalto,
+    Pvapor_mix,
+    ro_mix_Aalto,ro_mix_Spencer_and_Danner,
     cp_kg,hvap,cp_csp,cp_Teja,cp_mix_JamiesonandCartwright,cp_mix_Teja,
             vis_GCM,
             k_latini,k_Sastri,k_Missenard,k_Latini_and_Baroncini, k_mix_Filippov , k_mix_Baroncini, k_mix_Li,k_mix_PowerLaw,
@@ -275,7 +276,7 @@ public class liquids {
 
         }
         else {
-            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+            return " Bu sıcaklık değeri için  hesaplama yapılamıyor";
         }
     }
     public double cp_CSP(String name, double T,String tip) { // (kJ/(kmolK))
@@ -328,8 +329,9 @@ public class liquids {
     }
 
     public String cp_Teja(String name,double T) {
-
         // Bu metodun hassasiyeti pek iyi değil. O yüzden çıktılara eklemeyeceğim.
+        // Bu metodun hassasiyeti pek iyi değil. O yüzden çıktılara eklemeyeceğim.
+
         double Tcm=0;
         double Mm= 0;
         double wm=0;
@@ -455,7 +457,7 @@ public class liquids {
             critical = values.get_critical(name[i]);
             Tcm += x[i]*critical[2];
             Mm += x[i]*critical[0];
-            wm += x[i]*critical[7];
+            wm += x[i]*critical[7]; // accentric
         }
         critical = values.get_critical(name[0]);
         cp_c = values.getcp(name[0]);
@@ -786,7 +788,7 @@ public class liquids {
         if( M == 0 || Tb == 0 || Tc == 0 ){
             return "M, Tb, Tc değerlerinden en az biri bilinmiyor";
         }
-        if(Asharp == 0  || beta == 0 || gamma == 0){
+        if( Asharp == 0  || beta == 0 || gamma == 0 ){
             return " Malzeme organik değil veya ailesi bilinmiyor";
         }
 
@@ -1252,7 +1254,6 @@ return ""+k_high_pressure;
         double Tcm=0;
         double x1=x[0];
         double x2=x[1];
-
         double k1, k2;
         double A1,A2;
         critical = values.get_critical(name[0]);
@@ -1268,7 +1269,6 @@ return ""+k_high_pressure;
         beta=organiccompounds_classification[2];
         gamma=organiccompounds_classification[3];
         k_c = values.getk(name[0]);
-
         try{
             k1 = Double.parseDouble(k());
            // System.out.println("k1="+k1);
@@ -1318,7 +1318,6 @@ return ""+k_high_pressure;
         if ( A2 <= A1 ){
             kmix = (x1*x1*A1+x2*x2*A2+2.2*x1*x2*Math.pow(A2*A2*A2/A1,0.5))*Math.pow(1-Trm,0.38)/Math.pow(Trm,0.16667);
         }
-
         return ""+kmix;
     }
     public String k_mix_Baroncini_compressed(String name[], double x[],double P){
@@ -1333,7 +1332,6 @@ return ""+k_high_pressure;
         double Tcm=0;
         double x1=x[0];
         double x2=x[1];
-
         double k1, k2;
         double A1,A2;
         critical = values.get_critical(name[0]);
@@ -1402,8 +1400,6 @@ return ""+k_high_pressure;
 
         return ""+kmix;
     }
-
-
 
     // Li 1976
     public String k_mix_Li(String names[],double x[],double T){
@@ -1510,7 +1506,6 @@ return ""+k_high_pressure;
         return ""+k;
     }
 
-
     public String k_mix_PowerLaw(String names[],double x[],double T){
     // Vredeveld 1973
 
@@ -1542,8 +1537,6 @@ return ""+k_high_pressure;
         kmix = Math.pow(kmix,-0.5);
         return ""+kmix;
     }
-
-
 
     public double vis(String name,double T) {
         double A,B,C,D;
@@ -1623,8 +1616,6 @@ return ""+k_high_pressure;
         }
         else{  return 0.0; }
     }
-
-
 
     public String vis_Lucas(String name,double T ,double P) { // Bu hesaplamada basınç değeri de hesaba katılacak.
         // Lucas (1981) tarafından oluşturulan bir eşitlik. Sıkıştırılmış sıvı için olan viskoziteyi hesaplar.
@@ -1712,10 +1703,6 @@ return ""+k_high_pressure;
             e.printStackTrace();
             return "Yoğunluk bilinmediği için hesaplama yapılamıyor";
         }
-
-
-
-
         Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
         E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
         vis = Vo / E / (V - Vo);
@@ -1808,8 +1795,6 @@ return ""+k_high_pressure;
                 e.printStackTrace();
                 return "Vm hesaplanamadığı için işlem yapılamıyor";
             }
-
-
 
             Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tfreezing / Tc) + 0.894);
             E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tfreezing - 11.58 * (Tfreezing / Tc));
@@ -2469,7 +2454,11 @@ return ""+k_high_pressure;
             e2.printStackTrace();
             return "Doymuş sıvı yoğunluğu hesaplanamadığı için hesap yapılamıyor.";
         }
+
         double ro = ro_Saturated/(1-C*(Math.log((B+P)/(B+Pvapor))));
+        if(Pvapor>P){
+            ro = ro_Saturated;
+        }
 
         return ""+ro;
     }
@@ -2516,9 +2505,12 @@ return ""+k_high_pressure;
             e2.printStackTrace();
             return 0.0;
         }
-        double X=Math.log((B+P)/(B+Pvapor));
-        System.out.println("X="+X);
+
         double ro = ro_Saturated/(1-C*(Math.log((B+P)/(B+Pvapor))));
+        if(Pvapor>P){
+            ro = ro_Saturated;
+        }
+
         return ro;
     }
 
@@ -2550,6 +2542,9 @@ return ""+k_high_pressure;
             return 0.0;
         }
         double ro = ro_Saturated/((A*Pc+Math.pow(C,Math.pow(D-Tr,B))*(P-Pvapor))/(A*Pc+C*(P-Pvapor)));
+        if(Pvapor>P){
+            ro = ro_Saturated;
+        }
         return ro;
     }
     public String ro_Chang_and_Zhao(double P){
@@ -2577,10 +2572,65 @@ return ""+k_high_pressure;
             return "Doymuş sıvı yoğunluğu hesaplanamadığı için hesap yapılamıyor.";
         }
         double ro = ro_Saturated/((A*Pc+Math.pow(C,Math.pow(D-Tr,B))*(P-Pvapor))/(A*Pc+C*(P-Pvapor)));
+        if(Pvapor>P){
+            ro = ro_Saturated;
+        }
         return ""+ro;
     }
+    public String ro_mix_Spencer_and_Danner(double T,double P,String name[],double x[]){
 
-    public String ro_mix_Aalto(double T,double P,String name[],double x[]){
+        double w, Tc,Pc,Vc,M; // Pc:bar,Tc:Kelvin,Vc: ml/mol
+        double Vcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
+        double Tcm=0.0;
+        double wsrkm=0; // wsrk mixture: Soawe Redlich Kwong accentric factor: direkt w değerini kullanmak da önemli hatalara neden olmaz.
+        // O yüzden ben onu kullanacağım.
+        double K1=0.0,K2=0.0,K3=0.0;
+        double Ru = 8.314; // kJ/(kgK)
+        double Z_RAm=0.0;
+        double Z_RAi;
+        double Vm; // Bubble point için hesaplanacak olan özgül hacim. Vsaturated yani
+        double L1 = 0;
+        double total_mole;
+        double Molar_mass_mixture=0;
+        for(int i=0;i<name.length;i++){
+            critical = values.get_critical(name[i]);
+            w = critical[7]; // accentric factor
+            Tc = critical[2]; // Kelvin
+            Pc = critical[3]; // bar
+            Vc = critical[4]; // ml/mol
+            M = critical[0]; // g/mol
+
+            if(w == 0 || Tc == 0 || Pc == 0 || Vc == 0 || M ==0){
+                return "w,Tc,Pc,Vc,M değerlerinden en az biri bilinmediği için hesaplama yapılamıyor";
+            }
+
+            Molar_mass_mixture += x[i]*M;
+            K1 += x[i]*Vc;
+            K2 += x[i]*Math.pow(Vc,0.6666);
+            K3 += x[i]*Math.pow(Vc,0.3333);
+            wsrkm += x[i]*Math.pow(w,0.5);
+            Tcm += x[i]*Math.pow(Vc*Tc,0.5);
+            Z_RAi = 0.29056-0.08775*w;
+            Z_RAm += x[i]*Z_RAi;
+            L1 += x[i]*Tc/Pc;
+
+
+        }
+        Vcm = 0.25*(K1+3*K2*K3); // Hankinson and Thomson (1979), özgül hacim
+        wsrkm = wsrkm*wsrkm;
+        Tcm= Tcm*Tcm/Vcm;        // Hankinson and Thomson (1979)
+        double Pcm = (0.291-0.08*wsrkm)*Ru*Tcm/Vcm*1000; // kPa
+        double Trm=T/Tcm;  // Treduced mixture
+        // Spencer and Danner ( Kabarcıklanma noktasındaki özgül hacim hesaplanıyor. Yani doymuş karisim icin olan.
+        Vm = Ru*L1*Math.pow(Z_RAm,1+Math.pow(1-Trm,0.2857))*10; // Burada diğer hesap yöntemlerine göre bir farklı çıkıyor. 10 ile çarpmak
+        // değeri düzeltir gibi oluyor. R yerine 8.314 yerine 83.14 kullanmışlar. Ben mi birimlerde hata yaptım onlarda mı bir sorun var bilemedim.
+        // Ama başka yöntemler ile hesaplanınca da onların değerine yakın çıkıyor. O yüzden 10 ile çarpıverdim.
+        //  Vm = 116.43;
+        return ""+1/(Vm/Molar_mass_mixture /1000);
+    }
+
+    public String ro_mix_Hankinson_and_Thomson(double T,double P,String name[],double x[]){
+        //Bu metot  algoritmalara  ve tez metnine eklenmeyecek.
 
         double w, Tc,Pc,Vc,M; // Pc:bar,Tc:Kelvin,Vc: ml/mol
         double Vcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
@@ -2619,9 +2669,9 @@ return ""+k_high_pressure;
 
 
         }
-        Vcm = 0.25*(K1+3*K2*K3);
+        Vcm = 0.25*(K1+3*K2*K3); // Hankinson and Thomson (1979), özgül hacim
         wsrkm = wsrkm*wsrkm;
-        Tcm= Tcm*Tcm/Vcm;
+        Tcm= Tcm*Tcm/Vcm;        // Hankinson and Thomson (1979)
         double Pcm = (0.291-0.08*wsrkm)*Ru*Tcm/Vcm*1000; // kPa
         double Trm=T/Tcm;  // Treduced mixture
         // Spencer and Danner
@@ -2651,8 +2701,119 @@ return ""+k_high_pressure;
         double V_ikinciyol ;
 
         return ""+1/(V/Molar_mass_mixture /1000);
+    }
+
+    public String ro_mix_Aalto(double T,double P,String name[],double x[]){
+
+        double w, Tc,Pc,Vc,M; // Pc:bar,Tc:Kelvin,Vc: ml/mol
+        double Vcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
+        double Tcm=0.0;
+        double wsrkm=0; // wsrk mixture: Soawe Redlich Kwong accentric factor: direkt w değerini kullanmak da önemli hatalara neden olmaz.
+        // O yüzden ben onu kullanacağım.
+        double K1=0.0,K2=0.0,K3=0.0;
+        double Ru = 8.314; // kJ/(kgK)
+        double Z_RAm=0.0;
+        double Z_RAi;
+        double Vm; // Bubble point için hesaplanacak olan özgül hacim. Vsaturated yani
+        double L1 = 0;
+        double total_mole;
+        double Molar_mass_mixture=0;
+        for(int i=0;i<name.length;i++){
+            critical = values.get_critical(name[i]);
+            w = critical[7]; // accentric factor
+            Tc = critical[2];
+            Pc = critical[3]; // bar
+            Vc = critical[4]; // ml/mol
+            M = critical[0]; // ml/mol
+
+            if(w == 0 || Tc == 0 || Pc == 0 || Vc == 0 || M ==0){
+                return "w,Tc,Pc,Vc,M değerlerinden en az biri bilinmediği için hesaplama yapılamıyor";
+            }
+            Molar_mass_mixture += x[i]*M;
+            K1 += x[i]*Vc;
+            K2 += x[i]*Math.pow(Vc,0.6666);
+            K3 += x[i]*Math.pow(Vc,0.3333);
+            wsrkm += x[i]*Math.pow(w,0.5);
+            Tcm += x[i]*Math.pow(Vc*Tc,0.5);
+            Z_RAi = 0.29056-0.08775*w;
+            Z_RAm += x[i]*Z_RAi;
+            L1 += x[i]*Tc/Pc;
+        }
+        Vcm = 0.25*(K1+3*K2*K3); // Hankinson and Thomson (1979), özgül hacim
+        wsrkm = wsrkm*wsrkm;
+        Tcm= Tcm*Tcm/Vcm;        // Hankinson and Thomson (1979)
+        double Pcm = (0.291-0.08*wsrkm)*Ru*Tcm/Vcm*1000; // kPa
+        double Trm=T/Tcm;  // Treduced mixture
+        // Spencer and Danner
+        Vm = Ru*L1*Math.pow(Z_RAm,1+Math.pow(1-Trm,0.2857))*10; // Burada diğer hesap yöntemlerine göre bir farklı çıkıyor. 10 ile çarpmak
+        // değeri düzeltir gibi oluyor. R yerine 8.314 yerine 83.14 kullanmışlar. Ben mi birimlerde hata yaptım onlarda mı bir sorun var bilemedim.
+        // Ama başka yöntemler ile hesaplanınca da onların değerine yakın çıkıyor. O yüzden 10 ile çarpıverdim.
+        //  Vm = 116.43;
+        double Pvpr0=6.13144-6.30662/Trm-1.55663*Math.log(Trm)+0.17518*Math.pow(Trm,6.0); // Pvpr hesaplanırken kullanılacak.
+        double Pvpr1=2.99938-3.08508/Trm+1.26573*Math.log(Trm)+0.08560*Math.pow(Trm,6.0); // Pvpr hesaplanırken kullanılacak.
+        double Pvpr = Math.pow(Math.E,Pvpr0+wsrkm*Pvpr1); // Pvapor reduced
+        double a0=-170.335,a1 = -28.578, a2=124.809,a3=-55.5393,a4=130.01,b0=0.164813,b1=-0.0914427,C=Math.E,D=1.00588;
+        double A = a0+a1*Trm+a2*Trm*Trm*Trm+a3*Trm*Trm*Trm*Trm*Trm*Trm+a4/Trm;
+        double B = b0+wsrkm*b1;
+        double Pvp=Pvpr*Pcm; // Pref gibi kullanılacak. Pbubble basıncı da denilebilir.
+        double V = Vm*(A*Pcm+Math.pow(C,Math.pow(D-Trm,B))*(P-Pvp))/(A*Pcm+C*(P-Pvp));
+        if ( P < Pvp ){
+            V = Vm;
+        }
+        return ""+1/(V/Molar_mass_mixture /1000);
+    }
+    public String Pvapor_mix_Aalto(double T,String name[],double x[]){
+
+        // Yontemde sadece Pvp degerini dondurmek istiyorum. Gereksiz hesaplamalar olabilir. Ama yanlis bir sey slmemek icin dokunmuyorum.
+
+        double w, Tc,Pc,Vc,M; // Pc:bar,Tc:Kelvin,Vc: ml/mol
+        double Vcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
+        double Tcm=0.0;
+        double wsrkm=0; // wsrk mixture: Soawe Redlich Kwong accentric factor: direkt w değerini kullanmak da önemli hatalara neden olmaz.
+        // O yüzden ben onu kullanacağım.
+        double K1=0.0,K2=0.0,K3=0.0;
+        double Ru = 8.314; // kJ/(kgK)
+        double Z_RAm=0.0;
+        double Z_RAi;
+        double Vm; // Bubble point için hesaplanacak olan özgül hacim. Vsaturated yani
+        double L1 = 0;
+        double total_mole;
+        double Molar_mass_mixture=0;
+        for(int i=0;i<name.length;i++){
+            critical = values.get_critical(name[i]);
+            w = critical[7]; // accentric factor
+            Tc = critical[2];
+            Pc = critical[3]; // bar
+            Vc = critical[4]; // ml/mol
+            M = critical[0]; // ml/mol
+
+            if(w == 0 || Tc == 0 || Pc == 0 || Vc == 0 || M ==0){
+                return "w,Tc,Pc,Vc,M değerlerinden en az biri bilinmediği için hesaplama yapılamıyor";
+            }
+            Molar_mass_mixture += x[i]*M;
+            K1 += x[i]*Vc;
+            K2 += x[i]*Math.pow(Vc,0.6666);
+            K3 += x[i]*Math.pow(Vc,0.3333);
+            wsrkm += x[i]*Math.pow(w,0.5);
+            Tcm += x[i]*Math.pow(Vc*Tc,0.5);
+            Z_RAi = 0.29056-0.08775*w;
+            Z_RAm += x[i]*Z_RAi;
+            L1 += x[i]*Tc/Pc;
+        }
+        Vcm = 0.25*(K1+3*K2*K3); // Hankinson and Thomson (1979), özgül hacim
+        wsrkm = wsrkm*wsrkm;
+        Tcm= Tcm*Tcm/Vcm;        // Hankinson and Thomson (1979)
+        double Pcm = (0.291-0.08*wsrkm)*Ru*Tcm/Vcm*1000; // kPa
+        double Trm=T/Tcm;  // Treduced mixture
+        double Pvpr0=6.13144-6.30662/Trm-1.55663*Math.log(Trm)+0.17518*Math.pow(Trm,6.0); // Pvpr hesaplanırken kullanılacak.
+        double Pvpr1=2.99938-3.08508/Trm+1.26573*Math.log(Trm)+0.08560*Math.pow(Trm,6.0); // Pvpr hesaplanırken kullanılacak.
+        double Pvpr = Math.pow(Math.E,Pvpr0+wsrkm*Pvpr1); // Pvapor reduced
+        double a0=-170.335,a1 = -28.578, a2=124.809,a3=-55.5393,a4=130.01,b0=0.164813,b1=-0.0914427,C=Math.E,D=1.00588;
+
+        double Pvp=Pvpr*Pcm; // Pref gibi kullanılacak. Pbubble basıncı da denilebilir.
 
 
+        return ""+Pvp;
     }
 
     public String ro_mix_molar(String ro[],double x[],double M[]) {
@@ -3583,7 +3744,7 @@ return ""+k_high_pressure;
                 {"ro,yoğunluk:",ro,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"ro,yoğunluk(diğer bir yöntem):",ro2,"kg/m^3",ro_c[4]+"-"+ro_c[5]},
                 {"ro,Rackett:",ro_Rackett,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"ro,Yamada and Gunn:",ro_Yamada_Gunn,"kg/m^3",ro_c[4]+"-"+ro_c[5]},
                 {"ro,HBT:",ro_HBT,"kg/m^3",ro_c[4]+"-"+ro_c[5]}, {"ro,Tait:",ro_Tait,"kg/m^3",ro_c[4]+"-"+ro_c[5]},{"ro,Chang and Zhao:",ro_Chand_and_Zhao,"kg/m^3",ro_c[4]+"-"+ro_c[5]},
-                {"v,Tait:",v_Tait,"m^3/kg",ro_c[4]+"-"+ro_c[5]},{"g, gibbs serbest enerjisi:",g,"kJ/kmol",""},
+                {"v,Tait:",v_Tait,"m^3/kg",ro_c[4]+"-"+ro_c[5]},
                 {"viskozite:",vis," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"vis, Przezdziecki and Sridhar:",vis_Przezdziecki_and_Sridhar," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
                 {"vis, Lucas:",vis_Lucas," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"vis, Letsou and Sitel:",vis_Letsou_and_Stiel," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
                 {"viskozite,GCM:",vis_GCM," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
@@ -3725,7 +3886,13 @@ return ""+k_high_pressure;
         }
 
         surten_mix = sur_tension_mixtures(sur_tension,x,molar_mass,ro);
+
+        Pvapor_mix = Pvapor_mix_Aalto(T,liquid_names,x);
+
         ro_mix = ro_mix_molar(ro,x,molar_mass);
+        ro_mix_Aalto = ro_mix_Aalto(T,P,liquid_names,x);
+        ro_mix_Spencer_and_Danner = ro_mix_Spencer_and_Danner(T,P,liquid_names,x);
+
         vis_mix = vis_mix_GN2(vis,x);
         vis_mix_Teja_and_Rice = vis_Teja_and_Rice(liquid_names,x,P);
         k_mix_Filippov = k_mix_Filippov_x(T,liquid_names,x);
@@ -3736,7 +3903,6 @@ return ""+k_high_pressure;
         cp_mix=cp_mix2(cp,x);
         cp_mix_JamiesonandCartwright = cp_mix_JamiesonandCartwright(liquid_names,x,T);
         cp_mix_Teja = cp_mix_Teja(liquid_names,x,T);
-        ro_mixture_Aalto = ro_mix_Aalto(T,P,liquid_names,x);
         surten_mix_WeinaugKatz=surten_mix_WeinaugKatz(liquid_names,x,T,P);
         surten_mix_Hadden = surten_mix_Hadden(liquid_names,x,T,-1.0);
         surten_mix_ZuoandStendby_Kays = surten_mix_ZuoandStendby_Kays(liquid_names,x,T);
@@ -3744,7 +3910,7 @@ return ""+k_high_pressure;
         surten_mix_WeinaugKatz2 = surten_mix_WeinaugKatz2(liquid_names,x,T);
         double kinematic_vis = 0;
         try {
-            kinematic_vis = Double.parseDouble(vis_mix_Teja_and_Rice)/ Double.parseDouble(ro_mixture_Aalto);
+            kinematic_vis = Double.parseDouble(vis_mix_Teja_and_Rice)/ Double.parseDouble(ro_mix_Aalto);
         }
         catch (NumberFormatException e ) {
             e.printStackTrace();
@@ -3781,11 +3947,13 @@ return ""+k_high_pressure;
 //        };
 
         Object result[][]= {{"T,sıcaklık:",T,"K",""},{"P,basınç:",P,"kPa",""},
+                {"Pvapor_mix,kabarcıklanma basıncı:",Pvapor_mix,"kPa",""},
                 {"cp_mix,sabit basınçta özgül ısı:",cp_mix,"kJ/kmolK",cpTmin+"-"+cpTmax},
                 {"cp_mix,sabit basınçta özgül ısı, Jamieson ve Cartwright:",cp_mix_JamiesonandCartwright,"kJ/kmolK",cpTmin+"-"+cpTmax},
                 {"cp_mix,sabit basınçta özgül ısı, Teja:",cp_mix_Teja,"kJ/kmolK",cpTmin+"-"+cpTmax},
-                {"ro_mix,yoğunluk:",ro_mix,"kg/m^3",roTmin+"-"+roTmax},
-                {"ro_mix_Aalto:",ro_mixture_Aalto," kg/m^3",roTmin+"-"+roTmax},
+                {"ro_mix,toplam kütle ve toplam hacim ile hesap:",ro_mix,"kg/m^3",roTmin+"-"+roTmax},
+                {"ro_mix_Aalto,hesaplamalara basınç dahil:",ro_mix_Aalto," kg/m^3",roTmin+"-"+roTmax},
+                {"ro_mix_Spencer_and_Danner, kabarcıklanma basıncı:",ro_mix_Spencer_and_Danner," kg/m^3",roTmin+"-"+roTmax},
                 {"surten_mix_Hadden,yüzey gerilimi:",surten_mix_Hadden,"N/m",stTmin+"-"+stTmax},
                 {"surten_mix_WeinaugKatz,yüzey gerilimi:",surten_mix_WeinaugKatz,"N/m",stTmin+"-"+stTmax},
                 {"surten_mix_WeinaugKatz2,yüzey gerilimi_Parachor hesabı farklı:",surten_mix_WeinaugKatz2,"N/m",stTmin+"-"+stTmax},

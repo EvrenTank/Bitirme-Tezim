@@ -33,28 +33,28 @@ public class createTable_for_comparision extends JPanel {
     String properties[] = {"Density (kg/m^3)","Surface tension (N/m)","Thermal conductivity (W/(mK))","Viscosity (Pa.s)",
             "Specific heat (kJ/(kmolK))","hbuharlasma (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};
     String liquids[] = {"Ar_argon","CH4_methane","C2H2F4_1112tetrafluoroethane","C2H3F3_111trifluoroethane","C2H4F2_11difluoroethane",
-            "C2HF5_pentafluoroethane","C2HClF4_2chloro1112tetrafluoroethane","C2HCl2F3_22dichloro111trifluoroethane","C2H2F4_1112tetrafluoroethane",
+            "C2HF5_pentafluoroethane","C2HClF4_2chloro1112tetrafluoroethane","C2HCl2F3_22dichloro111trifluoroethane",
             "C3H8_propane","C3H6_propylene","C4H10_butane","C4H10_isobutane","CCl2F2_dichlorodifluoromethane","CH2F2_difluoromethane",
             "CHClF2_chlorodifluoromethane","CHF3_fluoroform","C2H6_ethane","CO2_carbondioxide","N2_nitrogen","NH3_ammonia",
             "O2_oxygen","He_helium4","H2O_water"};
     JComboBox <String> liquid_list=new JComboBox<String>(liquids);
     JComboBox <String> property_list=new JComboBox<String>(properties);
-    String liquid = "CH4_methane";
+    String liquid = "Ar_argon";
     String property = "Density";
-    String column[] = {"T(Kelvin)","Tablo","Katsayılar(%Hata)","Rackett(%Hata)","Yamada and Gunn(%Hata)","HBT(%Hata)"};
+    String column[] ={"T(Kelvin)","Tablo","Katsayılar"," % Hata","Rackett","% Hata","Yamada and Gunn","% Hata","HBT","% Hata"};;
     Object row[][];
     JScrollPane scrollPane;
+
     public createTable_for_comparision(){
         this.setLayout(null);
         liquid_list.setBounds(20,50,300,50);
         property_list.setBounds(350,50,300,50);
         this.add(liquid_list);
         this.add(property_list);
-
          double x_values[],y_values[];
-
         row = density_values_for_Table(liquid);
-        label.setBounds(235,130,300,50);
+        label.setBounds(35,130,500,50);
+        label.setText("Liquid: "+liquid + "   Property:  "+property);
         this.add(label);
         table=new JTable(row,column);
         resizeTableColumnWidth();
@@ -69,8 +69,8 @@ public class createTable_for_comparision extends JPanel {
                 createTable_for_comparision.this.remove(scrollPane);
                 liquid = (String) liquid_list.getSelectedItem();
                 property = (String) property_list.getSelectedItem();
-                label.setText("Liquid: "+liquid + " Property:"+property);
-                label.setBounds(100,30,200,50);
+                label.setText("Liquid: "+liquid + "   Property:  "+property);
+                label.setBounds(35,130,500,50);
                 createTable_for_comparision.this.add(label);
                 row = calculate(liquid,property);
                 table = new JTable(row,column);
@@ -158,7 +158,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double surten_c[]=values.getsurtension(name);
-        String metot_names[]= {"T(Kelvin)","Tablo","Katsayılar (% Hata)","Brock ve Bird(Yüzde Hata)","Pitzer(% Hata)","Zuo ve Stendby( % Hata)","Sastri ve Rao(% Hata)"};
+        String metot_names[]= {"T(Kelvin)","Tablo","Katsayılar"," % Hata","Brock ve Bird","% Hata","Pitzer","% Hata","Zuo ve Stendby","% Hata","Sastri ve Rao","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         double sigma; // Yüzey gerilimi Birimi: N/m
@@ -169,6 +169,7 @@ public class createTable_for_comparision extends JPanel {
         symbol.setDecimalSeparator('.');
         NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
         NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
+        NumberFormat formatter3 = new DecimalFormat("#0.0000000",symbol);
         for(int i=0;i<table_Values.length;i++){
             //row[i][1]=String.format("%,.5f", sigma); Boyle de formatlanabilir. Bircok yontem var.
             T = table_Values[i][1];
@@ -176,22 +177,27 @@ public class createTable_for_comparision extends JPanel {
             sigma = table_Values[i][18]; // Birimi mN/m. Bunu N/m yapmak icin 1000'e bolecegim.
             sigma = sigma/1000; // Birimini degistirdim.
             sigma_referans = sigma;
-            row[i][1]=formatter.format(sigma);
+            row[i][1]=formatter3.format(sigma);
             sigma = liquids.sur_tension(name,T);
             percent_error = (sigma - sigma_referans) / sigma_referans*100;
-            row[i][2]=formatter.format(sigma) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(sigma) ;
+            row[i][3]=formatter2.format(percent_error);
             sigma = liquids.surten_BrockandBird(name,T);
             percent_error = (sigma-sigma_referans)/sigma_referans*100;
-            row[i][3]=formatter.format(sigma) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][4]=formatter.format(sigma) ;
+            row[i][5]=formatter2.format(percent_error);
             sigma = liquids.surten_Pitzer(name,T);
             percent_error = (sigma-sigma_referans)/sigma_referans*100;
-            row[i][4]=formatter.format(sigma) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][6]=formatter.format(sigma);
+            row[i][7]=formatter2.format(percent_error);
             sigma = liquids.surten_ZuoandStendby(name,T);
             percent_error = (sigma-sigma_referans)/sigma_referans*100;
-            row[i][5]=formatter.format(sigma) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][8]=formatter.format(sigma) ;
+            row[i][9]=formatter2.format(percent_error);
             sigma = liquids.surten_SastriandRao(name,T);
             percent_error = (sigma-sigma_referans)/sigma_referans*100;
-            row[i][6]=formatter.format(sigma) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][10]=formatter.format(sigma) ;
+            row[i][11]=formatter2.format(percent_error);
            /* try{
                 Pdoyma = Double.parseDouble(liquids.Pvapor(name,T));//Bundan dolayi try icine aldim.
                 sigma = liquids.surten_MacleodandSugden(name,T,Pdoyma,"double");
@@ -211,7 +217,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double vis_c[]=values.getvis(name);
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar(% Hata)","Przezdziecki and Sridhar(% Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata","Przezdziecki and Sridhar","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -231,10 +237,12 @@ public class createTable_for_comparision extends JPanel {
             row[i][1]=formatter.format(vis);
             vis = liquids.vis(name,T);
             percent_error = (vis-vis_referans)/vis_referans*100;
-            row[i][2]=formatter.format(vis) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(vis) ;
+            row[i][3]=formatter2.format(percent_error);
             vis = liquids.vis_Przezdziecki_and_Sridhar(name,T,"double");
             percent_error = (vis-vis_referans)/vis_referans*100;
-            row[i][3]=formatter.format(vis) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][4]=formatter.format(vis);
+            row[i][5]=formatter2.format(percent_error);
 //            try{
 //                Pdoy = Double.parseDouble(liquids.Pvapor(name,T));
 //                vis = liquids.vis_Lucas(name,T,Pdoy,"double");
@@ -256,7 +264,7 @@ public class createTable_for_comparision extends JPanel {
         double cp_c[]=values.getcp(name);
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar( % Hata)","CSP(% Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar"," % Hata","CSP","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -276,10 +284,12 @@ public class createTable_for_comparision extends JPanel {
             row[i][1]=formatter.format(cp);
             cp = liquids.cp(name,T);
             percent_error = (cp-cp_referans)/cp_referans*100;
-            row[i][2]=formatter.format(cp) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(cp);
+            row[i][3]=formatter2.format(percent_error);
             cp = liquids.cp_CSP(name,T,"double");
             percent_error = (cp-cp_referans)/cp_referans*100;
-            row[i][3]=formatter.format(cp) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][4]=formatter.format(cp);
+            row[i][5]=formatter2.format(percent_error);
         }
         return row;
     }
@@ -289,7 +299,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double cp_c[]=values.getro(name);
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar(% Hata)","Rackett(% Hata)","Yamada and Gunn(% Hata)","HBT(% Hata)"}; // HBT: Hankinson and Thomson
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar"," % Hata","Rackett","% Hata","Yamada and Gunn","% Hata","HBT","% Hata"}; // HBT: Hankinson and Thomson
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -309,16 +319,20 @@ public class createTable_for_comparision extends JPanel {
             ro = liquids.ro(name,T);
             percent_error = (ro-ro_referans)/ro_referans*100;
             // Simdilik katsayi ile hesaplanann degerler referans olarak kullanilacak.
-            row[i][2]=formatter.format(ro) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(ro) ;
+            row[i][3]=formatter2.format(percent_error);
             ro = liquids.ro_Rackett(name,T);
             percent_error = (ro-ro_referans)/ro_referans*100;
-            row[i][3]=formatter.format(ro) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][4]=formatter.format(ro);
+            row[i][5]=formatter2.format(percent_error);
             ro = liquids.ro_Yamada_Gunn(name,T);
             percent_error = (ro-ro_referans)/ro_referans*100;
-            row[i][4]=formatter.format(ro) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][6]=formatter.format(ro);
+            row[i][7]=formatter2.format(percent_error);
             ro = liquids.ro_HBT(name,T);
             percent_error = (ro-ro_referans)/ro_referans*100;
-            row[i][5]=formatter.format(ro) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][8]=formatter.format(ro);
+            row[i][9]=formatter2.format(percent_error);
         }
         return row;
     }
@@ -328,7 +342,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double cp_c[]=values.getk(name);
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar( % Hata)","Latini( % Hata)","Sastri( % Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata","Latini","% Hata","Sastri","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -348,13 +362,16 @@ public class createTable_for_comparision extends JPanel {
             row[i][1]=formatter.format(k);
             k = liquids.k(name,T);
             percent_error = (k-k_referans)/k_referans*100;
-            row[i][2]=formatter.format(k) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(k);
+            row[i][3]=formatter2.format(percent_error);
             k = liquids.k_Latini(name,T);
             percent_error = (k-k_referans)/k_referans*100;
-            row[i][3]=formatter.format(k) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][4]=formatter.format(k);
+            row[i][5]=formatter2.format(percent_error);
             k = liquids.k_Sastri(name,T);
             percent_error = (k-k_referans)/k_referans*100;
-            row[i][4]=formatter.format(k) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][6]=formatter.format(k);
+            row[i][7]=formatter2.format(percent_error);
         }
         return row;
     }
@@ -365,7 +382,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar( % Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata"};
         column = metot_names;
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
@@ -390,7 +407,8 @@ public class createTable_for_comparision extends JPanel {
             row[i][1]=formatter.format(hvap);
             hvap = liquids.hvap(name,T);
             percent_error = (hvap-hvap_referans)/hvap_referans*100;
-            row[i][2]=formatter.format(hvap) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(hvap);
+            row[i][3]=formatter2.format(percent_error);
         }
         return row;
     }
@@ -403,7 +421,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar (% Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata"};
         column = metot_names;
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
@@ -431,7 +449,8 @@ public class createTable_for_comparision extends JPanel {
             h2 = liquids.h(name,T2);
             deltah = h2-h1;// Bunun birimi zaten kJ/kmol. O yuzden birimine dokunmuyorum.
             percent_error = (deltah-deltah_referans)/deltah_referans*100;
-            row[i][2]=formatter.format(deltah) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(deltah);
+            row[i][3]=formatter2.format(percent_error);
         }
         return row;
     }
@@ -444,7 +463,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar (% Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata"};
         column = metot_names;
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
@@ -473,7 +492,8 @@ public class createTable_for_comparision extends JPanel {
             deltas = s2-s1;// Bunun birimi  kJ/(kgK).  Ben bunu kJ/kmol yapacagim.
             deltas = deltas * M;
             percent_error = (deltas-deltas_referans)/deltas_referans*100;
-            row[i][2]=formatter.format(deltas) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(deltas);
+            row[i][3]=formatter2.format(percent_error);
         }
         return row;
     }
@@ -485,7 +505,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar (% Hata)"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -505,7 +525,8 @@ public class createTable_for_comparision extends JPanel {
             row[i][1]=formatter.format(Pvapor);
             Pvapor = liquids.Pvapor(name,T,"double");
             percent_error = (Pvapor-Pvapor_referans)/Pvapor_referans*100;
-            row[i][2]=formatter.format(Pvapor) + " (%" + formatter2.format(percent_error) + ")";
+            row[i][2]=formatter.format(Pvapor);
+            row[i][3]=formatter2.format(percent_error);
         }
         return row;
     }
