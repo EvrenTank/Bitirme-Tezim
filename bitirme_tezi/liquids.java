@@ -948,6 +948,20 @@ public class liquids {
 
         double k_high_pressure = (1+ Qfinal*Math.pow(Pr,0.7))*k_saturated;
 
+        double Pvapor=0; // Birimi kPa
+        Pvapor_c = values.getPvapor(name);
+        try {
+            Pvapor = Double.parseDouble(Pvapor(T));
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            return 0; //Pbuhar bilinmeli ki sivi compressed mi diye bakabileyim.
+        }
+        if(Pvapor !=0 && Pvapor >= P){
+            k_high_pressure = k_saturated; // Eger girilen basinc Pbuhardan dusuk ise zaten compressed olmayacagi icin
+            // direkt doymus deger alinacak.
+        }
+
         return k_high_pressure;
     }
     public String k_Missenard(String name,double T,double P){
@@ -1028,6 +1042,20 @@ public class liquids {
 
         double k_high_pressure = (1+ Qfinal*Math.pow(Pr,0.7))*k_saturated;
 
+        double Pvapor=0; // Birimi kPa
+        Pvapor_c = values.getPvapor(name);
+        try {
+            Pvapor = Double.parseDouble(Pvapor(T));
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            return "Pbuhar bilinmediği için hesap yapılamıyor."; //Pbuhar bilinmeli ki sivi compressed mi diye bakabileyim.
+        }
+        if(Pvapor !=0 && Pvapor >= P){
+            k_high_pressure = k_saturated; // Eger girilen basinc Pbuhardan dusuk ise zaten compressed olmayacagi icin
+            // direkt doymus deger alinacak.
+        }
+
 return ""+k_high_pressure;
     }
 
@@ -1036,6 +1064,31 @@ return ""+k_high_pressure;
         // Bu metot yalnızca doymuş hidrokarbonlar ve aromatikler için geçerlidir.
         double A,A0,A1=0,Tb,Tc,Pc,M,Tr,Pr,Asharp,alfa,beta,gamma; // A1 değerini initialize etmem gerektiği için değer verdim.
         double k=0;
+        double k_saturated;
+        try{
+            k_saturated = Double.parseDouble(k());
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            return " Doyma basıncı için olan k değeri hesaplanamadı.";
+        }
+
+        double Pvapor=0; // Birimi kPa
+        Pvapor_c = values.getPvapor(name);
+        try {
+            Pvapor = Double.parseDouble(Pvapor(T));
+        }
+        catch (NumberFormatException e){
+            e.printStackTrace();
+            return "Pbuhar bilinmediği için hesap yapılamıyor."; //Pbuhar bilinmeli ki sivi compressed mi diye bakabileyim.
+        }
+        if(Pvapor !=0 && Pvapor >= P){
+            k = k_saturated; // Eger girilen basinc Pbuhardan dusuk ise zaten compressed olmayacagi icin
+            // direkt doymus deger alinacak.
+            return ""+k;
+        }
+
+
         M=critical[0];
         Tb=critical[1];
         Tc=critical[2];
@@ -1269,13 +1322,7 @@ return ""+k_high_pressure;
         beta=organiccompounds_classification[2];
         gamma=organiccompounds_classification[3];
         k_c = values.getk(name[0]);
-        try{
-            k1 = Double.parseDouble(k());
-           // System.out.println("k1="+k1);
-        }
-        catch (NumberFormatException e){
-            e.printStackTrace();
-            return " Karışımdaki sıvılardan birinin ısıl iletkenliği hesaplamadığı için hesap yapılamıyor";}
+
         if( M == 0 || Tb == 0 || Tc == 0 ){
             return "M, Tb, Tc değerlerinden en az biri bilinmiyor";}
         if(Asharp == 0  || beta == 0 || gamma == 0){
@@ -1296,13 +1343,7 @@ return ""+k_high_pressure;
         gamma=organiccompounds_classification[3];
         k_c = values.getk(name[1]);
 
-        try{
-            k2 = Double.parseDouble(k());
-           // System.out.println("k2="+k2);
-        }
-        catch (NumberFormatException e){
-            e.printStackTrace();
-            return " Karışımdaki sıvılardan birinin ısıl iletkenliği hesaplamadığı için hesap yapılamıyor";}
+
         if( M == 0 || Tb == 0 || Tc == 0 ){
             return "M, Tb, Tc değerlerinden en az biri bilinmiyor";}
         if(Asharp == 0  || beta == 0 || gamma == 0){
@@ -1320,86 +1361,7 @@ return ""+k_high_pressure;
         }
         return ""+kmix;
     }
-    public String k_mix_Baroncini_compressed(String name[], double x[],double P){
-        // Baroncini 1981a,1983,1984
 
-        if( name.length > 2) {
-            return " Bu metot ikili karışımlar için uygundur";
-        }
-        double A,Tb,Tc,Pc,M,Trm,Pr,Asharp,alfa,beta,gamma; // A1 değerini initialize etmem gerektiği için değer verdim.
-        double kmix=0;
-        double Tc1, Tc2;
-        double Tcm=0;
-        double x1=x[0];
-        double x2=x[1];
-        double k1, k2;
-        double A1,A2;
-        critical = values.get_critical(name[0]);
-        M=critical[0];
-        Tb=critical[1];
-        Tc=critical[2];
-        Tc1 = Tc;
-        Pc = critical[3]*100; // kPa yaptım birimini
-        Pr=P/Pc;
-        organiccompounds_classification=values.get_orgmat_classification(name[0]);
-        Asharp=organiccompounds_classification[0];
-        alfa=organiccompounds_classification[1];
-        beta=organiccompounds_classification[2];
-        gamma=organiccompounds_classification[3];
-        k_c = values.getk(name[0]);
-
-        try{
-            k1 = Double.parseDouble(k_Missenard(name[0],T,P ));
-           // System.out.println("k1="+k1);
-        }
-        catch (NumberFormatException e){
-            e.printStackTrace();
-            return " Karışımdaki sıvılardan birinin ısıl iletkenliği hesaplamadığı için hesap yapılamıyor";}
-        if( M == 0 || Tb == 0 || Tc == 0 ){
-            return "M, Tb, Tc değerlerinden en az biri bilinmiyor";}
-        if(Asharp == 0  || beta == 0 || gamma == 0){
-            return "Sıvılardan biri organik değil veya ailesi bilinmiyor";}
-        A1 = Asharp* Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
-
-        critical = values.get_critical(name[1]);
-        M=critical[0];
-        Tb=critical[1];
-        Tc=critical[2];
-        Tc2 = Tc;
-        Pc = critical[3]*100; // kPa yaptım birimini
-        Pr=P/Pc;
-        organiccompounds_classification=values.get_orgmat_classification(name[1]);
-        Asharp=organiccompounds_classification[0];
-        alfa=organiccompounds_classification[1];
-        beta=organiccompounds_classification[2];
-        gamma=organiccompounds_classification[3];
-        k_c = values.getk(name[1]);
-
-        try{
-            k2= Double.parseDouble(k_Missenard(name[1],T,P ));
-            //System.out.println("k2="+k2);
-        }
-        catch (NumberFormatException e){
-            e.printStackTrace();
-            return " Karışımdaki sıvılardan birinin ısıl iletkenliği hesaplamadığı için hesap yapılamıyor";}
-        if( M == 0 || Tb == 0 || Tc == 0 ){
-            return "M, Tb, Tc değerlerinden en az biri bilinmiyor";}
-        if(Asharp == 0  || beta == 0 || gamma == 0){
-            return "Sıvılardan biri organik değil veya ailesi bilinmiyor";}
-        A2= Asharp* Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
-
-        Tcm = x1*Tc1+x2*Tc2;
-        Trm = T/Tcm;
-
-        if ( A1 <= A2 ){
-            kmix = (x1*x1*A1+x2*x2*A2+2.2*x1*x2*Math.pow(A1*A1*A1/A2,0.5))*Math.pow(1-Trm,0.38)/Math.pow(Trm,0.16667);
-        }
-        if ( A2 <= A1 ){
-            kmix = (x1*x1*A1+x2*x2*A2+2.2*x1*x2*Math.pow(A2*A2*A2/A1,0.5))*Math.pow(1-Trm,0.38)/Math.pow(Trm,0.16667);
-        }
-
-        return ""+kmix;
-    }
 
     // Li 1976
     public String k_mix_Li(String names[],double x[],double T){
@@ -1507,8 +1469,7 @@ return ""+k_high_pressure;
     }
 
     public String k_mix_PowerLaw(String names[],double x[],double T){
-    // Vredeveld 1973
-
+        // Vredeveld 1973
         double total_x_times_M=0;
         double ki;
         double Mi;
@@ -3001,7 +2962,6 @@ return ""+k_high_pressure;
         }
     }
     public double sur_tension(String name,double T ){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
-
         double sigma;
         surtension_c=values.getsurtension(name);
         double A = surtension_c[0];
@@ -3014,9 +2974,7 @@ return ""+k_high_pressure;
             sigma = sigma/1000; // Birimini N/m' ye çevirmek için yaptım.
         return  sigma;
     }
-
     public String sur_tension(double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
-
         double sigma;
         double A = surtension_c[0];
         double B = surtension_c[1];
@@ -3053,9 +3011,7 @@ return ""+k_high_pressure;
             e.printStackTrace();
             return "Yoğunluk hesaplanamadığı için hesap yapılamıyor";
         }
-
         double sigma = Math.pow(Parachor*ro,4.0); // dyn/cm
-
         return ""+sigma/1000; // Birimini N/m yaptım.
     }
     public double surten_MacleodandSugden(String name,double T,double P,String type){
@@ -3080,11 +3036,8 @@ return ""+k_high_pressure;
         catch (NumberFormatException e){
             sigma = 0;
         }
-
         return sigma/1000; // Birimini N/m yaptım.
     }
-
-
     public String surten_BrockandBird(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // BROCK and BIRD
         double sigma;
@@ -3099,17 +3052,10 @@ return ""+k_high_pressure;
             sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
             //System.out.println("Tb="+Tb+" Tc="+Tc+" Pc="+Pc+" Tbr="+Tbr+" Tr="+Tr+" Q="+Q);
             return ""+sigma/1000;
-
         }
-
         else {
             return " Kritik değerlerden en az biri bilinmediği için hesap yapılamıyor.";
         }
-   /*     double Tbr=Tb/Tc;
-        double Tr=T/Tc;
-        double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
-        sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
-        //System.out.println("Tb="+Tb+" Tc="+Tc+" Pc="+Pc+" Tbr="+Tbr+" Tr="+Tr+" Q="+Q);*/
     }
     public double surten_BrockandBird(String name,double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // BROCK and BIRD
@@ -3118,7 +3064,6 @@ return ""+k_high_pressure;
         double Tb = critical[1];
         double Tc = critical[2];
         double Pc = critical[3];
-
         if( Tb != 0 && Tc != 0 && Pc != 0) {
             double Tbr=Tb/Tc;
             double Tr=T/Tc;
@@ -3134,7 +3079,6 @@ return ""+k_high_pressure;
         double Tc = critical[2];
         double Pc = critical[3];
         double Tr=T/Tc;
-
         if(w != 0 && Tc !=0 && Pc !=0){
             sigma = Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*(1.86+1.18*w)/19.05*Math.pow((3.75+0.91*w)/(0.291-0.08*w),0.66666)*Math.pow(1-Tr,1.2222);
             return  ""+sigma/1000; // Birimini çevirdim.
@@ -3171,26 +3115,19 @@ return ""+k_high_pressure;
         double Pc2=24.9;
         double w1=0.011;
         double w2=0.399;
-        double sigma1=40.520*Math.pow(1-Tr,1.287);
-        double sigma2=52.095*Math.pow(1-Tr,1.21548);
+        double sigma1=40.520*Math.pow(1-Tr,1.287);//methane
+        double sigma2=52.095*Math.pow(1-Tr,1.21548);//n-octane
         double sigmar1=Math.log(1+sigma1/(Math.pow(Pc1,0.66666)*Math.pow(Tc1,0.33333)));
         double sigmar2=Math.log(1+sigma2/(Math.pow(Pc2,0.66666)*Math.pow(Tc2,0.33333)));
-
         double sigmar=sigmar1+(w-w1)/(w2-w1)*(sigmar2-sigmar1);
 
         if(w != 0 && Tc !=0 && Pc !=0){
             sigma=(Math.pow(Math.E,sigmar)-1)*(Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333));
             return ""+sigma/1000; // Birimini çevirdim.
         }
-
         else{
             return "Kritik değerlerden en az biri bilinmediği için hesaplama yapılamıyor.";
         }
-
-
-
-
-
     }
     public double surten_ZuoandStendby(String name, double T){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // ZUO-STENBY
