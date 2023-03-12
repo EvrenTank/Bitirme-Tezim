@@ -2538,7 +2538,7 @@ return ""+k_high_pressure;
         }
         return ""+ro;
     }
-    public String ro_mix_Spencer_and_Danner(double T,double P,String name[],double x[]){
+    public String ro_mix_Spencer_and_Danner(double T,String name[],double x[]){
 
         double w, Tc,Pc,Vc,M; // Pc:bar,Tc:Kelvin,Vc: ml/mol
         double Vcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
@@ -2672,7 +2672,7 @@ return ""+k_high_pressure;
         double wsrkm=0; // wsrk mixture: Soawe Redlich Kwong accentric factor: direkt w değerini kullanmak da önemli hatalara neden olmaz.
         // O yüzden ben onu kullanacağım.
         double K1=0.0,K2=0.0,K3=0.0;
-        double Ru = 8.314; // kJ/(kgK)
+        double Ru = 8.314;
         double Z_RAm=0.0;
         double Z_RAi;
         double Vm; // Bubble point için hesaplanacak olan özgül hacim. Vsaturated yani
@@ -2991,7 +2991,7 @@ return ""+k_high_pressure;
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public String surten_MacleodandSugden(String name,double T,double P){
+    public String surten_MacleodandSugden(String name,double T){
         critical = values.get_critical(name);
         ro_c = values.getro(name);
         double ro;
@@ -3002,7 +3002,7 @@ return ""+k_high_pressure;
         double  Parachor = 40.1684*(0.151-0.0464*w)*Math.pow(Tc,1.08333)/Math.pow(Pc,0.833333);
         //System.out.println("Parachor="+Parachor);
         try{
-            ro = Double.parseDouble(ro_Tait(T,P)); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
+            ro = Double.parseDouble(ro()); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
             // ro hesabı yapılırken basıncı da hesaba katan ro_Tait yöntemini kullandım.
             // Böylece yüzey gerilimi hesaplanırken de basınç hesaba katılmış olacak.
             ro = ro/1000/M; // Birimini mol/cm^3 yaptım.
@@ -3014,7 +3014,7 @@ return ""+k_high_pressure;
         double sigma = Math.pow(Parachor*ro,4.0); // dyn/cm
         return ""+sigma/1000; // Birimini N/m yaptım.
     }
-    public double surten_MacleodandSugden(String name,double T,double P,String type){
+    public double surten_MacleodandSugden(String name,double T,String type){
         // String olan metot ile çakışmasın diye String type ekledim. Hiçbir işlevi yok. Herhangi bir şey yazsam da olur.
         critical = values.get_critical(name);
         ro_c = values.getro(name);
@@ -3027,7 +3027,7 @@ return ""+k_high_pressure;
         double  Parachor = 40.1684*(0.151-0.0464*w)*Math.pow(Tc,1.08333)/Math.pow(Pc,0.833333);
         //System.out.println("Parachor="+Parachor);
         try{
-            ro = Double.parseDouble(ro_Tait(T,P)); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
+            ro = Double.parseDouble(ro()); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
             // ro hesabı yapılırken basıncı da hesaba katan ro_Tait yöntemini kullandım.
             // Böylece yüzey gerilimi hesaplanırken de basınç hesaba katılmış olacak.
             ro = ro/1000/M; // Birimini mol/cm^3 yaptım.
@@ -3238,7 +3238,7 @@ return ""+k_high_pressure;
     public String surten_mix_ZuoandStendby_Kays(String name[],double x[],double T){
         // pseudocritical özellikler Kay's Rule ile hesaplanmıştır.
         double w, Tc,Pc,Vc,M; // Pc:bar,Tc:Kelvin,Vc: ml/mol
-        double Pcm=0.0; // Vc mixture. Hesaplatılması için 3 sayı lazım.
+        double Pcm=0.0;
         double Tcm=0.0;
         double wm=0; // wsrk mixture: Soawe Redlich Kwong accentric factor: direkt w değerini kullanmak da önemli hatalara neden olmaz.
         // O yüzden ben onu kullanacağım.
@@ -3347,7 +3347,7 @@ return ""+k_high_pressure;
         return ""+sigma_mix;
     }
 
-    public String surten_mix_WeinaugKatz(String name[],double x[],double T,double P){
+    public String surten_mix_WeinaugKatz_Macleod(String name[],double x[],double T){
         // Macleod and Sugden 1923 eşitliğini karışımlara uyarlayarak hesaplanır.
         // Buhar hali için olan hesaplar ihmal edilecek. Zaten basıncın düşük olduğu durumlarda
         // etkisi azdır.
@@ -3382,7 +3382,7 @@ return ""+k_high_pressure;
                     return " Saf sıvılar için olan yoğunluk veya yüzey gerilimi değerlerinden en az biri hesaplanamıyor";
                 }
                 try{
-                    rolm = Double.parseDouble(ro_mix_Aalto(T,P,name,x))/1000.0; // birimini kg/m^3 yerine g/cm^3 yapmış bulunmaktayım.
+                    rolm = Double.parseDouble(ro_mix_Spencer_and_Danner(T,name,x))/1000.0; // birimini kg/m^3 yerine g/cm^3 yapmış bulunmaktayım.
                 }
                 catch (NumberFormatException e1) {
                     e1.printStackTrace();
@@ -3396,11 +3396,7 @@ return ""+k_high_pressure;
                 xj = x[j];
                 Parachorij = (Parachori+Parachorj)/2.0;
                 Parachorlm += xi*xj*Parachorij;
-                //System.out.println("roi= "+roi);
-                //System.out.println("roj= "+roj);
-                //System.out.println("Parachori="+Parachori);
-                //System.out.println("Parachorj="+Parachorj);
-                //System.out.println("Parachorlm="+Parachorlm);
+
             }
         }
         double sigma_mix = Math.pow(Parachorlm*rolm/Mmix,4.0);
@@ -3408,7 +3404,7 @@ return ""+k_high_pressure;
         return ""+sigma_mix;
     }
 
-    public String surten_mix_WeinaugKatz2(String name[],double x[],double T){
+    public String surten_mix_WeinaugKatz_HugillandWelsenes(String name[],double x[],double T){
         double Tci,Tcj; // Kelvin
         double Pci,Pcj; // bar
         double Parachori,Parachorj,Parachorij,Parachor_mix=0;
@@ -3433,7 +3429,7 @@ return ""+k_high_pressure;
                 /*
                 Parachori = (8.21307+1.97473*wi)*Math.pow(Tci,1.03406)*Math.pow(Pci,-0.82636);
                 Parachorj = (8.21307+1.97473*wj)*Math.pow(Tcj,1.03406)*Math.pow(Pcj,-0.82636);
-                Zuo and Stendby 1997 kaynağından alınan eşitlik. Aşağıdaki ise Gasem et al 1989
+                Zuo and Stendby 1997 kaynağından alınan eşitlik. Aşağıdaki ise Hugill ve Welsenes 1986
                 kaynağından alınan eşitlik. Aşağıdaki eşitlik Quayle 1953 kaynağında bulunan Parachor
                 değerlerine daha yakın değerler veriyor.
                 */
@@ -3448,7 +3444,7 @@ return ""+k_high_pressure;
             }
         }
         try{
-            ro_mix = Double.parseDouble(ro_mix_Aalto(T,P,name,x))/Mmix/1000.0; // birimini kg/m^3 yerine mol/cm^3 yapmış bulunmaktayım.
+            ro_mix = Double.parseDouble(ro_mix_Spencer_and_Danner(T,name,x))/Mmix/1000.0; // birimini kg/m^3 yerine mol/cm^3 yapmış bulunmaktayım.
         }
         catch (NumberFormatException e1) {
             e1.printStackTrace();
@@ -3641,7 +3637,7 @@ return ""+k_high_pressure;
         }
 
         surten = sur_tension(T);
-        surten_MacleodandSugden = surten_MacleodandSugden(name,T,P);
+        surten_MacleodandSugden = surten_MacleodandSugden(name,T);
         surten_BrockandBird = surten_BrockandBird();
         surten_Pitzer = surten_Pitzer();
         surten_ZuoandStendby = surten_ZuoandStendby();
@@ -3828,7 +3824,7 @@ return ""+k_high_pressure;
 
         ro_mix = ro_mix_molar(ro,x,molar_mass);
         ro_mix_Aalto = ro_mix_Aalto(T,P,liquid_names,x);
-        ro_mix_Spencer_and_Danner = ro_mix_Spencer_and_Danner(T,P,liquid_names,x);
+        ro_mix_Spencer_and_Danner = ro_mix_Spencer_and_Danner(T,liquid_names,x);
 
         vis_mix = vis_mix_GN2(vis,x);
         vis_mix_Teja_and_Rice = vis_Teja_and_Rice(liquid_names,x,P);
@@ -3840,11 +3836,11 @@ return ""+k_high_pressure;
         cp_mix=cp_mix2(cp,x);
         cp_mix_JamiesonandCartwright = cp_mix_JamiesonandCartwright(liquid_names,x,T);
         cp_mix_Teja = cp_mix_Teja(liquid_names,x,T);
-        surten_mix_WeinaugKatz=surten_mix_WeinaugKatz(liquid_names,x,T,P);
+        surten_mix_WeinaugKatz=surten_mix_WeinaugKatz_Macleod(liquid_names,x,T);
         surten_mix_Hadden = surten_mix_Hadden(liquid_names,x,T,-1.0);
         surten_mix_ZuoandStendby_Kays = surten_mix_ZuoandStendby_Kays(liquid_names,x,T);
         surten_mix_ZuoandStendby = surten_mix_ZuoandStendby(liquid_names,x,T);
-        surten_mix_WeinaugKatz2 = surten_mix_WeinaugKatz2(liquid_names,x,T);
+        surten_mix_WeinaugKatz2 = surten_mix_WeinaugKatz_HugillandWelsenes(liquid_names,x,T);
         double kinematic_vis = 0;
         try {
             kinematic_vis = Double.parseDouble(vis_mix_Teja_and_Rice)/ Double.parseDouble(ro_mix_Aalto);
@@ -3892,10 +3888,10 @@ return ""+k_high_pressure;
                 {"ro_mix_Aalto,hesaplamalara basınç dahil:",ro_mix_Aalto," kg/m^3",roTmin+"-"+roTmax},
                 {"ro_mix_Spencer_and_Danner, kabarcıklanma basıncı:",ro_mix_Spencer_and_Danner," kg/m^3",roTmin+"-"+roTmax},
                 {"surten_mix_Hadden,yüzey gerilimi:",surten_mix_Hadden,"N/m",stTmin+"-"+stTmax},
-                {"surten_mix_WeinaugKatz,yüzey gerilimi:",surten_mix_WeinaugKatz,"N/m",stTmin+"-"+stTmax},
-                {"surten_mix_WeinaugKatz2,yüzey gerilimi_Parachor hesabı farklı:",surten_mix_WeinaugKatz2,"N/m",stTmin+"-"+stTmax},
-                {"surten_mix_ZuoandStendby,yüzey gerilimi:",surten_mix_ZuoandStendby_Kays,"N/m",stTmin+"-"+stTmax},
-                {"surten_mix_ZuoandStendby,yüzey gerilimi_kritik değerler farklı:",surten_mix_ZuoandStendby,"N/m",stTmin+"-"+stTmax},
+                {"surten_mix_WeinaugKatz_Macleod:",surten_mix_WeinaugKatz,"N/m",stTmin+"-"+stTmax},
+                {"surten_mix_WeinaugKatz_HugillandWelsenes,",surten_mix_WeinaugKatz2,"N/m",stTmin+"-"+stTmax},
+                {"surten_mix_ZuoandStendby,",surten_mix_ZuoandStendby_Kays,"N/m",stTmin+"-"+stTmax},
+                {"surten_mix_ZuoandStendby,kritik değerler farklı:",surten_mix_ZuoandStendby,"N/m",stTmin+"-"+stTmax},
                 {"vis_mix,viskozite:",vis_mix," Ns/m^2",visTmin+"-"+visTmax},
                 {"vis_mix Teja and Rice,viskozite:",vis_mix_Teja_and_Rice," Ns/m^2",visTmin+"-"+visTmax},
                 {"kinematic_viskozite :",kinematic_vis," m^2/s",visTmin+"-"+visTmax},
