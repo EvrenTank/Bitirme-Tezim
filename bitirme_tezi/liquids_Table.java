@@ -146,16 +146,7 @@ public class liquids_Table extends JPanel{
 
     }
 
-
-
-
-
-
-
-
-
     public static void main(String args[]) {
-
         JFrame frame=new JFrame(" Properties of Liquids:  ");
         JTabbedPane tabbedPane=new JTabbedPane(JTabbedPane.TOP);
         liquids_Table panel=new liquids_Table();

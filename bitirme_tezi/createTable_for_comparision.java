@@ -158,7 +158,8 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double surten_c[]=values.getsurtension(name);
-        String metot_names[]= {"T(Kelvin)","Tablo","Katsayılar"," % Hata","Brock ve Bird","% Hata","Pitzer","% Hata","Zuo ve Stendby","% Hata","Sastri ve Rao","% Hata"};
+        String metot_names[]= {"T(Kelvin)","Tablo","Katsayılar","% Hata","Brock ve Bird","% Hata","Pitzer","% Hata","Zuo ve Stendby",
+                               "% Hata","Sastri ve Rao","% Hata","Macleod ve Sugden","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         double sigma; // Yüzey gerilimi Birimi: N/m
@@ -198,16 +199,11 @@ public class createTable_for_comparision extends JPanel {
             percent_error = (sigma-sigma_referans)/sigma_referans*100;
             row[i][10]=formatter.format(sigma) ;
             row[i][11]=formatter2.format(percent_error);
-           /* try{
-                Pdoyma = Double.parseDouble(liquids.Pvapor(name,T));//Bundan dolayi try icine aldim.
-                sigma = liquids.surten_MacleodandSugden(name,T,Pdoyma,"double");
-                percent_error = (sigma-sigma_referans)/sigma_referans*100;
-                row[i][6]=formatter.format(sigma) + "(%" + formatter2.format(percent_error) + ")";
-            }
-            catch (NumberFormatException e ){
-                e.printStackTrace();
-            }
-           */
+            sigma = liquids.surten_MacleodandSugden(name,T,"double");
+            percent_error = (sigma-sigma_referans)/sigma_referans*100;
+            System.out.println("Macleod and Sugden="+sigma);
+            row[i][12]=formatter.format(sigma) ;
+            row[i][13]=formatter2.format(percent_error);
         }
         return row;
     }
