@@ -31,13 +31,12 @@ public class liquids {
     Pvapor_mix,
     ro_mix_Aalto,ro_mix_Spencer_and_Danner,
     cp_kg,hvap,cp_csp,cp_Teja,cp_mix_JamiesonandCartwright,cp_mix_Teja,
-            vis_GCM,
             k_latini,k_Sastri,k_Missenard,k_Latini_and_Baroncini, k_mix_Filippov , k_mix_Baroncini, k_mix_Li,k_mix_PowerLaw,
             ro2,
             surten,surten_MacleodandSugden,surten_BrockandBird,surten_Pitzer,surten_ZuoandStendby,surten_SastriandRao,
-            surten_mix_WeinaugKatz,surten_mix_Hadden,surten_mix_ZuoandStendby_RiceTeja, surten_mix_ZuoandStendby_Kays,surten_mix_WeinaugKatz2,
+            surten_mix_WeinaugKatz_MacleodSugden,surten_mix_WeinaugKatz_HugillandWelsenes,surten_mix_Hadden,surten_mix_ZuoandStendby_RiceTeja, surten_mix_ZuoandStendby_Kays,
             Pvapor,ro_Tait,ro_Chand_and_Zhao,ro_HBT; //h_kg birimi kJ/kg olduğu için şimdilik böyle yazdım.
-    String vis_mix,vis_mix_Teja_and_Rice;
+    String vis_mix_Teja_and_Rice;
     String vis_Lucas,vis_Przezdziecki_and_Sridhar,vis_Letsou_and_Stiel;
     String malzemenin_turu="";
     double T;
@@ -261,9 +260,7 @@ public class liquids {
                 cp_saturated =  cp - R* Math.pow(Math.E,20.1*Tr-17.9);
                 cp = cp*M; // Birimi kJ/ (kmolK) yaptım.
                 cp_saturated = cp_saturated*M;
-//                System.out.println("cpL="+cp);
-//                System.out.println("cp_saturated="+cp_saturated);
-//                System.out.println("%Hata= "+(cp-cp_saturated)/cp_saturated*100);
+
                 if ( Tr < 0.99){
                     return ""+ cp_saturated;
                 }
@@ -309,9 +306,7 @@ public class liquids {
                 cp_saturated =  cp - R* Math.pow(Math.E,20.1*Tr-17.9);
                 cp = cp*M; // Birimi kJ/ (kmolK) yaptım.
                 cp_saturated = cp_saturated*M;
-//                System.out.println("cpL="+cp);
-//                System.out.println("cp_saturated="+cp_saturated);
-//                System.out.println("%Hata= "+(cp-cp_saturated)/cp_saturated*100);
+
                 if ( Tr < 0.99){
                     return cp_saturated;
                 }
@@ -402,7 +397,7 @@ public class liquids {
     public String cp_mix_JamiesonandCartwright(String name[],double x[],double T){ // (kJ/kmolK)
         // Sadece ikili karışımlar için kullanılacak bir yöntemdir. O yüzden bir if komutu ile bunu kontrol edeceğim.
         if(name.length>2){
-            return "Bu yöntem ikili sıvı karışımarı için kullanılabilir";
+            return "Bu yöntem ikili sıvı karışımları için kullanılabilir";
         }
         if(name[0].equals("H2O_water") || name[1].equals("H2O_water") )
         {
@@ -464,6 +459,7 @@ public class liquids {
         Tc1 = critical[2];
         w1 = critical[7];
         T1 = T/Tcm*Tc1;
+        System.out.println("T1:"+T1);
        try{
            cp1 = Double.parseDouble(cp(T1));
            cpgas1 = Double.parseDouble(cp_gas(T1,name[0]));
@@ -653,7 +649,6 @@ public class liquids {
         double Ru=8.3145; // kJ/(kmolK)
             vref=v(Tref); // m^3/kg
             v=v(T);
-            //System.out.println("vref="+vref+" v="+v);
             if((cp_c[4]-5)<=T && T<=(cp_c[5]+5))
             {
                 A=cp_c[0];
@@ -678,7 +673,6 @@ public class liquids {
         double Ru=8.3145; // kJ/(kmolK)
         vref=v(Tref); // m^3/kg
         v=v(T);
-        //System.out.println("vref="+vref+" v="+v);
         if((cp_c[4]-5)<=T && T<=(cp_c[5]+5))
         {
             A=cp_c[0];
@@ -764,7 +758,6 @@ public class liquids {
                 beta=organiccompounds_classification[2];
                 gamma=organiccompounds_classification[3];
                 A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
-                //System.out.println("malzeme:"+name+" A value: "+A);
             }
         }
     }
@@ -798,7 +791,6 @@ public class liquids {
                 A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
             }
             k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
-            //System.out.println("k_Latini metodundaki A değeri:"+A);
             return (""+k);
         }
         else {
@@ -1147,7 +1139,6 @@ return ""+k_high_pressure;
             critical = values.get_critical(name[j]);
             M = critical[0];
             x[j] = w[j]/M/Ntotal ;
-            System.out.println("Sıvı: "+name[j]+ "  weight fraction: "+ w[j]+ " mole fraction: "+x[j]);
         }
 
     }
@@ -1164,7 +1155,6 @@ return ""+k_high_pressure;
             critical = values.get_critical(name[j]);
             M = critical[0];
             x[j] = w[j]/M/Ntotal ;
-            System.out.println("Sıvı: "+name[j]+ "  weight fraction: "+ w[j]+ " mole fraction: "+x[j]);
         }
 
     }
@@ -1180,7 +1170,6 @@ return ""+k_high_pressure;
         critical = values.get_critical(name[0]);
         try{
             k1 = Double.parseDouble(k());
-            //System.out.println("k1="+k1);
         }
         catch (NumberFormatException e){
             e.printStackTrace();
@@ -1193,7 +1182,6 @@ return ""+k_high_pressure;
         critical = values.get_critical(name[1]);
         try{
             k2 = Double.parseDouble(k());
-            //System.out.println("k2="+k2);
         }
         catch (NumberFormatException e){
             e.printStackTrace();
@@ -1316,11 +1304,9 @@ return ""+k_high_pressure;
             try {
                 ro = Double.parseDouble(ro(T));
                 toplam_x_times_v += x[k]*(1/ro)*M;
-                //toplam_x_times_v += x[k]*Vc;
             }
             catch(NumberFormatException e ){
                 e.printStackTrace();
-                //System.out.println(names[k]+" malzemesinin özgül hacmi hesaplanamıyor.");
                 return names[k]+ " malzemesinin özgül hacmi hesaplatılamıyor";
             }
         }
@@ -1352,16 +1338,13 @@ return ""+k_high_pressure;
             }
             catch (NumberFormatException e){
                 e.printStackTrace();
-               // System.out.println(names[i]+" malzemesinin özgül hacmi hesaplanamıyor.");
                 return names[i]+" malzemesinin özgül hacim değeri hesaplanamıyor";
             }
             try{
                 ki = Double.parseDouble(k());
-                //System.out.println("ki="+ki);
             }
             catch (NumberFormatException e){
                 e.printStackTrace();
-                //System.out.println(names[i]+" malzemesinin ısıl iletkenlik değeri hesaplanamıyor.");
                 return names[i]+" malzemesinin ısıl iletkenlik değeri hesaplanamıyor";
             }
             for(int j=0;j< names.length;j++){
@@ -1378,16 +1361,13 @@ return ""+k_high_pressure;
                 }
                 catch (NumberFormatException e){
                     e.printStackTrace();
-                    //System.out.println(names[j]+" malzemesinin özgül hacmi hesaplanamıyor.");
                     return names[j]+" malzemesinin özgül hacim değeri hesaplanamıyor";
                 }
                 try{
                     kj = Double.parseDouble(k());
-                   // System.out.println("kj="+kj);
                 }
                 catch (NumberFormatException e){
                     e.printStackTrace();
-                  //  System.out.println(names[j]+" malzemesinin ısıl iletkenlik değeri hesaplanamıyor.");
                     return names[j]+" malzemesinin ısıl iletkenlik değeri hesaplanamıyor";
                 }
                 xj = x[j];
@@ -1572,49 +1552,6 @@ return ""+k_high_pressure;
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public String vis_GCM() { // Burada V değerlerini ro metodunu kullanarak hesapladım.
-
-        // Przezdziecki and Sridhar Yöntemi ( Group Contribution Yöntemlerinden biri)
-
-        double Tr, w, H1, H2, Tc, Vc, Pc, V;
-        double Vm, Vo, E;
-        Pc = critical[3];
-        w = critical[7];
-        Tc = critical[2]; // Kelvin
-        Vc = critical[4]; // (ml/mol), ( cm^3/mol) ikisi aynı şey
-        double M = critical[0];
-        double vis = 0;
-        Tr= T/Tc;
-
-        try {
-            Vm = M / Double.parseDouble(ro(Tf)) * 1000;
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "Tkritik için yoğunluk bilinmediği için hesaplama yapılamıyor";
-        }
-        try {
-         V = M / Double.parseDouble(ro()) * 1000;
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "Yoğunluk bilinmediği için hesaplama yapılamıyor";
-        }
-        Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
-        E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
-        vis = Vo / E / (V - Vo);
-
-        if( Tf == 0   ){
-            return "Tf bilinmediği için hesaplama yapılamıyor.";
-        }
-        else if( Tr< 0.50){
-            return "Tr, 0.50'den küçük olduğu için hesaplama yapılamıyor.";
-        }
-        else if( w==0){
-            return "Accentric factor bilinmediği için hesaplama yapılamıyor.";
-        }
-        else {
-            vis = vis / 1000; // Pa.s birimine çevirdim
-            return ("" + vis);        }
-    }
     public double vis_Przezdziecki_and_Sridhar (String name,double T,String tip){ // 1985 yılında geliştirilmiş.
         // vis = Vo/(E(V-Vo));
         // String tipi bu metot ile String döndüren metot karışmasın diye ekledim. Başka bir amacı yok.
@@ -1653,6 +1590,7 @@ return ""+k_high_pressure;
             Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tfreezing / Tc) + 0.894);
             E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tfreezing - 11.58 * (Tfreezing / Tc));
             vis= Vo/E/(V-Vo);
+
             vis = vis/1000; // Birimini çevirdim.
         }
         return vis;
@@ -1695,6 +1633,7 @@ return ""+k_high_pressure;
             E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tfreezing - 11.58 * (Tfreezing / Tc));
             vis= Vo/E/(V-Vo);
             vis = vis/1000; // Birimini çevirdim.
+
         }
           return ""+vis;
     }
@@ -1736,7 +1675,7 @@ return ""+k_high_pressure;
         }
     }
 
-    public String vis_Teja_and_Rice(String name[], double x[],double P){
+    public String vis_mix_Teja_and_Rice(String name[], double x[],double P){
         double Pc; //bar
         double w;
         double Tc; // Kelvin
@@ -1803,7 +1742,6 @@ return ""+k_high_pressure;
                     vis_c = values.getvis(name[1]);
                     vis2 = Double.parseDouble(vis1(name[1],T*Tc2/Tcm));
                     vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
-                   // System.out.println("Katsayılar ile hesaplandı.");
 
                 }
                 catch (NumberFormatException e1){
@@ -1817,7 +1755,6 @@ return ""+k_high_pressure;
                         ro_c = values.getvis(name[1]);
                         vis2 = Double.parseDouble(vis_Przezdziecki_and_Sridhar(name[1],T*Tc2/Tcm));
                         vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
-                       // System.out.println("Przezdziecki ve Sridhar yöntemi ile hesaplandı.");
 
                     }
                     catch (NumberFormatException e2){
@@ -1825,22 +1762,17 @@ return ""+k_high_pressure;
                         return "İki farklı yöntem ile denenmesine rağmen referans viskoziteleri hesaplanamdı";
 
                     }
-
-
             }
         }
         else{
             return "Kritik değerlerden birisi veya molar kütle bilinmiyor";
         }
 
-        // Burada x[i]'ler hesaplanırken bir hata oluşmuş olabilir. Kontrol et.
-
         for(int i=2;i<name.length;i+=1){
             if(name[i].equals("H2O_water"))
             {
                 interaction_coefficient= 1.37;
             }
-            //System.out.println("interaction coefficient="+interaction_coefficient);
             critical=values.get_critical(name[i]);
             Pc = critical[3];
             w = critical[7];
@@ -1853,9 +1785,6 @@ return ""+k_high_pressure;
             Tc1 = Tc;
             Vc1 = Vc;
             w1 = w;
-
-
-
             M2 =Mm;
             x2=1-x1;
             Tc2=Tcm;
@@ -1871,25 +1800,13 @@ return ""+k_high_pressure;
                 wm= x1*w1+x2*w2;
                 Tcm = 1/Vcm*(x1*x1*Math.pow(Tc1*Tc1*Vc1*Vc1,0.5)+2*interaction_coefficient*x1*x2*Math.pow(Tc1*Tc2*Vc1*Vc2,0.5)+x2*x2*Math.pow(Tc2*Tc2*Vc2*Vc2,0.5));
                 epsilonm=Math.pow(Vcm,0.6666)/Math.pow(Tcm*Mm,0.5);
-                try{
 
-                   // System.out.println("vis1="+vis1(name[0],T*Tc1/Tcm ));
-                   // System.out.println("vis2="+vis1(name[1],T*Tc2/Tcm ));
-                    vis_c = values.getvis(name[i]);
-                    vis1 = Double.parseDouble(vis_Lucas(name[i],T*Tc1/Tcm,P ));
-                    vis2 = vis_mix;
-                    vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
-                    //System.out.println("Lucas metodu ile hesaplandı.");
-                }
-                catch(NumberFormatException e ){
-                    e.printStackTrace();
 
                     try {
                         vis_c = values.getvis(name[i]);
                         vis1 = Double.parseDouble(vis1(name[i],T*Tc1/Tcm ));
                         vis2 = vis_mix;
                         vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
-                        //System.out.println("Katsayılar ile hesaplandı.");
 
                     }
                     catch (NumberFormatException e1){
@@ -1900,7 +1817,6 @@ return ""+k_high_pressure;
                             vis1 = Double.parseDouble(vis_Przezdziecki_and_Sridhar(name[i],T*Tc1/Tcm ));
                             vis2 =vis_mix;
                             vis_mix = Math.pow(Math.E,Math.log(vis1*epsilon1) + (Math.log(vis2*epsilon2)- Math.log(vis1*epsilon1))*((wm-w1)/(w2-w1)))/epsilonm;
-                           // System.out.println("Przezdziecki ve Sridhar yöntemi ile hesaplandı.");
                         }
                         catch (NumberFormatException e2){
                             e2.printStackTrace();
@@ -1908,7 +1824,7 @@ return ""+k_high_pressure;
                         }
                     }
                     //return "Referans viskozite değerleri hesaplanamadığı için hesapl yapılamıyor";
-                }
+
                 return ""+formatter.format(vis_mix);
             }
             else{
@@ -1974,91 +1890,36 @@ return ""+k_high_pressure;
         H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
         H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
         fT = H1 * (1 - w * H2); // Donma sıcaklığı için yapılan hesaplama Bunun yardımı ile Vm bulunacak.
-        /*System.out.println("Yazma İşlemi Başlıyor.");
-        System.out.println("Tf:"+Tf);
-        System.out.println("H1:"+H1);
-        System.out.println("H2:"+H2);
-        System.out.println("fT:"+fT);
-        System.out.println("Treferans(Tfp):"+Treferans);
-        System.out.println("w"+w);*/
 
 
         double x = (Treferans / Tc);
         H1 = 0.33593 - 0.33953 * x + 1.51941 * x * x - 2.02512 * x * x * x + 1.11422 * x * x * x * x;
         H2 = 0.29607 - 0.09045 * x - 0.04842 * x * x;
         fTreferans = H1 * (1 - w * H2); // referans noktası olması için kullanılan fT.
-        // Bu fT hem Vm hesabında hem de girdiğimiz sıcaklık için yapılan V hesabında kullanılacak.
-        // Referans noktası olarak kritik sıcaklığı seçtim. Çünkü orası için V değerleri tablolarda mevcut.
-        /*System.out.println("H1:"+H1);
-        System.out.println("H2:"+H2);
-        System.out.println("fTreferans:"+fTreferans);*/
 
-//        Vm = fT * Vreferans / fTreferans;
-//        Vm=95.2;
         try {
             Vm = M / Double.parseDouble(ro(Tf)) * 1000;
-//          Vreferans=106.87;
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return "Bu sıcaklıkta hesaplama yapılamıyor";
         }
-
-
-        //System.out.println("Vm:"+Vm);
-
-
         Tr = T / Tc;
-
-
         H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
         H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
         fT = H1 * (1 - w * H2);
         H1 = 0.33593 - 0.33953 * x + 1.51941 * x * x - 2.02512 * x * x * x + 1.11422 * x * x * x * x;
         H2 = 0.29607 - 0.09045 * x - 0.04842 * x * x;
-
-
-//        fTreferans = H1 * (1 - w * H2);
         fTreferans=0.340;
-
-        /*System.out.println("H1:"+H1);
-        System.out.println("H2:"+H2);
-        System.out.println("fT:"+fT);*/
-
         try {
             Vreferans = M / Double.parseDouble(ro()) * 1000;
             V = M / Double.parseDouble(ro()) * 1000;
-//       Vreferans=106.87;
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return "Bu sıcaklıkta hesaplama yapılamıyor";
         }
-//        V = fT * Vreferans / fTreferans;
-
-
-
-
         Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tf / Tc) + 0.894);
         E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tf - 11.58 * (Tf / Tc));
         vis = Vo / E / (V - Vo);
-      /*  System.out.println("V:"+V);
-        System.out.println("Vreferans:"+Vreferans);
-        System.out.println("Vo:"+Vo);
-        System.out.println("E:"+E);
-        System.out.println("vis:"+vis);*/
-
-//        for (int i = 0; i < vis_c.length; i++) {
-//            System.out.println("vis_c[" + i + "]=" + vis_c[i]);
-//        }
-
-       /* if(Tr > 0.55)
-        {
-            vis=vis/1000; // Pa.s birimine çevirdim
-            return (""+vis);
-        }
-        else {
-            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
-        }
-    }*/
         if( Tf != 0 && (Tr > 0.50)){ // Aslında kitapta 0.55 yazıyordu ama sınırdaki değerlerde sıkıntı olmasın diye böyle yaptım.
             vis = vis / 1000; // Pa.s birimine çevirdim
             return ("" + vis);
@@ -2069,8 +1930,6 @@ return ""+k_high_pressure;
         else {
             return "Tf değeri bilinmediği için hesap yapılamıyor.";
         }
-
-
     }
 
     public String vis_centipoise() {
@@ -2096,7 +1955,6 @@ return ""+k_high_pressure;
     public String ro() {
         double A,B,C,n;
         double ro=0;
-        //System.out.println("A="+ro_c[0]+" B="+ro_c[1]+" C="+ro_c[2]+" n="+ro_c[3]+" T="+T);
 
         if(ro_c[4]<=(T+5.0) && (T-5.0)<=ro_c[5])
         {
@@ -2106,8 +1964,7 @@ return ""+k_high_pressure;
             n=ro_c[3];
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
-            //System.out.println("ro metodu içinde:density="+ro);
-            //System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
+
             return (""+ro);
         }
         else {
@@ -2128,7 +1985,7 @@ return ""+k_high_pressure;
             n=ro_c[3];
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
-            //System.out.println("density="+ro);
+
             return (""+ro);
 
         }
@@ -2149,8 +2006,7 @@ return ""+k_high_pressure;
             n=ro_c[3];
             ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
             ro*=1000; // Birimi kg/m^3 yaptım.
-            //System.out.println("ro metodu içinde:density="+ro);
-            //System.out.println("A="+A+" B="+B+" C="+C+" n="+n);
+
             return ro;
     }
 
@@ -2219,8 +2075,7 @@ return ""+k_high_pressure;
              }
         try {
             Pvapor = Double.parseDouble(Pvapor()); // kPa
-           // System.out.println("Katsayılar ile hesaplatılan Pvapor="+Pvapor);
-            //System.out.println("Denklem ile hesaplatılan Pvapor="+Pvpr*Pc);
+
         }
         catch (NumberFormatException e1){
             e1.printStackTrace();
@@ -2253,8 +2108,7 @@ return ""+k_high_pressure;
         }
        /* try {
             Pvapor = Double.parseDouble(Pvapor()); // kPa
-            // System.out.println("Katsayılar ile hesaplatılan Pvapor="+Pvapor);
-            //System.out.println("Denklem ile hesaplatılan Pvapor="+Pvpr*Pc);
+
         }
         catch (NumberFormatException e1){
             e1.printStackTrace();
@@ -2665,7 +2519,6 @@ return ""+k_high_pressure;
         double pay=0;
         double payda=0;
         for(int i=0;i<ro.length;i++){
-            //System.out.println(" ro:"+ ro[i]);
 
             pay += M[i]*x[i];
             try{
@@ -2756,13 +2609,7 @@ return ""+k_high_pressure;
         H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
         H2 = 0.29607 - 0.09045 * Tr - 0.04842 * Tr * Tr;
         fTreferans = H1 * (1 - w * H2);
-//        System.out.println("Yazma İşlemi Başlıyor.");
-//        System.out.println("Tf:"+Tf);
-//        System.out.println("H1:"+H1);
-//        System.out.println("H2:"+H2);
-//        System.out.println("fT:"+fT);
-//        System.out.println("Treferans(Tfp):"+Treferans);
-//        System.out.println("w"+w);
+
 
         Tr = T / Tc;
         H1 = 0.33593 - 0.33953 * Tr + 1.51941 * Tr * Tr - 2.02512 * Tr * Tr * Tr + 1.11422 * Tr * Tr * Tr * Tr;
@@ -2811,10 +2658,8 @@ return ""+k_high_pressure;
         n=ro_c[3];
         C=ro_c[2];
         ro=A*Math.pow(B, -Math.pow((1-T/C), n)); // g/ml birimindedir.
-        //System.out.println(ro);
         ro*=1000; // Birimi kg/m^3 yaptım.
         v=1/ro;
-        //System.out.println(v);
         return (v);
     }
 
@@ -2883,7 +2728,6 @@ return ""+k_high_pressure;
         double w = critical[7];
         double M = critical[0];
         double  Parachor = 40.1684*(0.151-0.0464*w)*Math.pow(Tc,1.08333)/Math.pow(Pc,0.833333);
-        //System.out.println("Parachor="+Parachor);
         try{
             ro = Double.parseDouble(ro(T)); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
             ro = ro/1000/M; // Birimini mol/cm^3 yaptım.
@@ -2906,7 +2750,6 @@ return ""+k_high_pressure;
         double w = critical[7];
         double M = critical[0];
         double  Parachor = 40.1684*(0.151-0.0464*w)*Math.pow(Tc,1.08333)/Math.pow(Pc,0.833333);
-        //System.out.println("Parachor="+Parachor);
         try{
 
             ro = Double.parseDouble(ro(T)); // Birimi şu an kg/m^3. Bunu mol/cm^3 yapmam lazım.
@@ -2930,7 +2773,6 @@ return ""+k_high_pressure;
             double Tr=T/Tc;
             double Q=0.1196*(1+Tbr/(1-Tbr)*Math.log(Pc/1.01325))-0.279;
             sigma=Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333)*Q*Math.pow(1-Tr,1.22222);
-            //System.out.println("Tb="+Tb+" Tc="+Tc+" Pc="+Pc+" Tbr="+Tbr+" Tr="+Tr+" Q="+Q);
             return ""+sigma/1000;
         }
         else {
@@ -3031,11 +2873,7 @@ return ""+k_high_pressure;
             double sigmar=sigmar1+(w-w1)/(w2-w1)*(sigmar2-sigmar1);
             sigma=(Math.pow(Math.E,sigmar)-1)*(Math.pow(Pc,0.66666)*Math.pow(Tc,0.33333));
         }
-        /*System.out.println("sigma1:"+sigma1);
-        System.out.println("sigma2:"+sigma2);
-        System.out.println("sigmar1:"+sigmar1);
-        System.out.println("sigmar2:"+sigmar2);
-        System.out.println("sigmar:"+sigmar);*/
+
         return sigma/1000;
 
     }
@@ -3153,11 +2991,7 @@ return ""+k_high_pressure;
         double sigma_mix=(Math.pow(Math.E,sigmar)-1)*(Math.pow(Pcm,0.66666)*Math.pow(Tcm,0.33333));
         sigma_mix = sigma_mix/1000; // Birimi dyn/cm'den N/m'ye çevirdim.
 
-        System.out.println("x1:"+x[0]);
-        System.out.println("x2:"+x[1]);
-        System.out.println("Kays Rule :");
-        System.out.println("Tcm="+Tcm);
-        System.out.println("Pcm="+Pcm);
+
         return ""+sigma_mix;
     }
 
@@ -3207,9 +3041,7 @@ return ""+k_high_pressure;
         }
         Tcm = Tcm/Vcm;
         double Pcm = (0.291-0.08*wm)*Ru*Tcm/Vcm; // bar
-        System.out.println("Kays Rule değil:");
-        System.out.println("Tcm="+Tcm);
-        System.out.println("Pcm="+Pcm);
+
         double Trm = T/ Tcm;
         double Tc1=190.56;
         double Tc2=568.7;
@@ -3227,7 +3059,7 @@ return ""+k_high_pressure;
         return ""+sigma_mix;
     }
 
-    public String surten_mix_WeinaugKatz_Macleod(String name[],double x[],double T){
+    public String surten_mix_WeinaugKatz_MacleodSugden(String name[],double x[],double T){
         // Macleod and Sugden 1923 eşitliğini karışımlara uyarlayarak hesaplanır.
         // Buhar hali için olan hesaplar ihmal edilecek. Zaten basıncın düşük olduğu durumlarda
         // etkisi azdır.
@@ -3270,8 +3102,7 @@ return ""+k_high_pressure;
                 }
                 Parachori = Math.pow( surteni/(roi*roi*roi*roi),0.25) ;
                 Parachorj = Math.pow(surtenj/(roj*roj*roj*roj),0.25);
-                System.out.println("Macleod-Sugden Parachori:"+Parachori);
-                System.out.println("Macleod-Sugden Parachorj:"+Parachorj);
+
                 xi = x[i];
                 xj = x[j];
                 Parachorij = (Parachori+Parachorj)/2.0;
@@ -3315,8 +3146,7 @@ return ""+k_high_pressure;
                 */
                 Parachori = 40.1684*(0.151-0.0464*wi)*Math.pow(Tci,1.08333)/Math.pow(Pci,0.833333);
                 Parachorj = 40.1684*(0.151-0.0464*wj)*Math.pow(Tcj,1.08333)/Math.pow(Pcj,0.833333);
-                System.out.println("WeinaugKatz2 Parachori:"+Parachori);
-                System.out.println("WeinaugKatz2 Parachorj:"+Parachorj);
+
                 xi = x[i];
                 xj = x[j];
                 Parachorij = (Parachori+Parachorj)/2.0;
@@ -3330,7 +3160,8 @@ return ""+k_high_pressure;
             e1.printStackTrace();
             return " Karışımın yoğunluk değeri hesaplanamadığı için hesap yapılamıyor";
         }
-        double sigma_mix = Math.pow(Parachor_mix*ro_mix,3.6);
+        double sigma_mix = Math.pow(Parachor_mix*ro_mix,4); // Buradaki kuvvetin Gasem et. al(1989) tarafindan 3.6 olarak alinmasi onerilmistir. Ama orijinal halinde 4
+        // oldugu icin ben de 4 alacagim.
         sigma_mix = sigma_mix/1000; // Birimi dyn/cm'den N/m'ye çevirdim.
         return ""+sigma_mix;
     }
@@ -3380,7 +3211,6 @@ return ""+k_high_pressure;
         double density=0.0;
         double x=0.0;
         for(int i=0;i<sur_tension.length;i++){
-            //System.out.println("sur tension:"+ sur_tension[i]);
             try {
                 Double.parseDouble(sur_tension[i]);
                 Double.parseDouble(ro[i]);
@@ -3479,7 +3309,6 @@ return ""+k_high_pressure;
 
         Pr=Pr(cp,k,vis);
 
-        vis_GCM=vis_GCM();
 
         vis_Lucas = vis_Lucas(name,T,P);
 
@@ -3513,7 +3342,6 @@ return ""+k_high_pressure;
         }
         catch (NumberFormatException e){
             e.printStackTrace();
-            //System.out.println("ro_Tait değeri hesaplatılamamış");
         }
 
         surten = sur_tension(T);
@@ -3543,7 +3371,7 @@ return ""+k_high_pressure;
         double Tmax_for_cp_gas = (cpgas_c[6] <= cp_c[5]) ?  cpgas_c[6] : cp_c[5];
 
 
-        Object result[][]= {{"T,sıcaklık:",T,"K"," "},{"P,basınç:",P,"kPa"," "},{"Tc,kritik sıcaklık",critical[2],"K",""},
+        Object result[][]= {{"T,sıcaklık:",T,"K"," "},{"P,basınç:",P,"kPa"," "},{"Tc,kritik sıcaklık",critical[2],"K",""},{"Tr,indirgenmiş sıcaklık",T/critical[2],"",""},
                 {"Tb, kaynama sıcaklığı",critical[1],"K",""},{"Tf,donma sıcaklığı",Tf,"K",""},{"Pc,kritik basınç",critical[3]*100,"kPa",""},
                 {"M,molar kütle",critical[0],"kg/kmol",""},{"Vc,kritik özgül hacim",critical[4],"ml/mol veya cm^3/mol",""},
                 {"w,accentric factor",critical[7],"Birimsiz",""},{"Pvapor,buhar basıncı",Pvapor,"kPa",Pvapor_c[5]+"-"+Pvapor_c[6]},
@@ -3561,7 +3389,6 @@ return ""+k_high_pressure;
                 {"v,Tait:",v_Tait,"m^3/kg",ro_c[4]+"-"+ro_c[5]},
                 {"viskozite,katsayılar ile:",vis," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"vis, Przezdziecki and Sridhar:",vis_Przezdziecki_and_Sridhar," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
                 {"vis, Lucas:",vis_Lucas," Ns/m^2",vis_c[4]+"-"+vis_c[5]},{"vis, Letsou and Sitel:",vis_Letsou_and_Stiel," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
-                {"viskozite,GCM:",vis_GCM," Ns/m^2",vis_c[4]+"-"+vis_c[5]},
                 {"k, ısıl iletkenlik,katsayılar ile:",k," W/(mK)",k_c[3]+"-"+k_c[4]},{"k, ısıl iletkenlik(latini met.):",k_latini," W/(mK)",k_c[3]+"-"+k_c[4]},
                 {"k, ısıl iletkenlik(Sastri met.):",k_Sastri," W/(mK)",k_c[3]+"-"+k_c[4]},
                 {"k,Missenard metodu sıkıştırılmış sıvı:",k_Missenard," W/(mK)",k_c[3]+"-"+k_c[4]},
@@ -3633,7 +3460,6 @@ return ""+k_high_pressure;
 
       /*  for (int i = 0; i < liquid_names.length; i++) {
 
-            System.out.println("Sıvının adı: "+liquid_names[i]+" Kütlesi:"+mole[i]);
 
         }*/
 
@@ -3693,9 +3519,8 @@ return ""+k_high_pressure;
             cp[i]=cp();
             h[i]=h();
             sur_tension[i]=sur_tension(T);
-            //System.out.println("T:"+T);
             String s = "name="+name+" ro="+ ro[i]+" vis="+vis[i]+" k="+k[i]+" cp="+cp[i]+" h="+h[i]+" st="+sur_tension[i];
-           // System.out.println(s);
+
 
         }
 
@@ -3707,7 +3532,7 @@ return ""+k_high_pressure;
         ro_mix_Aalto = ro_mix_Aalto(T,P,liquid_names,x);
         ro_mix_Spencer_and_Danner = ro_mix_Spencer_and_Danner(T,liquid_names,x);
 
-        vis_mix_Teja_and_Rice = vis_Teja_and_Rice(liquid_names,x,P);
+        vis_mix_Teja_and_Rice = vis_mix_Teja_and_Rice(liquid_names,x,P);
         k_mix_Filippov = k_mix_Filippov_x(T,liquid_names,x);
         k_mix_Baroncini = k_mix_Baroncini(liquid_names,x);
         k_mix_Li = k_mix_Li(liquid_names,x,T);
@@ -3716,11 +3541,11 @@ return ""+k_high_pressure;
         cp_mix=cp_mix2(cp,x);
         cp_mix_JamiesonandCartwright = cp_mix_JamiesonandCartwright(liquid_names,x,T);
         cp_mix_Teja = cp_mix_Teja(liquid_names,x,T);
-        surten_mix_WeinaugKatz=surten_mix_WeinaugKatz_Macleod(liquid_names,x,T);
+        surten_mix_WeinaugKatz_MacleodSugden=surten_mix_WeinaugKatz_MacleodSugden(liquid_names,x,T);
+        surten_mix_WeinaugKatz_HugillandWelsenes = surten_mix_WeinaugKatz_HugillandWelsenes(liquid_names,x,T);
         surten_mix_Hadden = surten_mix_Hadden(liquid_names,x,T,-1.0);
         surten_mix_ZuoandStendby_Kays = surten_mix_ZuoandStendby_Kays(liquid_names,x,T);
         surten_mix_ZuoandStendby_RiceTeja = surten_mix_ZuoandStendby_RiceTeja(liquid_names,x,T);
-        surten_mix_WeinaugKatz2 = surten_mix_WeinaugKatz_HugillandWelsenes(liquid_names,x,T);
         double kinematic_vis = 0;
         try {
             kinematic_vis = Double.parseDouble(vis_mix_Teja_and_Rice)/ Double.parseDouble(ro_mix_Aalto);
@@ -3742,7 +3567,7 @@ return ""+k_high_pressure;
 
 
 
-       // System.out.println("x1:"+x1+" x2:"+x2+" w1:"+w1+" w2:"+w2);
+
 
 
 
@@ -3768,8 +3593,8 @@ return ""+k_high_pressure;
                 {"ro_mix_Aalto,hesaplamalara basınç dahil:",ro_mix_Aalto," kg/m^3",roTmin+"-"+roTmax},
                 {"ro_mix_Spencer_and_Danner, kabarcıklanma basıncı:",ro_mix_Spencer_and_Danner," kg/m^3",roTmin+"-"+roTmax},
                 {"surten_mix_Hadden,yüzey gerilimi:",surten_mix_Hadden,"N/m",stTmin+"-"+stTmax},
-                {"surten_mix_WeinaugKatz_Macleod:",surten_mix_WeinaugKatz,"N/m",stTmin+"-"+stTmax},
-                {"surten_mix_WeinaugKatz_HugillandWelsenes,",surten_mix_WeinaugKatz2,"N/m",stTmin+"-"+stTmax},
+                {"surten_mix_WeinaugKatz_MacleodSugden:",surten_mix_WeinaugKatz_MacleodSugden,"N/m",stTmin+"-"+stTmax},
+                {"surten_mix_WeinaugKatz_HugillandWelsenes,",surten_mix_WeinaugKatz_HugillandWelsenes,"N/m",stTmin+"-"+stTmax},
                 {"surten_mix_ZuoandStendby_Kays,",surten_mix_ZuoandStendby_Kays,"N/m",stTmin+"-"+stTmax},
                 {"surten_mix_ZuoandStendby_RiceTeja:",surten_mix_ZuoandStendby_RiceTeja,"N/m",stTmin+"-"+stTmax},
                 {"vis_mix Teja and Rice,viskozite:",vis_mix_Teja_and_Rice," Ns/m^2",visTmin+"-"+visTmax},
