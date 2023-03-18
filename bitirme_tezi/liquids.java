@@ -61,7 +61,7 @@ public class liquids {
         double A,B,C,D,E,Tmin,Tmax;
         double Pvapor=0;
 
-        if(Pvapor_c[5]<=T && T<=Pvapor_c[6])
+        if(Pvapor_c[5]<=(T+1) && (T-1)<=Pvapor_c[6])
         {
             A=Pvapor_c[0];
             B=Pvapor_c[1];
@@ -83,7 +83,7 @@ public class liquids {
         double A,B,C,D,E,Tmin,Tmax;
         double Pvapor=0;
 
-        if(Pvapor_c[5]<=T && T<=Pvapor_c[6])
+        if(Pvapor_c[5]<=(T+1) && (T-1)<=Pvapor_c[6])
         {
             A=Pvapor_c[0];
             B=Pvapor_c[1];
@@ -130,7 +130,7 @@ public class liquids {
         double Pvapor=0;
         Pvapor_c = values.getPvapor(name);
 
-        if(Pvapor_c[5]<=T && T<=Pvapor_c[6])
+        if(Pvapor_c[5]<=(T+1) && (T-1)<=Pvapor_c[6])
         {
             A=Pvapor_c[0];
             B=Pvapor_c[1];
@@ -713,29 +713,6 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
-    public double k_Latini(String name,double T){
-        // Latini et. al method
-        double A=0,Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
-        double k=0.0;
-        critical=values.get_critical(name);
-        organiccompounds_classification=values.get_orgmat_classification(name);
-        M=critical[0];
-        Tb=critical[1];
-        Tc=critical[2];
-        Tr=T/Tc;
-        Asharp=organiccompounds_classification[0];
-        alfa=organiccompounds_classification[1];
-        beta=organiccompounds_classification[2];
-        gamma=organiccompounds_classification[3];
-
-        if( M != 0 && Tb != 0 && Tc != 0 && Asharp != 0  && beta != 0 && gamma != 0){
-            A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
-            k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
-        }
-        //intln("k_Latini metodundaki A değeri:"+A);
-            return k;
-    }
-
     public void A_parameter() {
         liquid_names names = new liquid_names();
         String name;
@@ -762,10 +739,42 @@ public class liquids {
         }
     }
 
+    public double k_Latini(String name,double T){
+        // Latini et. al method
+
+        double A = values.getAparameter_for_kLatini(name);
+        System.out.println("A:"+A);
+        double Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
+        double k=0.0;
+        critical=values.get_critical(name);
+        organiccompounds_classification=values.get_orgmat_classification(name);
+        M=critical[0];
+        Tb=critical[1];
+        Tc=critical[2];
+        Tr=T/Tc;
+        Asharp=organiccompounds_classification[0];
+        alfa=organiccompounds_classification[1];
+        beta=organiccompounds_classification[2];
+        gamma=organiccompounds_classification[3];
+        if (A != 0){
+            k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
+        }
+
+        if( A == 0 && (M != 0 && Tb != 0 && Tc != 0 && Asharp != 0  && beta != 0 && gamma != 0)){
+            A=Asharp*Math.pow(Tb,alfa)/Math.pow(M,beta)/Math.pow(Tc,gamma);
+            k=A*Math.pow(1-Tr,0.38)/Math.pow(Tr,0.166666);
+        }
+        //intln("k_Latini metodundaki A değeri:"+A);
+            return k;
+    }
+
+
+
     public String k_Latini(String name){
         // Latini et. al method
 
         double A = values.getAparameter_for_kLatini(name);
+        System.out.println("A:"+A);
         double Tb,Tc,M,Tr,Asharp,alfa,beta,gamma;
         double k=0;
         critical = values.get_critical(name);
@@ -781,7 +790,7 @@ public class liquids {
         if( M == 0 || Tb == 0 || Tc == 0 ){
             return "M, Tb, Tc değerlerinden en az biri bilinmiyor";
         }
-        if( Asharp == 0  || beta == 0 || gamma == 0 ){
+        if( A == 0.0 && (Asharp == 0  || beta == 0 || gamma == 0 )){
             return " Malzeme organik değil veya ailesi bilinmiyor";
         }
 
@@ -1584,8 +1593,6 @@ return ""+k_high_pressure;
                 e.printStackTrace();
                 return 0;
             }
-
-
 
             Vo = 0.0085 * w * Tc - 2.02 + Vm / (0.342 * (Tfreezing / Tc) + 0.894);
             E = -1.12 + Vc / (12.94 + 0.10 * M - 0.23 * Pc + 0.0424 * Tfreezing - 11.58 * (Tfreezing / Tc));

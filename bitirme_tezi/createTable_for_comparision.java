@@ -266,7 +266,7 @@ public class createTable_for_comparision extends JPanel {
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
         symbol.setDecimalSeparator('.');
         NumberFormat formatter = new DecimalFormat("#0.0000000",symbol);
-        NumberFormat formatter2 = new DecimalFormat("#0.00",symbol);
+        NumberFormat formatter2 = new DecimalFormat("#0.0000",symbol);
         double T;
         double cp;
         double cp_referans;

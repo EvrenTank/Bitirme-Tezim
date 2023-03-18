@@ -958,7 +958,6 @@ C2H2F4_1112tetrafluoroethane refrigerant 0.494 0.0 0.5 -0.167
 C2H3F3_111trifluoroethane refrigerant 0.494 0.0 0.5 -0.167
 C2H4F2_11difluoroethane refrigerant 0.494 0.0 0.5 -0.167
 C3H3F5_11133pentafluoropropane refrigerant 0.494 0.0 0.5 -0.167
-NH3_ammonia refrigerant 0.494 0.0 0.5 -0.167
 CH4_methane saturated_hydrocarbon 0.494 0.0 0.5 -0.167
 C2H6_ethane saturated_hydrocarbon 0.494 0.0 0.5 -0.167
 C3H8_propane refrigerant 0.494 0.0 0.5 -0.167
@@ -966,12 +965,6 @@ C4H10_butane refrigerant 0.494 0.0 0.5 -0.167
 C4H10_isobutane refrigerant 0.494 0.0 0.5 -0.167
 C3H6_propylene refrigerant 0.494 0.0 0.5 -0.167
 C2H4_ethylene refrigerant 0.494 0.0 0.5 -0.167
-H2_hydrogen refrigerant 0.494 0.0 0.5 -0.167
-H2_parahydrogen refrigerant 0.494 0.0 0.5 -0.167
-O2_oxygen refrigerant 0.494 0.0 0.5 -0.167
-Ar_argon refrigerant 0.494 0.0 0.5 -0.167
-H2O_water refrigerant 0.494 0.0 0.5 -0.167
-CO2_carbondioxide refrigerant 0.494 0.0 0.5 -0.167
 
 C2H6O_ethanol alcohol 0.00339 1.2 0.5 0.167
 C2H6O_ethylalcohol alcohol 0.00339 1.2 0.5 0.167
@@ -5067,10 +5060,7 @@ CF2O_carbonylfluoride sadece_organik 0 0 0 0
 CF4_carbontetrafluoride sadece_organik 0 0 0 0
 CHBrF2_bromodifluoromethane sadece_organik 0 0 0 0
 CHBr3_bromoform sadece_organik 0 0 0 0
-CHClF2_chlorodifluoromethane sadece_organik 0 0 0 0
 CHCl2F_dichlorofluoromethane sadece_organik 0 0 0 0
-CHCl3_chloroform sadece_organik 0 0 0 0
-CHF3_fluoroform sadece_organik 0 0 0 0
 CHI3_iodoform sadece_organik 0 0 0 0
 CHN_hydrogencyanide sadece_organik 0 0 0 0
 CH2BrCl_bromochloromethane sadece_organik 0 0 0 0
@@ -5078,7 +5068,6 @@ CH2Br2_dibromomethane sadece_organik 0 0 0 0
 CH2ClF_chlorofluoromethane sadece_organik 0 0 0 0
 CH2ClNO_carbamicchloride sadece_organik 0 0 0 0
 CH2Cl2_dichloromethane sadece_organik 0 0 0 0
-CH2F2_difluoromethane sadece_organik 0 0 0 0
 CH2I2_diiodomethane sadece_organik 0 0 0 0
 CH2O_formaldehyde sadece_organik 0 0 0 0
 CH3Br_methylbromide sadece_organik 0 0 0 0
@@ -5099,7 +5088,6 @@ CI4_carbontetraiodide sadece_organik 0 0 0 0
 CN4O8_tetranitromethane sadece_organik 0 0 0 0
 CO_carbonmonoxide sadece_organik 0 0 0 0
 COS_carbonylsulfide sadece_organik 0 0 0 0
-CO2_carbondioxide sadece_organik 0 0 0 0
 CS2_carbondisulfide sadece_organik 0 0 0 0
 C2BrF3_bromotrifluoroethylene sadece_organik 0 0 0 0
 C2Br2F4_12dibromotetrafluoroethane sadece_organik 0 0 0 0
@@ -5124,11 +5112,9 @@ C2F6_hexafluoroethane sadece_organik 0 0 0 0
 C2HBrClF3_halothane sadece_organik 0 0 0 0
 C2HClF2_2chloro11difluoroethylene sadece_organik 0 0 0 0
 C2HClF4_1chloro1122tetrafluoroethane sadece_organik 0 0 0 0
-C2HClF4_2chloro1112tetrafluoroethane sadece_organik 0 0 0 0
 C2HClF4_chlorotetrafluoroethane sadece_organik 0 0 0 0
 C2HCl2F3_11dichloro122trifluoroethane sadece_organik 0 0 0 0
 C2HCl2F3_12dichloro112trifluoroethane sadece_organik 0 0 0 0
-C2HCl2F3_22dichloro111trifluoroethane sadece_organik 0 0 0 0
 C2HCl3_trichloroethylene sadece_organik 0 0 0 0
 C2HCl3F2_111trichloro22difluoroethane sadece_organik 0 0 0 0
 C2HCl3F2_112trichloro12difluoroethane sadece_organik 0 0 0 0
@@ -5139,7 +5125,6 @@ C2HCl4F_1112tetrachloro2fluoroethane sadece_organik 0 0 0 0
 C2HCl4F_1122tetrachloro1fluoroethane sadece_organik 0 0 0 0
 C2HCl5_pentachloroethane sadece_organik 0 0 0 0
 C2HF3_trifluoroethene sadece_organik 0 0 0 0
-C2HF5_pentafluoroethane sadece_organik 0 0 0 0
 C2HI_iodoacetylene sadece_organik 0 0 0 0
 C2H2Br2_11dibromoethene sadece_organik 0 0 0 0
 C2H2Br2_cis12dibromoethene sadece_organik 0 0 0 0
@@ -5170,7 +5155,6 @@ C2H2Cl4_1122tetrachloroethane sadece_organik 0 0 0 0
 C2H2F2_11difluoroethylene sadece_organik 0 0 0 0
 C2H2F2_cis12difluoroethene sadece_organik 0 0 0 0
 C2H2F2_trans12difluoroethene sadece_organik 0 0 0 0
-C2H2F4_1112tetrafluoroethane sadece_organik 0 0 0 0
 C2H2F4_1122tetrafluoroethane sadece_organik 0 0 0 0
 C2H2I2_cis12diiodoethene sadece_organik 0 0 0 0
 C2H2I2_trans12diiodoethylene sadece_organik 0 0 0 0
@@ -5195,7 +5179,6 @@ C2H3Cl3_111trichloroethane sadece_organik 0 0 0 0
 C2H3Cl3_112trichloroethane sadece_organik 0 0 0 0
 C2H3Cl3Si_trichlorovinylsilane sadece_organik 0 0 0 0
 C2H3F_vinylfluoride sadece_organik 0 0 0 0
-C2H3F3_111trifluoroethane sadece_organik 0 0 0 0
 C2H3F3_112trifluoroethane sadece_organik 0 0 0 0
 C2H3I_vinyliodide sadece_organik 0 0 0 0
 C2H3I3_111triiodoethane sadece_organik 0 0 0 0
@@ -5211,7 +5194,6 @@ C2H4ClF_1chloro2fluoroethane sadece_organik 0 0 0 0
 C2H4ClF_chlorofluoroethane sadece_organik 0 0 0 0
 C2H4Cl2_11dichloroethane sadece_organik 0 0 0 0
 C2H4Cl2_12dichloroethane sadece_organik 0 0 0 0
-C2H4F2_11difluoroethane sadece_organik 0 0 0 0
 C2H4F2_12difluoroethane sadece_organik 0 0 0 0
 C2H4I2_11diiodoethane sadece_organik 0 0 0 0
 C2H4I2_12diiodoethane sadece_organik 0 0 0 0
