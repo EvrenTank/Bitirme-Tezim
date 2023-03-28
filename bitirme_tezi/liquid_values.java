@@ -267,6 +267,7 @@ public class liquid_values {
                 org_compound_coefficients [1] = Double.parseDouble(i[3]);
                 org_compound_coefficients [2] = Double.parseDouble(i[4]);
                 org_compound_coefficients [3] = Double.parseDouble(i[5]);
+
             }
         }
 //        for(int i1=0;i1<cp.length;i1++){

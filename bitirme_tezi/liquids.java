@@ -2888,6 +2888,13 @@ return ""+k_high_pressure;
         // SASTRI-RAO
         double sigma=0;
         critical = values.get_critical(name);
+        values.get_orgmat_classification(name);
+        String malzeme_turu=values.malzemenin_turu;
+        if(malzeme_turu.equals("")){
+            return 0.0;
+        }
+
+
         double Tb=critical[1];
         double Tc=critical[2];
         double Pc=critical[3];
@@ -2923,6 +2930,12 @@ return ""+k_high_pressure;
     }
     public String surten_SastriandRao(){ //surface tension: Orijinal halinde birimi dynes/cm ama ben N/m' ye çevireceğim.
         // SASTRI-RAO
+
+        values.get_orgmat_classification(name);
+        String malzeme_turu=values.malzemenin_turu;
+        if(malzeme_turu.equals("")){
+            return "Bu malzeme organik olmayabilir.";
+        }
         double sigma;
         double Tb=critical[1];
         double Tc=critical[2];
