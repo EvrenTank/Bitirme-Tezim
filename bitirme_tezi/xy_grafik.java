@@ -244,7 +244,6 @@ import javax.swing.JPanel;
                 k=liquids.k_Missenard(name,T,P,"double");
                 y_ekseni4[i] = k;
                 k = liquids.k_Latini_and_Baroncini(name,T,P,"double");
-                System.out.println("k_Latini ve Baroncini="+k);
                 y_ekseni5[i] = k;
             }
             x.add(x_ekseni);

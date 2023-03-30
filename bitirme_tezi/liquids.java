@@ -713,6 +713,21 @@ public class liquids {
             return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
         }
     }
+    public String k(double T) {
+        double A,B,C;
+        double k=0;
+        if(k_c[3]<=T && T<=k_c[4])
+        {
+            A=k_c[0];
+            B=k_c[1];
+            C=k_c[2];
+            k=A+B*T+C*T*T;
+            return (""+k);
+        }
+        else {
+            return " Bu sıcaklık değeri için "+"\n"+" hesaplama yapılamıyor";
+        }
+    }
     public void A_parameter() {
         liquid_names names = new liquid_names();
         String name;
@@ -1128,12 +1143,18 @@ return ""+k_high_pressure;
 
         critical = values.get_critical(name);
         k_c = values.getk(name);
+        organiccompounds_classification=values.get_orgmat_classification(name);
+        String malzeme_turu=values.malzemenin_turu;
+        if(malzeme_turu.equals("saturated_hydrocarbon")==false && malzeme_turu.equals("aromatic")==false ){
+            return 0.0;
+        }
 
         double A,A0,A1=0,Tb,Tc,Pc,M,Tr,Pr,Asharp,alfa,beta,gamma; // A1 değerini initialize etmem gerektiği için değer verdim.
         double k=0;
         double k_saturated;
         try{
-            k_saturated = Double.parseDouble(k());
+
+            k_saturated = Double.parseDouble(k(T));
         }
         catch (NumberFormatException e){
             e.printStackTrace();
@@ -1144,6 +1165,8 @@ return ""+k_high_pressure;
         Pvapor_c = values.getPvapor(name);
         try {
             Pvapor = Double.parseDouble(Pvapor(T));
+            System.out.println("Pvapor:"+Pvapor);
+
         }
         catch (NumberFormatException e){
             e.printStackTrace();
@@ -1161,12 +1184,14 @@ return ""+k_high_pressure;
         Pc = critical[3]*100; // kPa yaptım birimini
         Tr=T/Tc;
         Pr=P/Pc;
-        organiccompounds_classification=values.get_orgmat_classification(name);
-        String malzeme_turu=values.malzemenin_turu;
+
+
+
         Asharp=organiccompounds_classification[0];
         alfa=organiccompounds_classification[1];
         beta=organiccompounds_classification[2];
         gamma=organiccompounds_classification[3];
+
         if(malzeme_turu.equals("saturated_hydrocarbon")==false && malzeme_turu.equals("aromatic")==false ){
             return 0.0;
         }
