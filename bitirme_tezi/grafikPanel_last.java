@@ -17,29 +17,32 @@ public class grafikPanel_last extends JPanel   {
         liquid_name = isimler[0];
         JComboBox<String> isim_listesi = new JComboBox<String>(isimler);
         //isim_listesi.setEditable(true);
-        isim_listesi.setBounds(300,50,150,20);
+        isim_listesi.setBounds(30,50,250,20);
         this.add(isim_listesi);
         JLabel label_Pressure = new JLabel("P(kPa):");
-        label_Pressure.setBounds(500,50,50,20);
+        label_Pressure.setBounds(300,50,50,20);
         this.add(label_Pressure);
         JTextField field_P = new JTextField();
         field_P.setText(""+P);
-        field_P.setBounds(570,50,50,20);
+        field_P.setBounds(370,50,50,20);
         this.add(field_P);
+        JButton button = new JButton("Grafikleri çizdir");
+        button.setBounds(430,50,150,20);
+        this.add(button);
 
-        g_vis = new xy_grafik("Temperature(K)","Viskozite(Pa.s)");
+        g_vis = new xy_grafik("Sıcaklık(K)","Viskozite( Pa.s)");
         g_vis.setBounds(50,100,400,300);
         this.add(g_vis);
-        g_st= new xy_grafik("Temperature(K)","Yüzey gerilimi(N/m)");
+        g_st= new xy_grafik("Sıcaklık(K)","Yüzey gerilimi (N/m)");
         g_st.setBounds(500,100,400,300);
         this.add(g_st);
-        g_k= new xy_grafik("Temperature(K)","Isıl iletk.kats.(W/(mK))");
+        g_k= new xy_grafik("Sıcaklık(K)","Isıl iletk.kats. (W/(mK))");
         g_k.setBounds(950,100,400,300);
         this.add(g_k);
-        g_ro= new xy_grafik("Temperature(K)","Yogunluk(kg/m^3)");
+        g_ro= new xy_grafik("Sıcaklık(K)","Yoğunluk (kg/m^3)");
         g_ro.setBounds(50,450,400,300);
         this.add(g_ro);
-        g_cp= new xy_grafik("Temperature(K)","Özgül ısı (kJ/kmol/K");
+        g_cp= new xy_grafik("Sıcaklık(K)","Özgül ısı (kJ/(kmolK))");
         g_cp.setBounds(500,450,400,300);
         this.add(g_cp);
 
@@ -55,8 +58,7 @@ public class grafikPanel_last extends JPanel   {
                 g_cp.createGraphic(liquid_name,"özgül ısı",P);
             }
         };
-        isim_listesi.addActionListener(ac_lis);
-        field_P.addActionListener(ac_lis);
+         button.addActionListener(ac_lis);
     }
     public static void main(String[] args) {
         grafikPanel_last g = new grafikPanel_last(); // Panel

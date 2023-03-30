@@ -31,7 +31,7 @@ public class createTable_for_comparision extends JPanel {
                          "N2_nitrogen","NH3_ammonia","O2_oxygen","He_helium4",
                          "Hg_mercury","H2O2_hydrogenperoxide","Bi_bismuth","Pb_lead","Na_sodium","K_potassium" };*/
     String properties[] = {"Density (kg/m^3)","Surface tension (N/m)","Thermal conductivity (W/(mK))","Viscosity (Pa.s)",
-            "Specific heat (kJ/(kmolK))","hbuharlasma (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};
+            "Specific heat (kJ/(kmolK))","h_evaporation (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};
     String liquids[] = {"Ar_argon","CH4_methane","C2H2F4_1112tetrafluoroethane","C2H3F3_111trifluoroethane","C2H4F2_11difluoroethane",
             "C2HF5_pentafluoroethane","C2HClF4_2chloro1112tetrafluoroethane","C2HCl2F3_22dichloro111trifluoroethane",
             "C3H8_propane","C3H6_propylene","C4H10_butane","C4H10_isobutane","CCl2F2_dichlorodifluoromethane","CH2F2_difluoromethane",
@@ -41,7 +41,7 @@ public class createTable_for_comparision extends JPanel {
     JComboBox <String> property_list=new JComboBox<String>(properties);
     String liquid = "Ar_argon";
     String property = "Density";
-    String column[] ={"T(Kelvin)","Tablo","Katsayılar"," % Hata","Rackett","% Hata","Yamada and Gunn","% Hata","HBT","% Hata"};;
+    String column[] ={"T(Kelvin)","Tablo","Katsayılar"," % Hata","Rackett","% Hata","Yamada ve Gunn","% Hata","HBT","% Hata"};;
     Object row[][];
     JScrollPane scrollPane;
 
@@ -103,7 +103,7 @@ public class createTable_for_comparision extends JPanel {
         else if(property == "Specific heat (kJ/(kmolK))"){
             row = cp_values_for_Table(liquid);
         }
-        else if(property == "hbuharlasma (kJ/(kmol))"){
+        else if(property == "h_evaporation (kJ/(kmol))"){
             row = hbuharlasma_values_for_Table(liquid);
         }
         else if(property == "deltah (kJ/(kmol))"){
@@ -213,7 +213,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double vis_c[]=values.getvis(name);
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata","Przezdziecki and Sridhar","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar","% Hata","Przezdziecki ve Sridhar","% Hata"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -239,16 +239,8 @@ public class createTable_for_comparision extends JPanel {
             percent_error = (vis-vis_referans)/vis_referans*100;
             row[i][4]=formatter.format(vis);
             row[i][5]=formatter2.format(percent_error);
-//            try{
-//                Pdoy = Double.parseDouble(liquids.Pvapor(name,T));
-//                vis = liquids.vis_Lucas(name,T,Pdoy,"double");
-//                percent_error = (vis-vis_referans)/vis_referans*100;
-//                row[i][3]=formatter.format(vis) + "(%" + formatter2.format(percent_error) + ")";
-//            }
-//            catch(NumberFormatException e){
-//                e.printStackTrace();
-//                row[i][3]="Hesaplanamadı";
-//            }
+
+
         }
         return row;
     }
@@ -295,7 +287,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double cp_c[]=values.getro(name);
-        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar"," % Hata","Rackett","% Hata","Yamada and Gunn","% Hata","HBT","% Hata"}; // HBT: Hankinson and Thomson
+        String metot_names[] = {"T(Kelvin)","Tablo","Katsayılar"," % Hata","Rackett","% Hata","Yamada ve Gunn","% Hata","HBT","% Hata"}; // HBT: Hankinson and Thomson
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
