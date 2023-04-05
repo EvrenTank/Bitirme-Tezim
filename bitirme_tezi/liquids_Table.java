@@ -46,8 +46,7 @@ public class liquids_Table extends JPanel{
         this.add(label_P);
         this.add(field_P);
 
-        //String column[]= {"Property"," Value"," Unit"," Available temp. range"};
-        String column[]= {"Özellik","Değer"," Birim"," Geçerli sıcaklık aralığı"};
+        String column[]= {"Property"," Value"," Unit"," Available temp. range"};
 
         table=new JTable(row,column);
         resizeTableColumnWidth();
@@ -117,21 +116,16 @@ public class liquids_Table extends JPanel{
     }
 
     public static void main(String args[]) {
-        //JFrame frame=new JFrame(" Properties of Liquids:");
-        JFrame frame=new JFrame(" Sıvıların Özellikleri:");
+        JFrame frame=new JFrame(" Properties of Liquids:");
         JTabbedPane tabbedPane=new JTabbedPane(JTabbedPane.TOP);
         liquids_Table panel=new liquids_Table();
         liquid_mixtureTables2 panel2=new liquid_mixtureTables2();
         grafikPanel_last panel3 = new grafikPanel_last();
         createTable_for_comparision panel4 = new createTable_for_comparision();
-        /*tabbedPane.addTab("Pure liquids",panel);
+        tabbedPane.addTab("Pure liquids",panel);
         tabbedPane.addTab("Mixtures",panel2);
         tabbedPane.addTab("Property graphics",panel3);
-        tabbedPane.addTab("Error calculations",panel4);*/
-        tabbedPane.addTab("Saf sıvılar",panel);
-        tabbedPane.addTab("Karışımlar",panel2);
-        tabbedPane.addTab("Özellik grafikleri",panel3);
-        tabbedPane.addTab("Hata analizleri",panel4);
+        tabbedPane.addTab("Error calculations",panel4);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.add(tabbedPane);

@@ -81,10 +81,10 @@ import javax.swing.JPanel;
             else if(graphic_name.equalsIgnoreCase("surface tension")){
                 o = surten_values(name,P);
             }
-            else if(graphic_name.equalsIgnoreCase("ısıl iletkenlik")){
+            else if(graphic_name.equalsIgnoreCase("thermal conductivity")){
                 o= k_values(name,P);
             }
-            else if(graphic_name.equalsIgnoreCase("yoğunluk")){
+            else if(graphic_name.equalsIgnoreCase("density")){
                 o= ro_values(name,P);
             }
             else {
@@ -135,7 +135,7 @@ import javax.swing.JPanel;
             y.add(y_ekseni);
             x.add(x_ekseni2);
             y.add(y_ekseni2);
-            String curve_names[] = {"Katsayılar","CSP metodu"};
+            String curve_names[] = {"Katsayilar","CSP metodu"};
             setCurves(curve_names);
             Object [] object =new Object[2];
             object[0] = x;
@@ -199,7 +199,7 @@ import javax.swing.JPanel;
             y.add(y_ekseni5);
             x.add(x_ekseni6);
             y.add(y_ekseni6);
-            String curve_names[] = {"Katsayılar","Rackett Yöntemi","Yamada-Gunn ","HBT yöntemi","Tait","Chang ve Zhao"};
+            String curve_names[] = {"Katsayilar","Rackett ","Yamada-Gunn ","HBT ","Tait","Chang ve Zhao"};
             setCurves(curve_names);
             Object [] object =new Object[2];
             object[0] = x;
@@ -257,7 +257,7 @@ import javax.swing.JPanel;
             y.add(y_ekseni4);
             y.add(y_ekseni5);
 
-            String curve_names[] = {"Katsayılar","Latini vd.","Sastri","Missenard","Lat. ve Baron."};
+            String curve_names[] = {"Katsayilar","Latini vd.","Sastri","Missenard","Lat. ve Baron."};
             setCurves(curve_names);
 /*
             for(int i=0;i<20;i++){
@@ -347,7 +347,7 @@ import javax.swing.JPanel;
             }
 
  */
-            String curve_names[] = {"Katsayılar","Brock-Bird","Pitzer","Zuo-Stendby","Sastri-Rao","Macl.-Sugden"};
+            String curve_names[] = {"Katsayilar","Brock-Bird","Pitzer","Zuo-Stendby","Sastri-Rao","Macl.-Sugden"};
            // String curve_names[] = {"Katsayılar","Brock-Bird","Pitzer","Zuo-Stendby","Sastri-Rao","Macleod and Sugden"};
             setCurves(curve_names);
             Object [] object =new Object[2];
@@ -394,7 +394,7 @@ import javax.swing.JPanel;
             y.add(y_ekseni2);
             x.add(x_ekseni3);
             y.add(y_ekseni3);
-            String curve_names[] = {"Katsayılar","Przez. ve Sridhar","Lucas"};
+            String curve_names[] = {"Katsayilar","Przez. ve Sridhar","Lucas"};
             setCurves(curve_names);
 Object [] object =new Object[2];
 object[0] = x;

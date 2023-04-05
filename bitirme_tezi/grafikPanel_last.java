@@ -26,23 +26,23 @@ public class grafikPanel_last extends JPanel   {
         field_P.setText(""+P);
         field_P.setBounds(370,50,50,20);
         this.add(field_P);
-        JButton button = new JButton("Grafikleri çizdir");
+        JButton button = new JButton("Plot the charts");
         button.setBounds(430,50,150,20);
         this.add(button);
 
-        g_vis = new xy_grafik("Sıcaklık(K)","Viskozite( Pa.s)");
+        g_vis = new xy_grafik("Temperature (K)","Viscosity( Pa.s)");
         g_vis.setBounds(50,100,400,300);
         this.add(g_vis);
-        g_st= new xy_grafik("Sıcaklık(K)","Yüzey gerilimi (N/m)");
+        g_st= new xy_grafik("Temperature (K)","Surface tens. (N/m)");
         g_st.setBounds(500,100,400,300);
         this.add(g_st);
-        g_k= new xy_grafik("Sıcaklık(K)","Isıl iletk.kats. (W/(mK))");
+        g_k= new xy_grafik("Temperature (K)","Therm. cond. (W/(mK))");
         g_k.setBounds(950,100,400,300);
         this.add(g_k);
-        g_ro= new xy_grafik("Sıcaklık(K)","Yoğunluk (kg/m^3)");
+        g_ro= new xy_grafik("Temperature (K)","Density (kg/m^3)");
         g_ro.setBounds(50,450,400,300);
         this.add(g_ro);
-        g_cp= new xy_grafik("Sıcaklık(K)","Özgül ısı (kJ/(kmolK))");
+        g_cp= new xy_grafik("Temperature (K)","Spec. heat (kJ/(kmolK))");
         g_cp.setBounds(500,450,400,300);
         this.add(g_cp);
 
@@ -53,9 +53,9 @@ public class grafikPanel_last extends JPanel   {
                 P=Double.parseDouble(field_P.getText());
                 g_vis.createGraphic(liquid_name,"viscosity",P);
                 g_st.createGraphic(liquid_name,"surface tension",P);
-                g_k.createGraphic(liquid_name,"ısıl iletkenlik",P);
-                g_ro.createGraphic(liquid_name,"yoğunluk",P);
-                g_cp.createGraphic(liquid_name,"özgül ısı",P);
+                g_k.createGraphic(liquid_name,"thermal conductivity",P);
+                g_ro.createGraphic(liquid_name,"density",P);
+                g_cp.createGraphic(liquid_name,"specific heat",P);
             }
         };
          button.addActionListener(ac_lis);

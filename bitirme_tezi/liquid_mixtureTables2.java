@@ -39,15 +39,15 @@ public class liquid_mixtureTables2 extends JPanel {
         liquid_names l_names= new liquid_names();
         String isimler [] = l_names.get_names();
         this.setLayout(null);
-        JPanel panel_compounds=new JPanel();// Bu paneli malzeme sayısına göre oluşturulacak olan alanlar için kullanacağım. GridLayout yaparak
-        // direkt olarak elemanları buna ekleyip, bu paneli de ana panele ekleyeceğim.
-        //String column[]= {"Property"," Value"," Unit","Available temp. range"};
-        String column[]= {"Özellik"," Değer","Birim","Geçerli sıcaklık aralığı"};
+        JPanel panel_compounds=new JPanel();// Bu paneli malzeme sayisina gore olusturulacak olan alanlar icin kullanacagim. GridLayout yaparak
+        // direkt olarak elemanlari buna ekleyip, bu paneli de ana panele ekleyecegim.
+        String column[]= {"Property"," Value"," Unit","Available temp. range"};
+        //String column[]= {"ozellik"," Deger","Birim","Gecerli sicaklik araligi"};
         table=new JTable(row , column);
         resizeTableColumnWidth();
         table.setPreferredScrollableViewportSize(new Dimension(600,600));
-        //JLabel label=new JLabel("Enter the comp. numbers in the mixture:");
-        JLabel label=new JLabel("Karışımdaki sıvı sayısını giriniz:");
+        JLabel label=new JLabel("Enter the comp. numbers in the mixture:");
+        //JLabel label=new JLabel("Karisimdaki sivi sayisini giriniz:");
         JLabel label_P=new JLabel("P(kPa):");
         field_P = new JTextField(""+P,10);
         label_P.setBounds(120,100,50,30);
@@ -55,15 +55,15 @@ public class liquid_mixtureTables2 extends JPanel {
         this.add(label_P);
         this.add(field_P);
         label.setBorder(blackline);
-        label.setBounds(240,100,200,30 );
+        label.setBounds(240,100,230,30 );
         this.add(label);
         JTextField field=new JTextField(10);
-        field.setBounds(450,100,30,30);
+        field.setBounds(480,100,30,30);
         this.add(field);
         sp=new JScrollPane(table);
         sp.setBounds(600,20,600,600);
         liquid_mixtureTables2.this.add(sp);
-        JButton hesapla_butonu=new JButton("Hesapla");
+        JButton hesapla_butonu=new JButton("Calculate");
         hesapla_butonu.setBounds(260,150,140,20);
         this.add(hesapla_butonu);
 
@@ -135,7 +135,7 @@ public class liquid_mixtureTables2 extends JPanel {
                     labels.add(l);
                     liquid_mixtureTables2.this.add(l);
 
-                    l2=new JLabel("Mol sayısı:");
+                    l2=new JLabel("Mol sayisi:");
                     l2.setBounds(x+410,y+30*i,70,20);
                     labels2.add(l2);
                     liquid_mixtureTables2.this.add(l2);
@@ -159,7 +159,7 @@ public class liquid_mixtureTables2 extends JPanel {
         label_m2=new JLabel("m2");
 
         field_m1=new JTextField("1",5); // mol sayilarini girmek icin olan alan
-        field_m2=new JTextField("1",5); // mol sayilarini girmek için olan alan
+        field_m2=new JTextField("1",5); // mol sayilarini girmek icin olan alan
 
         JComboBox <String> isim_listesi=new JComboBox<String>(isimler);
         JComboBox <String> isim_listesi2=new JComboBox<String>(isimler);
@@ -206,7 +206,7 @@ public class liquid_mixtureTables2 extends JPanel {
     public static void main(String[] args) {
 
         liquid_mixtureTables2 t1=new liquid_mixtureTables2();
-        JFrame frame=new JFrame("Mixture için olan table");
+        JFrame frame=new JFrame("Mixture icin olan table");
         frame.setSize(1200,800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

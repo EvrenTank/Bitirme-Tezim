@@ -32,8 +32,8 @@ public class createTable_for_comparision extends JPanel {
                          "Hg_mercury","H2O2_hydrogenperoxide","Bi_bismuth","Pb_lead","Na_sodium","K_potassium" };*/
   /*  String properties[] = {"Density (kg/m^3)","Surface tension (N/m)","Thermal conductivity (W/(mK))","Viscosity (Pa.s)",
             "Specific heat (kJ/(kmolK))","h_evaporation (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};*/
-    String properties[] = {"Yoğunluk (kg/m^3)","Yüzey Gerilimi (N/m)","Isıl iletkenlik (W/(mK))","Viskozite (Pa.s)",
-            "Özgül Isı (kJ/(kmolK))","h_buharlaşma (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};
+    String properties[] = {"Density (kg/m^3)","Surf. tension (N/m)","Thermal cond. (W/(mK))","Viscosity (Pa.s)",
+            "Specific heat (kJ/(kmolK))","Evaporation enthalpy (kJ/(kmol))","deltah (kJ/(kmol))","deltas (kJ/(kmolK))","Pvapor (kPa)"};
     String liquids[] = {"Ar_argon","CH4_methane","C2H2F4_1112tetrafluoroethane","C2H3F3_111trifluoroethane","C2H4F2_11difluoroethane",
             "C2HF5_pentafluoroethane","C2HClF4_2chloro1112tetrafluoroethane","C2HCl2F3_22dichloro111trifluoroethane",
             "C3H8_propane","C3H6_propylene","C4H10_butane","C4H10_isobutane","CCl2F2_dichlorodifluoromethane","CH2F2_difluoromethane",
@@ -42,8 +42,8 @@ public class createTable_for_comparision extends JPanel {
     JComboBox <String> liquid_list=new JComboBox<String>(liquids);
     JComboBox <String> property_list=new JComboBox<String>(properties);
     String liquid = "Ar_argon";
-    String property = "Yoğunluk (kg/m^3)";
-    String column[] ={"T(Kelvin)","Referans","Katsayılar"," % Hata","Rackett","% Hata","Yamada ve Gunn","% Hata","HBT","% Hata"};;
+    String property = "Density (kg/m^3)";
+    String column[] ={"T(Kelvin)","Referans","Katsayilar"," % Error","Rackett","% Error","Yamada ve Gunn","% Error","HBT","% Error"};;
     Object row[][];
     JScrollPane scrollPane;
 
@@ -56,7 +56,7 @@ public class createTable_for_comparision extends JPanel {
          double x_values[],y_values[];
         row = density_values_for_Table(liquid);
         label.setBounds(35,130,500,50);
-        label.setText("Sıvı: "+liquid + "   Özellik:  "+property);
+        label.setText("Liquid: "+liquid + "  Property: "+property);
         this.add(label);
         table=new JTable(row,column);
         resizeTableColumnWidth();
@@ -71,7 +71,7 @@ public class createTable_for_comparision extends JPanel {
                 createTable_for_comparision.this.remove(scrollPane);
                 liquid = (String) liquid_list.getSelectedItem();
                 property = (String) property_list.getSelectedItem();
-                label.setText("Sıvı: "+liquid + "   Özellik:  "+property);
+                label.setText("Liquid: "+liquid + "  Property: "+property);
                 label.setBounds(35,130,500,50);
                 createTable_for_comparision.this.add(label);
                 row = calculate(liquid,property);
@@ -90,22 +90,22 @@ public class createTable_for_comparision extends JPanel {
     public Object[][] calculate(String liquid,String property){
         Object row[][] ;
 
-        if(property == "Yoğunluk (kg/m^3)"){
+        if(property == "Density (kg/m^3)"){
             row = density_values_for_Table(liquid);
         }
-        else if(property == "Yüzey Gerilimi (N/m)"){
+        else if(property == "Surf. tension (N/m)"){
             row = surten_values_for_Table(liquid);
         }
-        else if(property == "Isıl iletkenlik (W/(mK))"){
+        else if(property == "Thermal cond. (W/(mK))"){
             row = thermalconductivity_values_for_Table(liquid);
         }
-        else if(property == "Viskozite (Pa.s)"){
+        else if(property == "Viscosity (Pa.s)"){
             row = viscosity_values_for_Table(liquid);
         }
-        else if(property == "Özgül Isı (kJ/(kmolK))"){
+        else if(property == "Specific heat (kJ/(kmolK))"){
             row = cp_values_for_Table(liquid);
         }
-        else if(property == "h_buharlaşma (kJ/(kmol))"){
+        else if(property == "Evaporation enthalpy (kJ/(kmol))"){
             row = hbuharlasma_values_for_Table(liquid);
         }
         else if(property == "deltah (kJ/(kmol))"){
@@ -160,8 +160,8 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double surten_c[]=values.getsurtension(name);
-        String metot_names[]= {"T(Kelvin)","Referans","Katsayılar","% Hata","Brock ve Bird","% Hata","Pitzer","% Hata","Zuo ve Stendby",
-                               "% Hata","Sastri ve Rao","% Hata","Macleod ve Sugden","% Hata"};
+        String metot_names[]= {"T(Kelvin)","Referans","Katsayilar","% Error","Brock ve Bird","% Error","Pitzer","% Error","Zuo ve Stendby",
+                               "% Error","Sastri ve Rao","% Error","Macleod ve Sugden","% Error"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         double sigma; // Yüzey gerilimi Birimi: N/m
@@ -215,7 +215,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double vis_c[]=values.getvis(name);
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar","% Hata","Przezdziecki ve Sridhar","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar","% Error","Przezdziecki ve Sridhar","% Error"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -254,7 +254,7 @@ public class createTable_for_comparision extends JPanel {
         double cp_c[]=values.getcp(name);
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar"," % Hata","CSP","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar"," % Error","CSP","% Error"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -289,7 +289,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double cp_c[]=values.getro(name);
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar"," % Hata","Rackett","% Hata","Yamada ve Gunn","% Hata","HBT","% Hata"}; // HBT: Hankinson and Thomson
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar"," % Error","Rackett","% Error","Yamada ve Gunn","% Error","HBT","% Error"}; // HBT: Hankinson and Thomson
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -332,7 +332,7 @@ public class createTable_for_comparision extends JPanel {
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
         double cp_c[]=values.getk(name);
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar","% Hata","Latini","% Hata","Sastri","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar","% Error","Latini","% Error","Sastri","% Error"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
@@ -372,7 +372,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar","% Error"};
         column = metot_names;
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
@@ -411,7 +411,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar","% Error"};
         column = metot_names;
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
@@ -453,7 +453,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar","% Error"};
         column = metot_names;
         double critical_values[] = values.get_critical(name);
         double M = critical_values[0];
@@ -495,7 +495,7 @@ public class createTable_for_comparision extends JPanel {
         liquid_values values = new liquid_values();
         double table_Values[][] = values.getTableValues(name);
         liquids liquids = new liquids();
-        String metot_names[] = {"T(Kelvin)","Referans","Katsayılar","% Hata"};
+        String metot_names[] = {"T(Kelvin)","Referans","Katsayilar","% Error"};
         column = metot_names;
         Object row[][]=new Object[table_Values.length][metot_names.length]; // Tablolara eklenecek olan satırlar
         DecimalFormatSymbols symbol= new DecimalFormatSymbols();
